@@ -187,8 +187,37 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   74%{transform:scale(1.02);opacity:1;filter:blur(0)}
   100%{transform:scale(1.12);opacity:0;filter:blur(4px)}}
 @keyframes transitSub{0%,26%{opacity:0}42%{opacity:1}80%{opacity:1}100%{opacity:0}}
-.flash{position:fixed;inset:0;z-index:39;pointer-events:none;opacity:0}
-.flash.go{animation:flashFade .5s ease both}
+/* ---------- 时空穿越 · 抽卡式揭示 ---------- */
+.rift{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;background:radial-gradient(circle at 50% 46%,rgba(10,16,34,.93),rgba(2,3,9,.985));
+  backdrop-filter:blur(10px);animation:riftIn .42s ease both}
+.rift.out{animation:riftOut .5s ease both}
+@keyframes riftIn{from{opacity:0}to{opacity:1}}
+@keyframes riftOut{to{opacity:0}}
+.rift-kicker{font-size:10px;letter-spacing:.46em;color:var(--ink-dim)}
+.rift-window{position:relative;width:min(88vw,430px);height:76px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);
+  border-block:1px solid rgba(255,255,255,.07)}
+.rift-window::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);opacity:.6}
+.rift-reel{display:flex;flex-direction:column;will-change:transform}
+.rift-item{height:76px;line-height:76px;text-align:center;font-size:25px;letter-spacing:.24em;
+  color:rgba(226,238,255,.42);white-space:nowrap}
+.rift-item.target{color:var(--ink)}
+.rift.spinning .rift-reel{filter:blur(.6px)}
+.rift-window.landed{animation:riftLand .55s cubic-bezier(.2,.9,.2,1) both}
+@keyframes riftLand{0%{transform:scale(1)}38%{transform:scale(1.07)}100%{transform:scale(1)}}
+.rift-verdict{opacity:0;transform:translateY(10px) scale(.94);font-size:12.5px;letter-spacing:.3em;
+  padding:9px 18px;border-radius:24px;border:1px solid currentColor;transition:opacity .5s,transform .5s}
+.rift-verdict.show{opacity:1;transform:none}
+.rift.ok .rift-verdict{color:var(--gold);box-shadow:0 0 34px -12px var(--gold)}
+.rift.bad .rift-verdict{color:var(--bad);box-shadow:0 0 34px -12px var(--bad)}
+.rift.ok .rift-item.target{color:var(--gold);text-shadow:0 0 32px rgba(255,215,106,.6)}
+.rift.bad .rift-item.target{color:#ffb4bd;text-shadow:0 0 32px rgba(255,90,110,.5)}
+.rift-sub{font-size:10.5px;letter-spacing:.28em;color:var(--ink-dim);opacity:0;transition:opacity .6s .25s}
+.rift-sub.show{opacity:.8}
+.flash{position:fixed;inset:0;z-index:39;pointer-events:none;opacity:0}.flash.go{animation:flashFade .5s ease both}
 @keyframes flashFade{0%{opacity:.85}100%{opacity:0}}
 .flash-red{background:radial-gradient(circle at 50% 60%,rgba(255,60,80,.28),rgba(120,0,20,.5))}
 .flash-ok{background:radial-gradient(circle at 50% 60%,rgba(80,255,200,.16),rgba(0,80,80,.3))}
@@ -1017,6 +1046,63 @@ async function levelFail(){
   show('s-result');
 }
 
+/* ---------------- 时空穿越：抽卡式揭示 ---------------- */
+function riftReveal(targetEra, ok){
+  return new Promise(resolve => {
+    const ROW = 76;
+    const overlay = document.createElement('div');
+    overlay.className = 'rift ' + (ok ? 'ok' : 'bad') + ' spinning';
+    overlay.innerHTML =
+      '<div class="rift-kicker">' + (ok ? 'SPACETIME RIFT · ASCEND' : 'SPACETIME RIFT · COLLAPSE') + '</div>' +
+      '<div class="rift-window" id="riftWin"><div class="rift-reel" id="riftReel"></div></div>' +
+      '<div class="rift-verdict" id="riftVerdict"></div>' +
+      '<div class="rift-sub" id="riftSub"></div>';
+    document.body.appendChild(overlay);
+
+    const reel = overlay.querySelector('#riftReel');
+    const win = overlay.querySelector('#riftWin');
+    const verdict = overlay.querySelector('#riftVerdict');
+    const sub = overlay.querySelector('#riftSub');
+
+    const names = [];
+    for(let i = 0; i < 17; i++) names.push(ERAS[Math.floor(Math.random() * ERAS.length)].n);
+    for(let i = 3; i >= 0; i--) names.push(ERAS[Math.max(0, targetEra - i)].n);
+    reel.innerHTML = names.map((n, i) =>
+      `<div class="rift-item${i === names.length - 1 ? ' target' : ''}">${n}</div>`).join('');
+    reel.style.transform = 'translateY(0)';
+
+    requestAnimationFrame(() => {
+      reel.style.transition = 'transform 1.9s cubic-bezier(.09,.86,.07,1)';
+      reel.style.transform = 'translateY(' + (-(names.length - 1) * ROW) + 'px)';
+    });
+
+    Sfx.travel();
+    if(window.__atmos) window.__atmos.warp(1.5);
+
+    setTimeout(() => {
+      overlay.classList.remove('spinning');
+      win.classList.add('landed');
+      verdict.textContent = ok ? '⇈ 飞升 · 连进两纪' : '↓ 坠落 · 退回出发时代';
+      verdict.classList.add('show');
+      sub.textContent = ok ? ('抵达 ' + ERAS[targetEra].n) : ('回到 ' + ERAS[targetEra].n);
+      sub.classList.add('show');
+      if(ok){
+        flash('flash-ok');
+        Sfx.up();
+        if(window.__atmos) window.__atmos.burst(.5, .48, window.__hex2rgb('#ffd76a'));
+      } else {
+        flash('flash-red');
+        Sfx.down();
+      }
+    }, 1960);
+
+    setTimeout(() => {
+      overlay.classList.add('out');
+      setTimeout(() => { overlay.remove(); resolve(); }, 480);
+    }, 4600);
+  });
+}
+
 /* ---------------- 穿越挑战 ---------------- */
 function startTravel(){
   S.travelFrom = S.era;
@@ -1027,17 +1113,21 @@ function startTravel(){
   setTimeout(renderQuestion, 220);
 }
 
-function travelResult(){
+async function travelResult(){
   const allRight = S.levelRight === 3;
   S.travels++;
+  const from = S.travelFrom;
+  const target = allRight ? Math.min(MAX_ERA, from + 2) : from;
+
+  await riftReveal(target, allRight);
+
   if(allRight){
     S.travelWins++;
     S.score += 30;
     S.cores = Math.min(3, S.cores + 1);
-    S.era = Math.min(MAX_ERA, S.era + 2);
+    S.era = target;
     applyEra(S.era);
     saveBest(S.era);
-    flash('flash-ok');
     Sfx.up();
     renderRail();
     $('resKicker').textContent = 'RIFT CONQUERED';
@@ -1046,10 +1136,9 @@ function travelResult(){
     $('resTitle').textContent = '跃迁成功';
     $('resSub').textContent = '裂隙承认了你：' + ERAS[S.era].n;
   } else {
-    S.era = S.travelFrom;
+    S.era = from;
     S.cores = 0;
     applyEra(S.era);
-    flash('flash-red');
     Sfx.down();
     renderRail();
     $('resKicker').textContent = 'RIFT REJECTED';
