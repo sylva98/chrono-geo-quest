@@ -73,6 +73,29 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .title-actions{margin-top:auto;display:grid;gap:10px}
 .best{font-size:12px;letter-spacing:.16em;color:var(--ink-dim);margin-bottom:10px}
 
+/* ---------- 选择考区 ---------- */
+#s-subject{gap:10px}
+#s-subject h1{font-size:27px;letter-spacing:.16em;margin:4px 0 0;font-weight:600}
+#s-subject .sub{font-size:12.5px;color:var(--ink-dim);line-height:1.7;letter-spacing:.06em;margin:0}
+.sub-list{display:flex;flex-direction:column;gap:9px;margin:14px 0 0;overflow-y:auto;
+  scrollbar-width:none;min-height:0}
+.sub-list::-webkit-scrollbar{display:none}
+.sub-card{display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;text-align:left;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);color:var(--ink);
+  font-family:inherit;cursor:pointer;transition:border-color .25s,background .25s,box-shadow .35s}
+.sub-card:active{transform:scale(.99)}
+.sub-card .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:14px;
+  background:rgba(255,255,255,.07);color:var(--ink-dim);flex:none;transition:.25s}
+.sub-card .tx{flex:1;min-width:0}
+.sub-card .nm{font-size:15px;letter-spacing:.08em;display:block}
+.sub-card .ds{font-size:11.5px;color:var(--ink-dim);margin-top:3px;letter-spacing:.04em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.sub-card .st{font-size:11px;color:var(--ink-dim);letter-spacing:.06em;flex:none;text-align:right;line-height:1.5}
+.sub-card.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 30px -14px var(--accent)}
+.sub-card.on .ic{background:var(--accent);color:#02121c}
+.sub-card.off{opacity:.42}
+.sub-card.off .st{color:rgba(255,255,255,.4)}
+
 /* ---------- HUD ---------- */
 #s-play{padding-top:calc(env(safe-area-inset-top) + 12px);gap:10px}
 .hud{display:flex;flex-direction:column;gap:8px;flex:none}
@@ -81,6 +104,13 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .era-chip .idx{font-size:11px;letter-spacing:.1em;color:var(--accent);font-variant-numeric:tabular-nums;
   border:1px solid var(--accent-soft);border-radius:6px;padding:2px 5px}
 .era-chip .nm{font-size:15px;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snd{width:26px;height:26px;flex:none;border-radius:8px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);color:var(--ink-dim);font-size:12px;line-height:1;cursor:pointer;
+  font-family:inherit;padding:0;transition:.2s}
+.snd.on{color:var(--ink);border-color:var(--accent);box-shadow:0 0 14px -6px var(--accent)}
+.snd.off{opacity:.5;text-decoration:line-through}
+.sub-badge{font-size:10px;letter-spacing:.08em;color:var(--ink-dim);flex:none;
+  border:1px solid rgba(255,255,255,.14);border-radius:5px;padding:1px 5px;opacity:.9}
 .cores{display:flex;gap:3px;margin-left:auto;align-items:center}
 .core-ico{font-size:10px;color:#9fe9ff;margin-right:3px;opacity:.85}
 .core{width:9px;height:14px;border-radius:3px;background:linear-gradient(180deg,#9fe9ff,#3aa7d8);
@@ -254,6 +284,16 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
   </section>
 
+  <section class="screen" id="s-subject">
+    <div class="kicker">SELECT TIMELINE</div>
+    <h1>选择考区</h1>
+    <p class="sub">所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。</p>
+    <div class="sub-list" id="subList"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="btnSubGo">跃迁至 · 地理</button>
+    <button class="btn ghost" id="btnSubBack">返回</button>
+  </section>
+
   <section class="screen" id="s-brief">
     <div class="kicker" id="briefKicker">ERA 09</div>
     <h1 id="briefName">石器时代</h1>
@@ -271,9 +311,10 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   <section class="screen" id="s-play">
     <header class="hud">
       <div class="hud-top">
-        <div class="era-chip"><span class="idx" id="eraIdx">09</span><span class="nm" id="eraName">石器时代</span></div>
+        <div class="era-chip"><span class="idx" id="eraIdx">09</span><span class="nm" id="eraName">石器时代</span><span class="sub-badge" id="hudSub">地理</span></div>
         <div class="cores" id="cores"></div>
         <div class="score"><b id="scoreVal">0</b>PTS</div>
+        <button class="snd" id="btnSnd" type="button" aria-label="声音开关">♪</button>
       </div>
     </header>
     <div class="qwrap">
@@ -338,6 +379,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
     <div class="spacer"></div>
     <button class="btn primary" id="btnReborn">重塑宇宙</button>
+    <button class="btn ghost" id="btnOverSwitch">切换考区</button>
   </section>
 
   <section class="screen" id="s-win">
@@ -354,13 +396,15 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
     <div class="spacer"></div>
     <button class="btn gold" id="btnAgain">再闯一次时间线</button>
+    <button class="btn ghost" id="btnWinSwitch">切换考区</button>
   </section>
 </main>
 
 <div class="sheet" id="help">
   <div class="sheet-inner">
     <h3>玩法说明</h3>
-    <p>题目全部来自湘教版八年级地理上册知识清单（第 1—2 章：疆域与人口、自然环境与河流），每次进入关卡随机抽题，选项顺序也随机。<br><br>
+    <p>开局先选择考区：<b>地理</b>、<b>历史</b>，或 <b>混合</b>（多科目混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
+    题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
     每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
     每通过两关开启一次时空穿越：3 道高难题，全对连升两级，错一题退回出发时的时代。<br><br>
@@ -371,6 +415,9 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 
 <script>
 const QUESTIONS = __QUESTIONS__;
+const SUBJECTS = __SUBJECTS__;
+const MIX = {id:'mix', name:'混合', short:'混', desc:'全科混抽 · 跨科目总复习', chapter:'', accent:'#c49bff'};
+let pickId = 'geo';
 
 const ERAS = [
   {n:'虚无乌托邦', s:'时间尚未开始',      bg:'#010207', a:'#6f7ba8', a2:'#3c4468', mood:'void'},
@@ -402,23 +449,181 @@ function pad2(n){return String(n).padStart(2,'0')}
 /* ---------------- 音效 ---------------- */
 const Sfx = {
   ctx:null, on:true,
-  init(){ if(this.ctx) return; try{ this.ctx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} },
-  tone(freq, dur, type='sine', gain=.06, slideTo){
+  init(){
+    if(this.ctx) return;
+    try{
+      this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = .9;
+      this.master.connect(this.ctx.destination);
+    }catch(e){}
+    if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  tone(freq, dur, type='sine', gain=.06, slideTo, delay=0){
     if(!this.on) return; this.init(); if(!this.ctx) return;
-    const t = this.ctx.currentTime, o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    const t = this.ctx.currentTime + delay, o = this.ctx.createOscillator(), g = this.ctx.createGain();
     o.type = type; o.frequency.setValueAtTime(freq, t);
-    if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    if(slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), t + dur);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(gain, t + .012);
     g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-    o.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t + dur + .02);
+    o.connect(g); g.connect(this.master || this.ctx.destination);
+    o.start(t); o.stop(t + dur + .02);
   },
-  good(){ this.tone(660,.12,'sine',.05); setTimeout(()=>this.tone(990,.22,'sine',.045),80); },
-  bad(){ this.tone(150,.32,'sawtooth',.05,70); },
-  tick(){ this.tone(1200,.05,'square',.025); },
-  up(){ this.tone(330,.5,'triangle',.05,880); },
-  down(){ this.tone(420,.7,'sawtooth',.055,60); },
-  travel(){ this.tone(220,.8,'sine',.05,1320); }
+  /* 答对：三音上行，明亮清脆 */
+  good(){
+    this.tone(784,.10,'sine',.05);
+    this.tone(1046,.12,'sine',.045,.016);
+    this.tone(1318,.26,'sine',.04,.032);
+    this.tone(2093,.10,'triangle',.012,undefined,.05);
+  },
+  /* 答错：低频闷响 + 下滑 */
+  bad(){
+    this.tone(160,.30,'sawtooth',.055,72);
+    this.tone(96,.34,'square',.03,54,.02);
+  },
+  tick(){ this.tone(1300,.045,'square',.02); },
+  /* 纪元跃迁：上扬 */
+  up(){
+    this.tone(330,.55,'triangle',.05,990);
+    this.tone(660,.5,'sine',.03,1320,.06);
+  },
+  /* 纪元坠落：下坠 */
+  down(){
+    this.tone(430,.75,'sawtooth',.055,58);
+    this.tone(220,.8,'sine',.035,40,.05);
+  },
+  /* 穿越开启 */
+  travel(){
+    this.tone(180,1.1,'sine',.045,1500);
+    this.tone(90,.9,'triangle',.03,420,.1);
+  },
+  /* 飞升：扫频上行 + 大调琶音 */
+  ascend(){
+    this.tone(196,1.5,'sine',.045,1568);
+    [523,659,784,1046].forEach((f,i)=> this.tone(f,.42,'triangle',.045,undefined,.55+i*.09));
+  },
+  /* 坠落：扫频下行 + 低频撞击 */
+  descend(){
+    this.tone(880,1.4,'sawtooth',.045,55);
+    this.tone(70,.7,'sine',.06,38,.5);
+  }
+};
+
+/* ---------------- 时代背景音乐（Web Audio 生成，无音频文件） ---------------- */
+const MUSIC = [
+  {r:55,  sc:[0,3,5,7,10], bpm:36, w:'sine',     cut:520,  dens:.22, dv:.050},
+  {r:62,  sc:[0,1,5,6,10], bpm:44, w:'sine',     cut:640,  dens:.30, dv:.048},
+  {r:65,  sc:[0,2,4,7,9],  bpm:52, w:'triangle', cut:1100, dens:.42, dv:.050},
+  {r:58,  sc:[0,2,3,7,8],  bpm:40, w:'sine',     cut:480,  dens:.24, dv:.045},
+  {r:73,  sc:[0,2,4,6,9],  bpm:56, w:'sine',     cut:1500, dens:.45, dv:.044},
+  {r:49,  sc:[0,3,5,6,10], bpm:70, w:'sawtooth', cut:900,  dens:.50, dv:.050},
+  {r:82,  sc:[0,2,5,7,9],  bpm:60, w:'sine',     cut:1700, dens:.42, dv:.042},
+  {r:65,  sc:[0,3,5,7,10], bpm:52, w:'triangle', cut:800,  dens:.34, dv:.048},
+  {r:87,  sc:[0,2,4,7,11], bpm:46, w:'sine',     cut:2400, dens:.30, dv:.040},
+  {r:98,  sc:[0,3,5,7,10], bpm:64, w:'triangle', cut:1200, dens:.46, dv:.046},
+  {r:110, sc:[0,2,4,7,9],  bpm:68, w:'triangle', cut:1500, dens:.50, dv:.044},
+  {r:123, sc:[0,2,4,7,9],  bpm:72, w:'sine',     cut:1800, dens:.52, dv:.044},
+  {r:131, sc:[0,2,3,7,10], bpm:84, w:'square',   cut:1100, dens:.46, dv:.036},
+  {r:147, sc:[0,2,5,7,9],  bpm:92, w:'square',   cut:2000, dens:.52, dv:.034},
+  {r:165, sc:[0,2,4,7,9],  bpm:88, w:'triangle', cut:2200, dens:.55, dv:.040},
+  {r:175, sc:[0,2,4,6,9],  bpm:100,w:'square',   cut:2600, dens:.58, dv:.032},
+  {r:196, sc:[0,2,5,7,10], bpm:96, w:'triangle', cut:2300, dens:.55, dv:.038},
+  {r:220, sc:[0,1,4,6,9],  bpm:104,w:'sine',     cut:2700, dens:.60, dv:.036},
+  {r:233, sc:[0,2,4,7,11], bpm:112,w:'triangle', cut:3000, dens:.62, dv:.034},
+  {r:247, sc:[0,2,4,7,9],  bpm:78, w:'sine',     cut:2400, dens:.46, dv:.044},
+  {r:262, sc:[0,2,4,5,7,9,11], bpm:74, w:'sine', cut:3200, dens:.50, dv:.046}
+];
+
+const Music = {
+  era:9, cfg:MUSIC[9], timer:0, next:0, drone:null, muted:false, step:0,
+  get ctx(){ return Sfx.ctx; },
+  unlock(){ Sfx.init(); },
+  start(){ this.unlock(); if(!this.ctx || this.timer) return; this.next = this.ctx.currentTime + .1; this.loop(); },
+  stop(){ clearInterval(this.timer); this.timer = 0; this.killDrone(); },
+  loop(){
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      if(!this.ctx || this.muted || !Sfx.on) return;
+      if(this.ctx.state === 'suspended') return;
+      const horizon = this.ctx.currentTime + .7;
+      while(this.next < horizon){ this.schedule(this.next); this.next += 60 / this.cfg.bpm / 2; }
+    }, 150);
+  },
+  setEra(i, instant){
+    const c = MUSIC[Math.max(0, Math.min(MUSIC.length-1, i))];
+    if(!c) return;
+    const changed = c !== this.cfg;
+    this.cfg = c; this.era = i;
+    if(!changed) return;
+    if(instant || !this.ctx){ return; }
+    this.buildDrone();
+  },
+  freq(deg){
+    const c = this.cfg, oct = Math.floor(deg / c.sc.length);
+    return c.r * Math.pow(2, (c.sc[((deg % c.sc.length) + c.sc.length) % c.sc.length] + oct * 12) / 12);
+  },
+  schedule(t){
+    const c = this.cfg;
+    const beat = 60 / c.bpm;
+    this.step++;
+    if(Math.random() < c.dens){
+      const deg = 2 + Math.floor(Math.random() * 7);
+      const dur = beat * (1.2 + Math.random() * 1.8);
+      this.note(t, this.freq(deg), dur, c.w, .035 + Math.random() * .015, c.cut);
+    }
+    if(this.step % 8 === 0){
+      this.note(t, this.freq(0) / 2, beat * 5, 'sine', .030, c.cut * .6);
+    }
+    if(this.step % 16 === 3){
+      this.note(t, this.freq(4), beat * .9, c.w, .022, c.cut);
+    }
+  },
+  note(t, freq, dur, wave, gain, cut){
+    const ctx = this.ctx;
+    const o = ctx.createOscillator(), o2 = ctx.createOscillator();
+    const g = ctx.createGain(), f = ctx.createBiquadFilter();
+    o.type = wave; o.frequency.value = freq;
+    o2.type = wave; o2.frequency.value = freq * 1.006;
+    f.type = 'lowpass'; f.frequency.value = cut; f.Q.value = .7;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + .04);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(f); o2.connect(f); f.connect(g); g.connect(Sfx.master);
+    o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + dur + .05);
+  },
+  buildDrone(){
+    if(!this.ctx) return;
+    const ctx = this.ctx, t = ctx.currentTime, c = this.cfg;
+    const g = ctx.createGain(), f = ctx.createBiquadFilter();
+    const o1 = ctx.createOscillator(), o2 = ctx.createOscillator();
+    o1.type = 'sine'; o1.frequency.value = c.r / 2;
+    o2.type = 'sine'; o2.frequency.value = c.r / 2 * 1.5;
+    f.type = 'lowpass'; f.frequency.value = Math.max(300, c.cut * .5);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(c.dv, t + 1.4);
+    o1.connect(f); o2.connect(f); f.connect(g); g.connect(Sfx.master);
+    o1.start(t); o2.start(t);
+    const old = this.drone;
+    this.drone = {o1, o2, g};
+    if(old){
+      try{
+        old.g.gain.cancelScheduledValues(ctx.currentTime);
+        old.g.gain.setValueAtTime(old.g.gain.value, ctx.currentTime);
+        old.g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + 1.2);
+        old.o1.stop(ctx.currentTime + 1.3); old.o2.stop(ctx.currentTime + 1.3);
+      }catch(e){}
+    }
+  },
+  killDrone(){
+    if(!this.drone || !this.ctx) return;
+    try{
+      const t = this.ctx.currentTime;
+      this.drone.g.gain.exponentialRampToValueAtTime(.0001, t + .4);
+      this.drone.o1.stop(t + .5); this.drone.o2.stop(t + .5);
+    }catch(e){}
+    this.drone = null;
+  }
 };
 
 /* ---------------- 时代氛围引擎 ---------------- */
@@ -686,30 +891,93 @@ function shuffle(a){
   return a;
 }
 
+/* ---------------- 科目 ---------------- */
+function readySubjects(){ return SUBJECTS.filter(s => s.count > 0); }
+function subjectById(id){
+  if(id === 'mix') return MIX;
+  return SUBJECTS.find(s => s.id === id) || SUBJECTS[0];
+}
+function bankFor(sub){
+  return sub === 'mix' ? QUESTIONS : QUESTIONS.filter(q => q.sub === sub);
+}
+function bestFor(sub){
+  try{
+    let v = localStorage.getItem('chrono_best_' + sub);
+    if(v === null && sub === 'geo') v = localStorage.getItem('chrono_best');
+    const n = Number(v);
+    return isNaN(n) ? -1 : n;
+  }catch(e){ return -1; }
+}
+
+function renderSubjectPicker(){
+  const list = $('subList');
+  const ready = readySubjects();
+  const cards = ready.map(s => ({s, off:false}));
+  cards.push({s: {...MIX, count: QUESTIONS.length}, off: ready.length < 2});
+  SUBJECTS.filter(s => s.count === 0).forEach(s => cards.push({s, off:true}));
+
+  if(!cards.some(c => c.s.id === pickId && !c.off)){
+    pickId = ready.length ? ready[0].id : MIX.id;
+  }
+
+  list.innerHTML = cards.map(({s, off}) => {
+    const best = bestFor(s.id);
+    const st = off
+      ? (s.count === 0 ? '建设中' : '需 2 科')
+      : (best >= START_ERA ? ERAS[Math.min(best, MAX_ERA)].n : '未开始');
+    const cnt = s.count ? s.count + ' 题' : '暂无题库';
+    return `<button class="sub-card${s.id === pickId && !off ? ' on' : ''}${off ? ' off' : ''}" data-id="${s.id}" data-off="${off ? 1 : 0}">
+      <span class="ic">${s.short}</span>
+      <span class="tx"><b class="nm">${s.name}</b><span class="ds">${s.desc} · ${cnt}</span></span>
+      <span class="st">${st}</span>
+    </button>`;
+  }).join('');
+
+  list.querySelectorAll('.sub-card').forEach(el => {
+    el.onclick = () => {
+      if(el.dataset.off === '1') return;
+      pickId = el.dataset.id;
+      Sfx.tick();
+      renderSubjectPicker();
+    };
+  });
+  const s = subjectById(pickId);
+  $('btnSubGo').textContent = '跃迁至 · ' + s.name;
+}
+
+function openSubjects(){
+  renderSubjectPicker();
+  show('s-subject');
+}
+
+/* ---------------- 抽题 ---------------- */
 function pickQuestion(era, forceDiff){
+  const base = bankFor(S.sub);
   const tiers = forceDiff ? [forceDiff] : shuffle(tierFor(era).slice());
   for(const d of tiers){
-    let pool = QUESTIONS.filter(q => q.d === d && !S.used.has(q.id));
-    if(!pool.length) pool = QUESTIONS.filter(q => q.d === d);
+    let pool = base.filter(q => q.d === d && !S.used.has(q.id));
+    if(!pool.length) pool = base.filter(q => q.d === d);
     if(!pool.length) continue;
     const q = pool[Math.floor(Math.random()*pool.length)];
     S.used.add(q.id);
     return q;
   }
-  const fallback = QUESTIONS.filter(q => !S.used.has(q.id));
-  const q = (fallback.length ? fallback : QUESTIONS)[Math.floor(Math.random()* (fallback.length ? fallback.length : QUESTIONS.length))];
+  const fallback = base.filter(q => !S.used.has(q.id));
+  const q = (fallback.length ? fallback : base)[Math.floor(Math.random()* (fallback.length ? fallback.length : base.length))];
   S.used.add(q.id);
   return q;
 }
 
-function newGame(){
+function newGame(sub){
   S = {
+    sub: sub || pickId,
     era: START_ERA, cores: 0, score: 0, used: new Set(),
     passes: 0, travels: 0, travelWins: 0,
     total: 0, correct: 0, streak: 0, bestStreak: 0,
     queue: [], qi: 0, levelTotal: 0, levelRight: 0,
     mode: 'normal', travelFrom: null, t0: Date.now()
   };
+  try{ localStorage.setItem('chrono_last_sub', S.sub); }catch(e){}
 }
 
 /* ---------------- 主题 ---------------- */
@@ -723,6 +991,8 @@ function applyEra(era){
   const meta = document.querySelector('meta[name=theme-color]');
   if(meta) meta.setAttribute('content', e.bg);
   if(window.__atmos) window.__atmos.setEra(Math.max(0, era));
+  if(typeof Music !== 'undefined') Music.setEra(Math.max(0, era));
+  syncSndBtn();
 }
 
 /* ---------------- 进度条 ---------------- */
@@ -731,6 +1001,7 @@ function renderRail(){}
 function renderHud(){
   $('eraIdx').textContent = pad2(Math.max(0, S.era));
   $('eraName').textContent = ERAS[Math.max(0, S.era)].n;
+  $('hudSub').textContent = subjectById(S.sub).name;
   $('wm').textContent = pad2(Math.max(0, S.era));
   $('scoreVal').textContent = S.score;
   const cores = $('cores');
@@ -770,8 +1041,8 @@ function transit(text, sub){
 }
 
 /* ---------------- 关卡流程 ---------------- */
-function beginRun(){
-  newGame();
+function beginRun(sub){
+  newGame(sub);
   applyEra(S.era);
   showBrief();
 }
@@ -779,7 +1050,7 @@ function beginRun(){
 function showBrief(){
   applyEra(S.era);
   const era = ERAS[S.era];
-  $('briefKicker').textContent = 'ERA ' + pad2(S.era);
+  $('briefKicker').textContent = 'ERA ' + pad2(S.era) + ' · ' + subjectById(S.sub).name;
   $('briefName').textContent = era.n;
   $('briefSub').textContent = era.s;
   $('briefCount').textContent = qCountFor(S.era);
@@ -1088,11 +1359,11 @@ function riftReveal(targetEra, ok){
       sub.classList.add('show');
       if(ok){
         flash('flash-ok');
-        Sfx.up();
+        Sfx.ascend();
         if(window.__atmos) window.__atmos.burst(.5, .48, window.__hex2rgb('#ffd76a'));
       } else {
         flash('flash-red');
-        Sfx.down();
+        Sfx.descend();
       }
     }, 1960);
 
@@ -1164,8 +1435,8 @@ function fmtTime(ms){
 }
 function saveBest(era){
   try{
-    const prev = Number(localStorage.getItem('chrono_best'));
-    if(isNaN(prev) || era > prev) localStorage.setItem('chrono_best', era);
+    const key = 'chrono_best_' + (S.sub || 'geo');
+    if(era > bestFor(S.sub || 'geo')) localStorage.setItem(key, String(era));
   }catch(e){}
 }
 function gameOver(){
@@ -1195,22 +1466,43 @@ function winGame(){
 }
 
 /* ---------------- 交互绑定 ---------------- */
-$('btnStart').onclick = () => { Sfx.init(); beginRun(); };
+$('btnStart').onclick = () => { Sfx.init(); Music.start(); Music.setEra(START_ERA, true); Music.buildDrone(); openSubjects(); };
+$('btnSubGo').onclick = () => beginRun(pickId);
+$('btnSubBack').onclick = () => show('s-title');
 $('btnEnter').onclick = enterEra;
-$('btnReborn').onclick = beginRun;
-$('btnAgain').onclick = beginRun;
+$('btnReborn').onclick = () => beginRun(S ? S.sub : pickId);
+$('btnAgain').onclick = () => beginRun(S ? S.sub : pickId);
+$('btnOverSwitch').onclick = openSubjects;
+$('btnWinSwitch').onclick = openSubjects;
 $('btnTravelGo').onclick = startTravel;
 $('btnTravelNo').onclick = () => { S.mode = 'normal'; showBrief(); };
+function syncSndBtn(){
+  const b = $('btnSnd'); if(!b) return;
+  const on = Sfx.on;
+  b.classList.toggle('on', on);
+  b.classList.toggle('off', !on);
+  b.textContent = on ? '♪' : '♪';
+}
+$('btnSnd').onclick = () => {
+  Sfx.on = !Sfx.on;
+  try{ localStorage.setItem('chrono_snd', Sfx.on ? '1' : '0'); }catch(e){}
+  if(!Sfx.on){ Music.stop(); }
+  else { Sfx.init(); Music.start(); Music.setEra(S.era || START_ERA); Music.buildDrone(); }
+  syncSndBtn();
+};
 $('btnHow').onclick = () => { $('help').classList.add('open'); };
 $('btnHelpClose').onclick = () => { $('help').classList.remove('open'); };
 $('help').addEventListener('click', e => { if(e.target.id === 'help') $('help').classList.remove('open'); });
 
 (function initBest(){
   try{
-    const best = Number(localStorage.getItem('chrono_best'));
-    if(!isNaN(best) && best >= START_ERA){
-      $('bestLine').textContent = '最高抵达 · ' + ERAS[Math.min(best, MAX_ERA)].n;
+    const last = localStorage.getItem('chrono_last_sub') || 'geo';
+    const best = bestFor(last);
+    if(best >= START_ERA){
+      $('bestLine').textContent = '上次 · ' + subjectById(last).name + ' · 最高 ' + ERAS[Math.min(best, MAX_ERA)].n;
     }
+    if(localStorage.getItem('chrono_last_sub')) pickId = last;
+    if(localStorage.getItem('chrono_snd') === '0') Sfx.on = false;
   }catch(e){}
   applyEra(START_ERA);
 })();

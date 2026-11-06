@@ -1,0 +1,26 @@
+[
+  {
+    "id": "geo",
+    "name": "地理",
+    "short": "地",
+    "desc": "疆域 · 人口 · 气候 · 河流",
+    "chapter": "八年级上册 第 1—2 章",
+    "accent": "#4fd1ff"
+  },
+  {
+    "id": "hist",
+    "name": "历史",
+    "short": "史",
+    "desc": "中国近代史 · 第 1—12 课",
+    "chapter": "八年级上册 第 1—4 单元",
+    "accent": "#ffb37a"
+  },
+  {
+    "id": "bio",
+    "name": "生物",
+    "short": "生",
+    "desc": "动物 · 细菌真菌 · 病毒",
+    "chapter": "八年级上册 期中范围",
+    "accent": "#6fe8a8"
+  }
+]
