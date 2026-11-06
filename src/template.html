@@ -82,18 +82,23 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   border:1px solid var(--accent-soft);border-radius:6px;padding:2px 5px}
 .era-chip .nm{font-size:15px;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cores{display:flex;gap:3px;margin-left:auto;align-items:center}
+.core-ico{font-size:10px;color:#9fe9ff;margin-right:3px;opacity:.85}
 .core{width:9px;height:14px;border-radius:3px;background:linear-gradient(180deg,#9fe9ff,#3aa7d8);
   box-shadow:0 0 10px rgba(120,220,255,.6);transition:transform .3s,opacity .3s}
 .core.used{background:rgba(255,255,255,.12);box-shadow:none;opacity:.5}
 .score{font-size:11px;color:var(--ink-dim);letter-spacing:.1em;text-align:right;min-width:44px}
 .score b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.rail{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px;scroll-behavior:smooth}
-.rail::-webkit-scrollbar{display:none}
-.chip{flex:none;font-size:10.5px;letter-spacing:.06em;padding:4px 8px;border-radius:20px;
-  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);white-space:nowrap;transition:.3s}
-.chip.done{color:rgba(120,240,210,.85);border-color:rgba(65,224,176,.4)}
-.chip.now{color:#03141d;background:var(--accent);border-color:var(--accent);
-  box-shadow:0 0 18px -2px var(--accent);font-weight:600}
+/* 答对后的快速确认（不弹面板，自动进入下一题） */
+.pass-toast{position:absolute;left:0;right:0;bottom:6px;display:flex;align-items:center;justify-content:center;
+  gap:9px;font-size:12.5px;letter-spacing:.26em;color:var(--ok);pointer-events:none;
+  animation:passIn .26s ease both}
+.pass-toast b{font-weight:500}
+.pass-toast span{font-variant-numeric:tabular-nums;letter-spacing:.06em;color:var(--ink)}
+.pass-toast i{position:absolute;left:0;right:0;bottom:-6px;height:1.5px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--ok),transparent);opacity:.55;
+  transform-origin:left center;animation:passBar .8s linear both}
+@keyframes passIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes passBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
 /* ---------- question ---------- */
 .qwrap{flex:1;display:flex;flex-direction:column;min-height:0;gap:12px;overflow-y:auto;scrollbar-width:none;
@@ -141,6 +146,9 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .fb-head{font-size:13px;letter-spacing:.22em;margin-bottom:8px;color:var(--ok)}
 .fb-head.bad{color:var(--bad)}
 .fb-text{font-size:14px;line-height:1.75;color:#cfdcf2;margin:0 0 14px;letter-spacing:.01em}
+.core-use{background:linear-gradient(180deg,#a8ecff,#3aa7d8);color:#02121c;border:0;font-weight:600;
+  box-shadow:0 8px 26px -10px #6fd4ff;margin-bottom:9px;letter-spacing:.1em;animation:coreGlow 2.4s ease-in-out infinite}
+@keyframes coreGlow{50%{box-shadow:0 8px 30px -6px #9fe9ff}}
 
 /* ---------- brief / result ---------- */
 #s-brief,#s-result,#s-travel,#s-over,#s-win{justify-content:center;gap:14px;text-align:center}
@@ -168,12 +176,17 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 
 /* ---------- 转场与闪光 ---------- */
 .transit{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;
-  background:radial-gradient(circle at 50% 50%,rgba(6,10,22,.55),rgba(3,5,12,.92));animation:transitBg 1s ease both}
+  background:radial-gradient(circle at 50% 50%,rgba(6,10,22,.55),rgba(3,5,12,.92));animation:transitBg 2.1s ease both}
 .transit b{font-size:24px;letter-spacing:.3em;font-weight:600;color:var(--ink);
-  text-shadow:0 0 30px var(--accent);animation:transitZoom 1s cubic-bezier(.2,.8,.2,1) both}
-.transit small{position:absolute;margin-top:110px;font-size:11px;letter-spacing:.4em;color:var(--ink-dim);animation:transitBg 1s ease both}
-@keyframes transitBg{0%{opacity:0}22%{opacity:1}78%{opacity:1}100%{opacity:0}}
-@keyframes transitZoom{0%{transform:scale(.72);opacity:0}30%{transform:scale(1);opacity:1}100%{transform:scale(1.14);opacity:0}}
+  text-shadow:0 0 30px var(--accent);animation:transitZoom 2.1s cubic-bezier(.25,.8,.25,1) both}
+.transit small{position:absolute;margin-top:110px;font-size:11px;letter-spacing:.4em;color:var(--ink-dim);
+  animation:transitSub 2.1s ease both}
+@keyframes transitBg{0%{opacity:0}14%{opacity:1}86%{opacity:1}100%{opacity:0}}
+@keyframes transitZoom{0%{transform:scale(.78);opacity:0;filter:blur(6px)}
+  22%{transform:scale(1);opacity:1;filter:blur(0)}
+  74%{transform:scale(1.02);opacity:1;filter:blur(0)}
+  100%{transform:scale(1.12);opacity:0;filter:blur(4px)}}
+@keyframes transitSub{0%,26%{opacity:0}42%{opacity:1}80%{opacity:1}100%{opacity:0}}
 .flash{position:fixed;inset:0;z-index:39;pointer-events:none;opacity:0}
 .flash.go{animation:flashFade .5s ease both}
 @keyframes flashFade{0%{opacity:.85}100%{opacity:0}}
@@ -233,7 +246,6 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
         <div class="cores" id="cores"></div>
         <div class="score"><b id="scoreVal">0</b>PTS</div>
       </div>
-      <div class="rail" id="rail"></div>
     </header>
     <div class="qwrap">
       <div class="qmeta">
@@ -252,6 +264,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     <div class="feedback" id="feedback">
       <div class="fb-head" id="fbHead">时空稳定</div>
       <p class="fb-text" id="fbText"></p>
+      <button class="btn core-use" id="btnCore" style="display:none">❄ 使用冷冻核心 · 时间回溯</button>
       <button class="btn primary" id="btnNext">继续</button>
     </div>
   </section>
@@ -319,7 +332,8 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   <div class="sheet-inner">
     <h3>玩法说明</h3>
     <p>题目全部来自湘教版八年级地理上册知识清单（第 1—2 章：疆域与人口、自然环境与河流），每次进入关卡随机抽题，选项顺序也随机。<br><br>
-    每题限时 120 秒，超时算错。答错会消耗一枚冷冻核心，核心耗尽即刻坠落一个时代，题目重新随机；每通过一关可获得一枚核心（最多 3 枚）。<br><br>
+    每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
+    答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
     每通过两关开启一次时空穿越：3 道高难题，全对连升两级，错一题退回出发时的时代。<br><br>
     坠落出时间线最底端，宇宙坍缩，挑战结束。</p>
     <button class="btn primary" id="btnHelpClose">知道了</button>
@@ -683,15 +697,7 @@ function applyEra(era){
 }
 
 /* ---------------- 进度条 ---------------- */
-function renderRail(){
-  const rail = $('rail');
-  rail.innerHTML = ERAS.map((e,i) => {
-    const cls = i < S.era ? 'chip done' : (i === S.era ? 'chip now' : 'chip');
-    return `<div class="${cls}">${e.n}</div>`;
-  }).join('');
-  const cur = rail.querySelector('.chip.now');
-  if(cur) cur.scrollIntoView({inline:'center', block:'nearest'});
-}
+function renderRail(){}
 
 function renderHud(){
   $('eraIdx').textContent = pad2(Math.max(0, S.era));
@@ -700,6 +706,12 @@ function renderHud(){
   $('scoreVal').textContent = S.score;
   const cores = $('cores');
   cores.innerHTML = '';
+  if(S.cores > 0){
+    const ico = document.createElement('span');
+    ico.className = 'core-ico';
+    ico.textContent = '❄';
+    cores.appendChild(ico);
+  }
   const n = Math.max(S.cores, 3);
   for(let i=0;i<n;i++){
     const d = document.createElement('div');
@@ -724,7 +736,7 @@ function transit(text, sub){
     document.body.appendChild(d);
     if(window.__atmos) window.__atmos.warp(1.6);
     Sfx.travel();
-    setTimeout(() => { d.remove(); res(); }, 950);
+    setTimeout(() => { d.remove(); res(); }, 2150);
   });
 }
 
@@ -745,7 +757,7 @@ function showBrief(){
   $('briefTime').textContent = 120;
   $('briefCores').textContent = S.cores;
   $('briefHint').textContent = S.cores > 0
-    ? `你持有 ${S.cores} 枚冷冻核心，可抵挡 ${S.cores} 次失误；核心耗尽即刻坠落一个时代。`
+    ? `你持有 ${S.cores} 枚冷冻核心：答错时可冻结时间线、抹去这次失误并换一道新题重答；用尽后答错即坠落一个时代。`
     : '当前没有冷冻核心：任何一次答错或超时，都会让你坠落一个时代。';
   show('s-brief');
 }
@@ -765,6 +777,8 @@ function enterEra(){
 }
 
 function renderQuestion(){
+  clearTimeout(passTimer);
+  document.querySelectorAll('.pass-toast').forEach(el => el.remove());
   const q = S.queue[S.qi];
   if(!q) return;
   $('qPos').textContent = pad2(S.qi+1) + ' / ' + pad2(S.levelTotal);
@@ -860,7 +874,7 @@ function answer(idx, btn, ev){
       window.__atmos.burst(cx, cy, rgb);
     }
     if(navigator.vibrate) navigator.vibrate(18);
-    showFeedback(true, q);
+    quickPass();
   } else {
     S.streak = 0;
     btn.classList.add('wrong');
@@ -877,22 +891,40 @@ function handleWrong(q, lead){
   setTimeout(() => wrap.classList.remove('shake'), 450);
   if(navigator.vibrate) navigator.vibrate([30, 40, 30]);
   if(S.cores > 0){
-    S.cores--;
-    S.score = Math.max(0, S.score - 2);
-    renderHud();
-    showFeedback(false, q, lead + ' 冷冻核心碎裂一枚，为你冻结了时间。', '核心 -1');
+    flash('flash-red');
+    showFeedback(false, q, lead + ' 你可以冻结时间线，抹去这次失误。', '时空偏移', false, true);
   } else {
     flash('flash-red');
     showFeedback(false, q, lead + ' 冷冻核心已耗尽，时间线崩塌。', '时间线崩塌', true);
   }
 }
 
-function showFeedback(ok, q, text, headTag, fatal){
-  const fb = $('feedback'), head = $('fbHead'), body = $('fbText'), btn = $('btnNext');
+/* 主动使用冷冻核心：抹去本题失误，换一道同难度新题 */
+function useCore(){
+  if(S.cores <= 0) return;
+  S.cores--;
+  S.total = Math.max(0, S.total - 1);
+  S.queue[S.qi] = pickQuestion(S.era, S.mode === 'travel' ? 3 : null);
+  $('feedback').classList.remove('show');
+  renderHud();
+  flash('flash-ok');
+  Sfx.good();
+  if(window.__atmos) window.__atmos.warp(1.3);
+  renderQuestion();
+}
+
+function showFeedback(ok, q, text, headTag, fatal, canCore){
+  const fb = $('feedback'), head = $('fbHead'), body = $('fbText'), btn = $('btnNext'), core = $('btnCore');
   head.className = 'fb-head' + (ok ? '' : ' bad');
   head.textContent = ok ? '时空稳定 +5' : (headTag || '时空偏移');
   body.textContent = (text ? text + ' ' : '') + '解析：' + q.e;
-  if(fatal){
+  core.style.display = canCore ? 'block' : 'none';
+  if(canCore){
+    core.textContent = '❄ 使用冷冻核心 · 时间回溯（剩 ' + S.cores + ' 枚）';
+    core.onclick = useCore;
+    btn.textContent = '放弃 · 坠落一个时代';
+    btn.onclick = () => levelFail();
+  } else if(fatal){
     btn.textContent = '坠落';
     btn.onclick = () => levelFail();
   } else {
@@ -904,8 +936,23 @@ function showFeedback(ok, q, text, headTag, fatal){
   if(c) c.scrollIntoView({block:'center', behavior:'smooth'});
 }
 
+/* 答对：简短确认后自动进入下一题，不打断节奏 */
+let passTimer = 0;
+function quickPass(){
+  const holder = document.querySelector('.qwrap');
+  if(!holder) return;
+  const t = document.createElement('div');
+  t.className = 'pass-toast';
+  t.innerHTML = '<b>时空稳定</b><span>+5</span><i></i>';
+  holder.appendChild(t);
+  clearTimeout(passTimer);
+  passTimer = setTimeout(() => { clearTimeout(passTimer); t.remove(); nextQuestion(); }, 820);
+}
+
 function nextQuestion(){
+  clearTimeout(passTimer);
   $('feedback').classList.remove('show');
+  document.querySelectorAll('.pass-toast').forEach(el => el.remove());
   S.qi++;
   if(S.qi >= S.levelTotal){ levelDone(); return; }
   setTimeout(renderQuestion, 180);
