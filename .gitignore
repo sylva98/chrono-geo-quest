@@ -1,0 +1,13 @@
+# 构建产物（由 build.py 生成，发布走 gh-pages 分支）
+dist/
+
+# 原始素材与测试截图（体积大，不入库）
+materials/
+shots/
+
+# 工具与本地状态
+.workbuddy/
+.wbapp_*.genie
+__pycache__/
+*.pyc
+.DS_Store
