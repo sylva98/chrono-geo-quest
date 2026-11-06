@@ -1,4 +1,4 @@
-import json, pathlib, sys
+import json, pathlib, sys, random, hashlib
 
 root = pathlib.Path(__file__).parent
 tpl = (root / "src/template.html").read_text(encoding="utf-8")
@@ -14,11 +14,17 @@ for f in sorted((root / "src/data").glob("*.json")):
     questions += bank
     print(f"  {f.name}: {len(bank)} 题 → {sub}")
 
-# 统一分配全局唯一 id
+# 统一分配全局唯一 id，并按题干哈希稳定打乱选项
 seen = {}
 for q in questions:
     seen[q["sub"]] = seen.get(q["sub"], 0) + 1
     q["id"] = f"{q['sub']}-{seen[q['sub']]:03d}"
+    seed = int(hashlib.md5(q["q"].encode("utf-8")).hexdigest()[:8], 16)
+    rnd = random.Random(seed)
+    order = list(range(len(q["o"])))
+    rnd.shuffle(order)
+    q["o"] = [q["o"][i] for i in order]
+    q["a"] = order.index(q["a"])
 
 # 每科配额统计，供前端显示
 for s in meta:
