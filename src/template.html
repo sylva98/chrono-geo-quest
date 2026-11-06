@@ -73,7 +73,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .title-actions{margin-top:auto;display:grid;gap:10px}
 .best{font-size:12px;letter-spacing:.16em;color:var(--ink-dim);margin-bottom:10px}
 
-/* ---------- 选择考区 ---------- */
+/* ---------- 选择时间线 ---------- */
 #s-subject{gap:10px}
 #s-subject h1{font-size:27px;letter-spacing:.16em;margin:4px 0 0;font-weight:600}
 #s-subject .sub{font-size:12.5px;color:var(--ink-dim);line-height:1.7;letter-spacing:.06em;margin:0}
@@ -286,11 +286,10 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 
   <section class="screen" id="s-subject">
     <div class="kicker">SELECT TIMELINE</div>
-    <h1>选择考区</h1>
-    <p class="sub">所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。</p>
+    <h1>选择时间线</h1>
+    <p class="sub">点击卡片即刻跃迁。所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。</p>
     <div class="sub-list" id="subList"></div>
     <div class="spacer"></div>
-    <button class="btn primary" id="btnSubGo">跃迁至 · 地理</button>
     <button class="btn ghost" id="btnSubBack">返回</button>
   </section>
 
@@ -379,7 +378,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
     <div class="spacer"></div>
     <button class="btn primary" id="btnReborn">重塑宇宙</button>
-    <button class="btn ghost" id="btnOverSwitch">切换考区</button>
+    <button class="btn ghost" id="btnOverSwitch">切换时间线</button>
   </section>
 
   <section class="screen" id="s-win">
@@ -396,14 +395,14 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
     <div class="spacer"></div>
     <button class="btn gold" id="btnAgain">再闯一次时间线</button>
-    <button class="btn ghost" id="btnWinSwitch">切换考区</button>
+    <button class="btn ghost" id="btnWinSwitch">切换时间线</button>
   </section>
 </main>
 
 <div class="sheet" id="help">
   <div class="sheet-inner">
     <h3>玩法说明</h3>
-    <p>开局先选择考区：<b>地理</b>、<b>历史</b>，或 <b>混合</b>（多科目混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
+    <p>开局先选择时间线：<b>地理</b>、<b>历史</b>，或 <b>混合</b>（多科目混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
     题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
     每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
@@ -935,14 +934,12 @@ function renderSubjectPicker(){
 
   list.querySelectorAll('.sub-card').forEach(el => {
     el.onclick = () => {
-      if(el.dataset.off === '1') return;
+      if(el.dataset.off === '1'){ Sfx.bad(); return; }
       pickId = el.dataset.id;
-      Sfx.tick();
-      renderSubjectPicker();
+      try{ localStorage.setItem('chrono_last_sub', pickId); }catch(e){}
+      beginRun(pickId);
     };
   });
-  const s = subjectById(pickId);
-  $('btnSubGo').textContent = '跃迁至 · ' + s.name;
 }
 
 function openSubjects(){
@@ -1467,7 +1464,6 @@ function winGame(){
 
 /* ---------------- 交互绑定 ---------------- */
 $('btnStart').onclick = () => { Sfx.init(); Music.start(); Music.setEra(START_ERA, true); Music.buildDrone(); openSubjects(); };
-$('btnSubGo').onclick = () => beginRun(pickId);
 $('btnSubBack').onclick = () => show('s-title');
 $('btnEnter').onclick = enterEra;
 $('btnReborn').onclick = () => beginRun(S ? S.sub : pickId);
