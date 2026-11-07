@@ -23,7 +23,7 @@
 html,body{margin:0;height:100%;color:var(--ink);
   font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft Yahei",system-ui,sans-serif;
   overflow:hidden;overscroll-behavior:none}
-body{position:fixed;inset:0;background:#04050c;transition:background 1.6s ease}
+body{position:fixed;inset:0;overflow:hidden;background:#04050c;transition:background 1.6s ease}
 #stars{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .nebula{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;z-index:0;pointer-events:none;
   transition:background 1.6s ease}
@@ -209,6 +209,91 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .glitch{animation:glitch .5s steps(2) 2}
 @keyframes glitch{0%{text-shadow:1px 0 var(--bad),-1px 0 #4fd1ff}50%{text-shadow:-2px 0 var(--bad),2px 0 #4fd1ff}100%{text-shadow:none}}
 .win-glow{text-shadow:0 0 30px rgba(255,215,106,.5);color:var(--gold)}
+
+/* ---------- 神格觉醒 · 结算彩蛋 ---------- */
+#s-win{position:relative;overflow:hidden;gap:10px;justify-content:center}
+.win-scene{position:absolute;inset:0;pointer-events:none}
+.win-bg{position:absolute;inset:-26px -24px;
+  background:url("__ASSET:win-ascend.webp__") center 30%/cover no-repeat;
+  opacity:0;animation:winBgIn 1.8s ease .1s forwards,winDrift 26s ease-in-out .1s infinite alternate}
+@keyframes winBgIn{to{opacity:1}}
+@keyframes winDrift{from{transform:scale(1.03)}to{transform:scale(1.11) translateY(-14px)}}
+.win-rays{position:absolute;inset:-45%;
+  background:repeating-conic-gradient(from 0deg at 50% 44%,rgba(255,215,106,.08) 0 2.5deg,transparent 2.5deg 22deg);
+  -webkit-mask:radial-gradient(circle at 50% 44%,#000 0%,transparent 60%);
+          mask:radial-gradient(circle at 50% 44%,#000 0%,transparent 60%);
+  opacity:0;animation:raysIn 2.6s ease .5s forwards,raysSpin 80s linear .5s infinite}
+@keyframes raysIn{to{opacity:.6}}
+@keyframes raysSpin{to{transform:rotate(360deg)}}
+.win-stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffe9b0;
+  box-shadow:0 0 9px 2px rgba(255,215,106,.55);opacity:0;animation:twinkle 3.6s ease-in-out infinite}
+.win-stars i:nth-child(1){left:9%;top:14%;animation-delay:.2s}
+.win-stars i:nth-child(2){left:24%;top:7%;width:2px;height:2px;animation-delay:1.1s}
+.win-stars i:nth-child(3){left:41%;top:11%;animation-delay:2.2s}
+.win-stars i:nth-child(4){left:63%;top:6%;width:2px;height:2px;animation-delay:.7s}
+.win-stars i:nth-child(5){left:81%;top:15%;animation-delay:1.7s}
+.win-stars i:nth-child(6){left:90%;top:34%;animation-delay:2.8s}
+.win-stars i:nth-child(7){left:6%;top:40%;width:2px;height:2px;animation-delay:1.4s}
+.win-stars i:nth-child(8){left:16%;top:58%;animation-delay:.5s}
+.win-stars i:nth-child(9){left:86%;top:62%;animation-delay:2.4s}
+.win-stars i:nth-child(10){left:50%;top:19%;width:2px;height:2px;animation-delay:3s}
+@keyframes twinkle{0%,100%{opacity:.08;transform:scale(.7)}50%{opacity:.95;transform:scale(1.2)}}
+.win-motes i{position:absolute;bottom:-2%;width:4px;height:4px;border-radius:50%;
+  background:radial-gradient(circle,#ffe6a3 0%,rgba(255,215,106,0) 72%);opacity:0;animation:mote linear infinite}
+.win-motes i:nth-child(1){left:8%;animation-duration:11s;animation-delay:.2s}
+.win-motes i:nth-child(2){left:19%;animation-duration:14s;animation-delay:4.5s;transform:scale(.7)}
+.win-motes i:nth-child(3){left:30%;animation-duration:9.5s;animation-delay:2.1s}
+.win-motes i:nth-child(4){left:41%;animation-duration:13s;animation-delay:7.2s;transform:scale(1.3)}
+.win-motes i:nth-child(5){left:52%;animation-duration:10.5s;animation-delay:1.1s}
+.win-motes i:nth-child(6){left:63%;animation-duration:15s;animation-delay:5.8s;transform:scale(.65)}
+.win-motes i:nth-child(7){left:73%;animation-duration:9s;animation-delay:3.4s}
+.win-motes i:nth-child(8){left:83%;animation-duration:12.5s;animation-delay:.8s;transform:scale(1.2)}
+.win-motes i:nth-child(9){left:91%;animation-duration:11.5s;animation-delay:6.4s}
+.win-motes i:nth-child(10){left:12%;animation-duration:13.5s;animation-delay:9s;transform:scale(.8)}
+.win-motes i:nth-child(11){left:47%;animation-duration:10s;animation-delay:8.1s}
+.win-motes i:nth-child(12){left:68%;animation-duration:14.5s;animation-delay:10.2s;transform:scale(.75)}
+@keyframes mote{0%{opacity:0;translate:0 0}10%{opacity:.85}100%{opacity:0;translate:0 -660px}}
+.win-vignette{position:absolute;inset:0;background:linear-gradient(180deg,
+  rgba(4,5,12,.74),rgba(4,5,12,.18) 32%,rgba(4,5,12,0) 52%,rgba(4,5,12,.55) 82%,rgba(4,5,12,.86))}
+.win-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;
+  flex:1;min-height:0;gap:10px;text-align:center;overflow-y:auto;scrollbar-width:none}
+.win-content::-webkit-scrollbar{display:none}
+#s-win.active .win-kicker{animation:winUp .7s .25s both}
+#s-win.active .win-sigil{animation:winUp .8s .4s both}
+#s-win.active .win-title{animation:winUp .8s .55s both,shimmer 5.5s 1.6s linear infinite}
+#s-win.active .win-sub{animation:winUp .7s .7s both}
+#s-win.active .win-card{animation:winUp .8s .85s both}
+#s-win.active #btnAgain{animation:winUp .7s 1.15s both}
+#s-win.active #btnWinSwitch{animation:winUp .7s 1.3s both}
+@keyframes winUp{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+.win-kicker{color:var(--gold);text-shadow:0 0 12px rgba(255,215,106,.4)}
+.win-sigil{position:relative;width:96px;height:96px;flex:none;margin-top:2px;background:none;border:0;
+  padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sigil-ring{position:absolute;inset:0;filter:drop-shadow(0 0 10px rgba(255,215,106,.5));animation:sigilSpin 26s linear infinite}
+.sigil-ticks{transform-origin:60px 60px;animation:sigilSpinRev 16s linear infinite}
+.sigil-core{position:absolute;inset:0;display:grid;place-items:center;font-size:38px;color:var(--gold);
+  text-shadow:0 0 18px rgba(255,215,106,.9),0 0 46px rgba(255,215,106,.45);animation:sigilPulse 2.6s ease-in-out infinite}
+@keyframes sigilSpin{to{transform:rotate(360deg)}}
+@keyframes sigilSpinRev{to{transform:rotate(-360deg)}}
+@keyframes sigilPulse{50%{transform:scale(1.14)}}
+.sigil-burst{position:absolute;inset:12%;border-radius:50%;border:2px solid rgba(255,228,158,.95);
+  opacity:0;transform:scale(.4);pointer-events:none;box-shadow:0 0 30px rgba(255,215,106,.7)}
+.win-sigil.boom .sigil-burst{animation:burst .9s cubic-bezier(.15,.75,.3,1) both}
+@keyframes burst{0%{opacity:1;transform:scale(.4)}100%{opacity:0;transform:scale(2.7)}}
+#s-win .win-title{font-size:34px;letter-spacing:.16em;text-indent:.16em;font-weight:600;line-height:1.3;margin:2px 0;
+  background:linear-gradient(100deg,#8a6a1e 0%,#ffd76a 26%,#fff3c4 50%,#ffd76a 74%,#8a6a1e 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 18px rgba(255,215,106,.35))}
+@keyframes shimmer{from{background-position:0 0}to{background-position:220% 0}}
+.win-sub{font-size:13px;color:var(--gold);letter-spacing:.44em;text-indent:.44em;margin:0;
+  text-shadow:0 0 14px rgba(255,215,106,.45)}
+#s-win .win-card{width:min(100%,330px);background:rgba(5,7,16,.74);backdrop-filter:blur(10px);
+  border-color:rgba(255,215,106,.25);box-shadow:0 12px 44px -16px rgba(0,0,0,.8),0 0 34px -14px rgba(255,215,106,.45)}
+.win-oracle{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:2px;max-width:340px}
+.win-oracle[hidden]{display:none}
+.oracle-k{font-size:10px;letter-spacing:.5em;text-indent:.5em;color:rgba(255,215,106,.8);
+  border-top:1px solid rgba(255,215,106,.35);border-bottom:1px solid rgba(255,215,106,.35);padding:3px 10px 3px 13px}
+#oracleText{font-size:13.5px;line-height:1.8;color:#ffe9b8;text-shadow:0 0 14px rgba(255,215,106,.35);animation:winUp .6s both}
 .spacer{flex:1}
 
 /* ---------- 转场与闪光 ---------- */
@@ -389,20 +474,41 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   </section>
 
   <section class="screen" id="s-win">
-    <div class="kicker">ASCENSION</div>
-    <div class="big-icon win-glow">✦</div>
-    <h1 class="win-glow">神格觉醒</h1>
-    <p class="sub" style="letter-spacing:.3em;color:var(--gold)">时空主宰</p>
-    <div class="res-card">
-      <div class="res-row"><span>抵达纪元</span><b>星光神域</b></div>
-      <div class="res-row"><span>答题总数</span><b id="winTotal">0</b></div>
-      <div class="res-row"><span>正确率</span><b id="winAcc">0%</b></div>
-      <div class="res-row"><span>时空穿越</span><b id="winTravel">0 次</b></div>
-      <div class="res-row"><span>用时</span><b id="winTime">0:00</b></div>
+    <div class="win-scene" aria-hidden="true">
+      <div class="win-bg"></div>
+      <div class="win-rays"></div>
+      <div class="win-stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="win-motes"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="win-vignette"></div>
     </div>
-    <div class="spacer"></div>
-    <button class="btn gold" id="btnAgain">再闯一次时间线</button>
-    <button class="btn ghost" id="btnWinSwitch">切换时间线</button>
+    <div class="win-content">
+      <div class="kicker win-kicker">ASCENSION · 神格觉醒</div>
+      <button class="win-sigil" id="winSigil" aria-label="神格印记">
+        <svg class="sigil-ring" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="56" fill="none" stroke="rgba(255,215,106,.55)" stroke-width="1" stroke-dasharray="4 9"/>
+          <circle cx="60" cy="60" r="47" fill="none" stroke="rgba(255,215,106,.28)" stroke-width="1"/>
+          <g class="sigil-ticks" stroke="rgba(255,215,106,.8)" stroke-width="1.4">
+            <line x1="60" y1="6" x2="60" y2="14"/><line x1="60" y1="106" x2="60" y2="114"/>
+            <line x1="6" y1="60" x2="14" y2="60"/><line x1="106" y1="60" x2="114" y2="60"/>
+          </g>
+        </svg>
+        <span class="sigil-core">✦</span>
+        <span class="sigil-burst"></span>
+      </button>
+      <h1 class="win-title">神格觉醒</h1>
+      <p class="win-sub">时 空 主 宰</p>
+      <div class="res-card win-card">
+        <div class="res-row"><span>抵达纪元</span><b>星光神域</b></div>
+        <div class="res-row"><span>答题总数</span><b id="winTotal">0</b></div>
+        <div class="res-row"><span>正确率</span><b id="winAcc">0%</b></div>
+        <div class="res-row"><span>时空穿越</span><b id="winTravel">0 次</b></div>
+        <div class="res-row"><span>用时</span><b id="winTime">0:00</b></div>
+      </div>
+      <div class="win-oracle" id="winOracle" hidden><span class="oracle-k">神谕</span><span id="oracleText"></span></div>
+      <div class="spacer"></div>
+      <button class="btn gold" id="btnAgain">再闯一次时间线</button>
+      <button class="btn ghost" id="btnWinSwitch">切换时间线</button>
+    </div>
   </section>
 </main>
 
@@ -1526,12 +1632,45 @@ function winGame(){
   $('winTravel').textContent = S.travelWins + ' 次成功 / ' + S.travels + ' 次';
   $('winTime').textContent = fmtTime(Date.now() - S.t0);
   saveBest(MAX_ERA);
+  winEggReset();
   flash('flash-ok');
   show('s-win');
   Sfx.up();
   setTimeout(() => Sfx.good(), 420);
   if(window.__atmos) window.__atmos.warp(1.6);
 }
+
+/* ---------------- 神格结算彩蛋：点击印记唤醒神谕 ---------------- */
+const ORACLES = [
+  '你以凡人之躯，走完了诸神铺设的时间线。',
+  '星辰归位，万物在你的注视下重新开始计数。',
+  '过去与未来在你掌中并流，如两条安静的河。',
+  '宇宙记得每一次答对的瞬间——那是它学会思考的时刻。',
+  '现在，连时间也要抬头看你。'
+];
+let oracleIdx = -1;
+function winEggReset(){
+  oracleIdx = -1;
+  $('winOracle').hidden = true;
+  $('winSigil').classList.remove('boom');
+}
+$('winSigil').addEventListener('click', () => {
+  const sigil = $('winSigil');
+  sigil.classList.remove('boom');
+  void sigil.offsetWidth;
+  sigil.classList.add('boom');
+  try{ Sfx.good(); }catch(e){}
+  oracleIdx = (oracleIdx + 1) % ORACLES.length;
+  const box = $('winOracle'), txt = $('oracleText');
+  box.hidden = false;
+  txt.textContent = '「' + ORACLES[oracleIdx] + '」';
+  txt.style.animation = 'none';
+  void txt.offsetWidth;
+  txt.style.animation = '';
+  if(window.__atmos && window.__hex2rgb){
+    window.__atmos.burst(innerWidth / 2, innerHeight * .34, window.__hex2rgb('#ffd76a'));
+  }
+});
 
 /* ---------------- 交互绑定 ---------------- */
 $('btnStart').onclick = () => { Sfx.init(); Music.start(); Music.setEra(START_ERA, true); Music.buildDrone(); openSubjects(); };

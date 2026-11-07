@@ -1,4 +1,4 @@
-import json, pathlib, sys, random, hashlib
+import base64, json, pathlib, re, sys, random, hashlib
 
 root = pathlib.Path(__file__).parent
 tpl = (root / "src/template.html").read_text(encoding="utf-8")
@@ -41,6 +41,22 @@ payload_q = json.dumps(questions, ensure_ascii=False, separators=(",", ":"))
 payload_s = json.dumps(meta, ensure_ascii=False, separators=(",", ":"))
 
 out = tpl.replace("__QUESTIONS__", payload_q).replace("__SUBJECTS__", payload_s)
+
+# 内嵌二进制素材：模板里写 __ASSET:文件名__，构建时替换为 data URI
+assets_dir = root / "src/assets"
+MIME = {".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg"}
+
+
+def inline_asset(m):
+    f = assets_dir / m.group(1)
+    if not f.exists():
+        raise SystemExit(f"缺少素材文件：src/assets/{m.group(1)}")
+    mime = MIME.get(f.suffix.lower(), "application/octet-stream")
+    return f"data:{mime};base64," + base64.b64encode(f.read_bytes()).decode()
+
+
+out = re.sub(r"__ASSET:([\w.\-]+)__", inline_asset, out)
+
 assert "__QUESTIONS__" not in out and "__SUBJECTS__" not in out
 
 dist = root / "dist"
