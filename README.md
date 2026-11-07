@@ -4,8 +4,9 @@
 
 ## 在线游玩
 
-- WorkBuddy 托管：<https://chrono-geo-quest.app.workbuddy.host/?sharecode=3W55XANLYR>
-- GitHub Pages：见仓库右侧 About 链接
+- **GitHub Pages（主入口，随仓库自动更新）**：<https://sylva98.github.io/chrono-geo-quest/>
+- **WorkBuddy 托管（最新快照）**：<https://af4ed05de78962bcd.app.workbuddy.host/?sharecode=XV5P46YFHQ>
+- ~~旧版 WorkBuddy 快照（690 题，已停止更新）~~：`chrono-geo-quest.app.workbuddy.host`
 
 ## 玩法规则
 
