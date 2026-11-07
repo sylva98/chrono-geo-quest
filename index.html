@@ -2604,7 +2604,13 @@ async function rebirthSync(sub){
 async function rebirthClaim(sub){
   try{
     const j = await sbRpc('rebirth_claim', {p_device: deviceId(), p_subject: sub});
-    return (j && j.generation) ? Number(j.generation) : 0;
+    if(j && j.generation) return Number(j.generation);
+    /* 服务端说还在冷却：把解锁时间写回本机，防止清缓存跳过冷却 */
+    if(j && j.error === 'COOLING' && j.unlock_at){
+      const ts = Date.parse(j.unlock_at);
+      if(ts) setLockUntil(sub, ts);
+    }
+    return 0;
   }catch(e){ return 0; }
 }
 
