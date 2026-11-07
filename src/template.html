@@ -24,7 +24,7 @@
 html,body{margin:0;height:100%;color:var(--ink);
   font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft Yahei",system-ui,sans-serif;
   overflow:hidden;overscroll-behavior:none}
-body{position:fixed;inset:0;overflow:hidden;background:#04050c;transition:background 1.6s ease}
+body{position:fixed;inset:0;overflow:hidden;overflow:clip;background:#04050c;transition:background 1.6s ease}
 #stars{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .nebula{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;z-index:0;pointer-events:none;
   transition:background 1.6s ease}
@@ -297,6 +297,66 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 #oracleText{font-size:13.5px;line-height:1.8;color:#ffe9b8;text-shadow:0 0 14px rgba(255,215,106,.35);animation:winUp .6s both}
 .spacer{flex:1}
 
+/* ---------- 谷底 · 奇点结算彩蛋 ---------- */
+#s-over{position:relative;overflow:hidden;gap:9px;justify-content:center}
+.over-scene{position:absolute;inset:0;pointer-events:none}
+.over-bg{position:absolute;inset:-18px -14px -30px;
+  background:url("__ASSET:over-bottom.webp__") center 62%/cover no-repeat;
+  opacity:0;filter:brightness(.6) saturate(.92);
+  animation:overBgIn 2.2s ease .15s forwards}
+@keyframes overBgIn{to{opacity:1}}
+#s-over.lit .over-bg{transition:filter 3.2s ease;filter:brightness(1.02) saturate(1.05)}
+.over-embers i{position:absolute;bottom:-2%;width:3px;height:3px;border-radius:50%;
+  background:radial-gradient(circle,#ffb46a 0%,rgba(255,120,40,0) 72%);opacity:0;animation:emberUp linear infinite}
+.over-embers i:nth-child(1){left:12%;animation-duration:10s;animation-delay:.4s}
+.over-embers i:nth-child(2){left:24%;animation-duration:13s;animation-delay:5.2s;transform:scale(.7)}
+.over-embers i:nth-child(3){left:36%;animation-duration:9s;animation-delay:2.6s}
+.over-embers i:nth-child(4){left:48%;animation-duration:14s;animation-delay:7.6s;transform:scale(1.3)}
+.over-embers i:nth-child(5){left:60%;animation-duration:11s;animation-delay:1.2s}
+.over-embers i:nth-child(6){left:71%;animation-duration:9.5s;animation-delay:6.1s;transform:scale(.65)}
+.over-embers i:nth-child(7){left:82%;animation-duration:12.5s;animation-delay:3.3s}
+.over-embers i:nth-child(8){left:90%;animation-duration:10.5s;animation-delay:8.4s;transform:scale(1.15)}
+.over-embers i:nth-child(9){left:17%;animation-duration:12s;animation-delay:9.6s;transform:scale(.8)}
+.over-embers i:nth-child(10){left:55%;animation-duration:13.5s;animation-delay:10.4s}
+@keyframes emberUp{0%{opacity:0;translate:0 0}12%{opacity:.75}100%{opacity:0;translate:0 -620px}}
+.over-vignette{position:absolute;inset:0;background:linear-gradient(180deg,
+  rgba(2,3,8,.9),rgba(2,3,8,.42) 30%,rgba(2,3,8,0) 50%,rgba(2,3,8,.4) 74%,rgba(2,3,8,.92))}
+.over-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;
+  flex:1;min-height:0;gap:9px;text-align:center;overflow-y:auto;scrollbar-width:none}
+.over-content::-webkit-scrollbar{display:none}
+#s-over.active .over-kicker{animation:winUp .7s .25s both}
+#s-over.active .over-spark{animation:winUp .8s .4s both}
+#s-over.active #overTitle{animation:winUp .8s .55s both}
+#s-over.active .over-sub{animation:winUp .7s .7s both}
+#s-over.active .over-line{animation:winUp .8s .85s both}
+#s-over.active .over-card{animation:winUp .8s 1s both}
+#s-over.active #btnReborn{animation:winUp .7s 1.3s both}
+#s-over.active #btnOverSwitch{animation:winUp .7s 1.45s both}
+.over-kicker{color:#7e8db0;text-shadow:0 0 12px rgba(80,100,150,.35)}
+.over-spark{position:relative;width:84px;height:84px;flex:none;margin-top:2px;background:none;border:0;
+  padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.spark-flame{position:absolute;inset:26%;border-radius:50%;
+  background:radial-gradient(circle at 50% 62%,#fff3c0 0%,#ffb452 34%,rgba(255,110,30,.55) 62%,rgba(255,110,30,0) 78%);
+  box-shadow:0 0 18px 4px rgba(255,150,60,.5),0 0 46px 10px rgba(255,110,30,.22);
+  animation:sparkPulse 2.4s ease-in-out infinite}
+@keyframes sparkPulse{50%{transform:scale(1.16);box-shadow:0 0 24px 7px rgba(255,150,60,.65),0 0 60px 16px rgba(255,110,30,.3)}}
+.spark-burst{position:absolute;inset:10%;border-radius:50%;border:2px solid rgba(255,190,110,.95);
+  opacity:0;transform:scale(.4);pointer-events:none;box-shadow:0 0 30px rgba(255,150,60,.7)}
+.over-spark.boom .spark-burst{animation:burst .9s cubic-bezier(.15,.75,.3,1) both}
+#s-over #overTitle{font-size:31px;letter-spacing:.16em;text-indent:.16em;font-weight:600;line-height:1.3;margin:2px 0;
+  color:#aeb9d4;filter:drop-shadow(0 0 16px rgba(70,90,130,.35));transition:color 1.8s ease,filter 1.8s ease}
+#s-over.lit #overTitle{color:#e8c79a;filter:drop-shadow(0 0 18px rgba(255,150,60,.4))}
+.over-sub{font-size:12px;color:#7e8db0;letter-spacing:.4em;text-indent:.4em;margin:0;transition:color 1.6s ease}
+#s-over.lit .over-sub{color:#c98f56;text-shadow:0 0 12px rgba(255,150,60,.35)}
+.over-line{font-size:13.5px;line-height:1.95;color:#8f9cbb;max-width:330px;margin:0;transition:color 1.6s ease}
+#s-over.lit .over-line{color:#d8b98c}
+#s-over .over-card{width:min(100%,330px);background:rgba(4,5,12,.72);backdrop-filter:blur(10px);
+  border-color:rgba(120,140,190,.2);box-shadow:0 12px 44px -16px rgba(0,0,0,.85)}
+.over-oracle{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:2px;max-width:340px}
+.over-oracle[hidden]{display:none}
+.over-oracle .oracle-k{color:rgba(255,170,90,.85);border-color:rgba(255,170,90,.3)}
+#sparkText{font-size:13.5px;line-height:1.8;color:#ffd9a8;text-shadow:0 0 14px rgba(255,150,60,.35);animation:winUp .6s both}
+
 /* ---------- 转场与闪光 ---------- */
 .transit{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;
   background:radial-gradient(circle at 50% 50%,rgba(6,10,22,.55),rgba(3,5,12,.92));animation:transitBg 2.1s ease both}
@@ -461,17 +521,30 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   </section>
 
   <section class="screen" id="s-over">
-    <div class="kicker">SINGULARITY</div>
-    <h1 class="glitch" id="overTitle">宇宙收缩</h1>
-    <p class="over-text">时间失去了刻度，万物坍缩为一个奇点。<br>你与所有的纪元一同归于虚无。</p>
-    <div class="res-card">
-      <div class="res-row"><span>最后抵达</span><b id="overEra">虚无乌托邦</b></div>
-      <div class="res-row"><span>答对题数</span><b id="overCorrect">0</b></div>
-      <div class="res-row"><span>正确率</span><b id="overAcc">0%</b></div>
+    <div class="over-scene" aria-hidden="true">
+      <div class="over-bg"></div>
+      <div class="over-embers"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="over-vignette"></div>
     </div>
-    <div class="spacer"></div>
-    <button class="btn primary" id="btnReborn">重塑宇宙</button>
-    <button class="btn ghost" id="btnOverSwitch">切换时间线</button>
+    <div class="over-content">
+      <div class="kicker over-kicker">SINGULARITY · 奇点</div>
+      <button class="over-spark" id="overSpark" aria-label="手里那根火柴">
+        <span class="spark-flame"></span>
+        <span class="spark-burst"></span>
+      </button>
+      <h1 class="glitch" id="overTitle">宇宙收缩</h1>
+      <p class="over-sub" id="overSub">你坠到了时间线的尽头</p>
+      <p class="over-line">这里没有更低的地方了——<br>从这一步起，每走一步，都是新的高点。</p>
+      <div class="res-card over-card">
+        <div class="res-row"><span>最后抵达</span><b id="overEra">虚无乌托邦</b></div>
+        <div class="res-row"><span>答对题数</span><b id="overCorrect">0</b></div>
+        <div class="res-row"><span>正确率</span><b id="overAcc">0%</b></div>
+      </div>
+      <div class="over-oracle" id="overOracle" hidden><span class="oracle-k">火光</span><span id="sparkText"></span></div>
+      <div class="spacer"></div>
+      <button class="btn primary" id="btnReborn">从谷底爬起</button>
+      <button class="btn ghost" id="btnOverSwitch">切换时间线</button>
+    </div>
   </section>
 
   <section class="screen" id="s-win">
@@ -1622,6 +1695,7 @@ function gameOver(){
   $('overEra').textContent = ERAS[Math.max(0, S.era)].n;
   $('overCorrect').textContent = S.correct + ' / ' + S.total;
   $('overAcc').textContent = acc + '%';
+  overEggReset();
   document.body.style.background = '#000';
   show('s-over');
   $('overTitle').classList.add('glitch');
@@ -1673,6 +1747,48 @@ $('winSigil').addEventListener('click', () => {
   txt.style.animation = '';
   if(window.__atmos && window.__hex2rgb){
     window.__atmos.burst(innerWidth / 2, innerHeight * .34, window.__hex2rgb('#ffd76a'));
+  }
+});
+
+/* ---------------- 谷底结算彩蛋：点亮手里那根火柴 ---------------- */
+const SPARKS = [
+  '这里没有更低的地方了。所以从这一步起，每走一步，都是新的高点。',
+  '最坏的情况已经被你走完了——剩下的路，全是上坡。',
+  '谷底最大的好处是：方向只有一个。',
+  '连你手里这根小小的火柴都决定继续燃烧。',
+  '头顶的星星并不比你勇敢，它们只是从来没有放弃发光。'
+];
+let sparkIdx = -1, sparkLit = false;
+function overEggReset(){
+  sparkIdx = -1;
+  sparkLit = false;
+  $('overOracle').hidden = true;
+  $('overSpark').classList.remove('boom');
+  $('s-over').classList.remove('lit');
+  $('overTitle').textContent = '宇宙收缩';
+  $('overSub').textContent = '你坠到了时间线的尽头';
+}
+$('overSpark').addEventListener('click', () => {
+  const spark = $('overSpark');
+  spark.classList.remove('boom');
+  void spark.offsetWidth;
+  spark.classList.add('boom');
+  try{ Sfx.good(); }catch(e){}
+  if(!sparkLit){
+    sparkLit = true;
+    $('s-over').classList.add('lit');
+    $('overTitle').textContent = '谷底即起点';
+    $('overSub').textContent = '每一步都是高点';
+  }
+  sparkIdx = (sparkIdx + 1) % SPARKS.length;
+  const box = $('overOracle'), txt = $('sparkText');
+  box.hidden = false;
+  txt.textContent = '「' + SPARKS[sparkIdx] + '」';
+  txt.style.animation = 'none';
+  void txt.offsetWidth;
+  txt.style.animation = '';
+  if(window.__atmos && window.__hex2rgb){
+    window.__atmos.burst(innerWidth / 2, innerHeight * .38, window.__hex2rgb('#ff9636'));
   }
 });
 
