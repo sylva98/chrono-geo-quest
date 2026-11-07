@@ -6,7 +6,8 @@
 <meta name="theme-color" content="#04050c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>时空纪元 · 地理闯关</title>
+<title>时空纪元 · 知识闯关</title>
+<meta name="description" content="时空纪元 · 知识闯关：地理、历史、生物、诗歌四科题库，沿二十一个宇宙纪元向上闯关。">
 <style>
 :root{
   --accent:#4fd1ff;
@@ -367,7 +368,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   <section class="screen active" id="s-title">
     <div class="badge">CHRONO VOYAGER</div>
     <div class="orbit"><i></i><i></i><i></i><b></b></div>
-    <h1>时空纪元<span>地理闯关 · 二十一纪元</span></h1>
+    <h1>时空纪元<span>知识闯关 · 二十一纪元</span></h1>
     <p class="tagline">你从石器时代的火种旁醒来。<br>每答对一关，时间向前推进一个纪元；<br>任何一次失手，都会被抛回上一个时代。</p>
     <div class="title-actions">
       <div class="best" id="bestLine">最高抵达 · 石器时代</div>
@@ -515,7 +516,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 <div class="sheet" id="help">
   <div class="sheet-inner">
     <h3>玩法说明</h3>
-    <p>开局先选择时间线：<b>地理</b>、<b>历史</b>，或 <b>混合</b>（多科目混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
+    <p>开局先选择时间线：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
     题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
     常规关卡每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
@@ -985,9 +986,12 @@ let S = null;
 let timerHandle = 0, timerState = null;
 
 const $ = id => document.getElementById(id);
+const TITLE_BASE = '时空纪元 · 知识闯关';
 const show = id => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
+  const idle = id === 's-title' || id === 's-subject' || !S || !S.sub;
+  document.title = idle ? TITLE_BASE : subjectById(S.sub).name + ' · 时空纪元';
 };
 
 function qCountFor(era){
