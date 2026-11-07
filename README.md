@@ -10,15 +10,14 @@
 
 ## 更新方式
 
-改完题目或代码后，**push 到 `main` 就等于上线**：
+改完题目或代码后：
 
 ```bash
-git add -A && git commit -m "更新题库" && git push
+python build.py        # 本地构建，打开 dist/index.html 预览
+./deploy.sh --push     # 发布到 gh-pages，约 1 分钟后线上生效
 ```
 
-仓库里的 `.github/workflows/deploy.yml` 会自动跑 `build.py`，把 `dist/` 推到 `gh-pages`，约 1 分钟后线上生效。GitHub 网页上直接改文件（Edit / Upload files）提交到 `main` 也一样会触发。
-
-本地想先看效果：`python build.py` 后打开 `dist/index.html`；也可以 `./deploy.sh --push` 手动发布。
+仓库里已备好 `.github/workflows/deploy.yml`：把它提交到 `main` 后，以后 `git push` 就会自动构建并发布，无需再手动跑 `deploy.sh`。
 
 ## 玩法规则
 
