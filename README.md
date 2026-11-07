@@ -8,6 +8,18 @@
 - **WorkBuddy 托管（最新快照）**：<https://af4ed05de78962bcd.app.workbuddy.host/?sharecode=XV5P46YFHQ>
 - ~~旧版 WorkBuddy 快照（690 题，已停止更新）~~：`chrono-geo-quest.app.workbuddy.host`
 
+## 更新方式
+
+改完题目或代码后，**push 到 `main` 就等于上线**：
+
+```bash
+git add -A && git commit -m "更新题库" && git push
+```
+
+仓库里的 `.github/workflows/deploy.yml` 会自动跑 `build.py`，把 `dist/` 推到 `gh-pages`，约 1 分钟后线上生效。GitHub 网页上直接改文件（Edit / Upload files）提交到 `main` 也一样会触发。
+
+本地想先看效果：`python build.py` 后打开 `dist/index.html`；也可以 `./deploy.sh --push` 手动发布。
+
 ## 玩法规则
 
 - 从**石器时代**出发，沿 21 个时代向未来攀爬，终点为**星光神域**
