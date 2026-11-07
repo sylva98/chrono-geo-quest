@@ -30,7 +30,7 @@ for q in questions:
 for s in meta:
     pool = [q for q in questions if q.get("sub") == s["id"]]
     s["count"] = len(pool)
-    s["d"] = {str(k): sum(1 for q in pool if q["d"] == k) for k in (1, 2, 3)}
+    s["d"] = {str(k): sum(1 for q in pool if q["d"] == k) for k in (1, 2, 3, 4)}
     if not s.get("planned") and len(pool) < 60:
         print(f"  ! {s['name']} 题量偏少（{len(pool)}），建议至少 250 题", file=sys.stderr)
 

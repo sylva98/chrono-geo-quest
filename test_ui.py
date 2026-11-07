@@ -1,11 +1,21 @@
 import asyncio, pathlib
 from playwright.async_api import async_playwright
 
-ROOT = pathlib.Path("/Users/a123/WorkBuddy/2026-11-06-16-24-47")
+ROOT = pathlib.Path(__file__).resolve().parent
 URL = (ROOT / "dist/index.html").as_uri()
 SHOT = ROOT / "shots"
 SHOT.mkdir(exist_ok=True, parents=True)
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+import shutil, sys
+
+def find_chrome():
+    for p in ("/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome",
+              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"):
+        if pathlib.Path(p).exists():
+            return p
+    print("未找到 Chromium/Chrome，请安装或修改 CHROME 变量", file=sys.stderr)
+    sys.exit(1)
+
+CHROME = find_chrome()
 
 
 async def main():
@@ -31,12 +41,8 @@ async def main():
         print("subject cards:", cards)
 
         await page.click('.sub-card[data-id="hist"]')
-        await page.wait_for_timeout(350)
-        await page.screenshot(path=str(SHOT / "t3-subject-hist.png"))
-        print("btnSubGo:", await page.inner_text("#btnSubGo"))
-
-        await page.click("#btnSubGo")
         await page.wait_for_timeout(500)
+        await page.screenshot(path=str(SHOT / "t3-subject-hist.png"))
         print("brief kicker:", await page.inner_text("#briefKicker"))
         print("audio:", await page.evaluate("({ctx: !!Sfx.ctx, state: Sfx.ctx && Sfx.ctx.state, music: !!Music.timer, era: Music.era})"))
 

@@ -46,7 +46,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .btn{border-radius:14px;padding:16px 18px;font-size:16px;font-weight:500;letter-spacing:.08em;
   color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--line);
-  font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .25s,width:100%}
+  font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .25s;width:100%}
 .btn:active{transform:scale(.98)}
 .btn.primary{background:var(--accent);background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 62%,#0a1a2a));
   color:#02121c;border:0;box-shadow:0 8px 30px -8px var(--accent);font-weight:600}
@@ -132,7 +132,8 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 
 /* ---------- question ---------- */
 .qwrap{flex:1;display:flex;flex-direction:column;min-height:0;gap:12px;overflow-y:auto;scrollbar-width:none;
-  position:relative}
+  position:relative;padding-bottom:0;transition:padding-bottom .3s cubic-bezier(.2,.9,.2,1);
+  scroll-padding:70px 0 26px}
 .qwrap::-webkit-scrollbar{display:none}
 .qmeta{display:flex;align-items:center;gap:10px;font-size:11.5px;letter-spacing:.14em;color:var(--ink-dim);
   font-variant-numeric:tabular-nums}
@@ -168,16 +169,22 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .opt.dim{opacity:.45}
 .after{flex:1;min-height:20px}
 .feedback{position:absolute;left:0;right:0;bottom:0;transform:translateY(110%);transition:transform .34s cubic-bezier(.2,.9,.2,1);
-  background:linear-gradient(180deg,rgba(10,16,30,.88),rgba(6,10,20,.98));
-  backdrop-filter:blur(14px);border-top:1px solid var(--accent-soft);padding:16px 18px calc(env(safe-area-inset-bottom) + 16px);
+  background:linear-gradient(180deg,rgba(10,16,30,.9),rgba(6,10,20,.99));
+  backdrop-filter:blur(14px);border-top:1px solid var(--accent-soft);padding:14px 18px calc(env(safe-area-inset-bottom) + 14px);
   z-index:5;max-width:520px;margin:0 auto;border-radius:18px 18px 0 0;
-  box-shadow:0 -20px 60px -20px var(--accent-soft)}
+  box-shadow:0 -20px 60px -20px var(--accent-soft);
+  display:flex;flex-direction:column;max-height:calc(100% - 88px);overflow:hidden}
 .feedback.show{transform:none}
-.fb-head{font-size:13px;letter-spacing:.22em;margin-bottom:8px;color:var(--ok)}
+.fb-head{font-size:13px;letter-spacing:.22em;margin-bottom:8px;color:var(--ok);flex:none}
 .fb-head.bad{color:var(--bad)}
-.fb-text{font-size:14px;line-height:1.75;color:#cfdcf2;margin:0 0 14px;letter-spacing:.01em}
+.fb-text{font-size:13.5px;line-height:1.72;color:#cfdcf2;margin:0 0 12px;letter-spacing:.01em;
+  flex:1 1 auto;min-height:0;overflow-y:auto;max-height:min(30vh,200px);
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;padding-right:6px}
+.fb-text::-webkit-scrollbar{width:3px}
+.fb-text::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:3px}
+.feedback>.btn{flex:none;padding:13px 16px;font-size:15px}
 .core-use{background:linear-gradient(180deg,#a8ecff,#3aa7d8);color:#02121c;border:0;font-weight:600;
-  box-shadow:0 8px 26px -10px #6fd4ff;margin-bottom:9px;letter-spacing:.1em;animation:coreGlow 2.4s ease-in-out infinite}
+  box-shadow:0 8px 26px -10px #6fd4ff;margin-bottom:8px;letter-spacing:.08em;animation:coreGlow 2.4s ease-in-out infinite}
 @keyframes coreGlow{50%{box-shadow:0 8px 30px -6px #9fe9ff}}
 
 /* ---------- brief / result ---------- */
@@ -356,10 +363,10 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   <section class="screen" id="s-travel">
     <div class="kicker">SPACETIME RIFT</div>
     <h1>时空裂隙开启</h1>
-    <p class="over-text">裂隙深处传来回响：三道高难问题。<br>全部答对，可连升两个纪元；<br>答错任何一题，你会被抛回出发时的时代。</p>
+    <p class="over-text">裂隙深处传来回响：三道高难问题，每题时限只有常规的一半。<br>全部答对，可连升两个纪元；<br>答错任何一题，你会被抛回出发时的时代。</p>
     <div class="metrics">
       <div class="metric"><b>3</b><span>题量</span></div>
-      <div class="metric"><b>90</b><span>每题秒数</span></div>
+      <div class="metric"><b id="riftSecs">60</b><span>每题秒数</span></div>
       <div class="metric"><b>+2</b><span>跃升纪元</span></div>
     </div>
     <div class="spacer"></div>
@@ -404,9 +411,9 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     <h3>玩法说明</h3>
     <p>开局先选择时间线：<b>地理</b>、<b>历史</b>，或 <b>混合</b>（多科目混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
     题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
-    每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
+    常规关卡每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
-    每通过两关开启一次时空穿越：3 道高难题，全对连升两级，错一题退回出发时的时代。<br><br>
+    每通过两关开启一次时空穿越：3 道高考风格的拔高题，每题限时只有常规的一半（60 秒），三题题型互不重复。全对连升两级，错一题退回出发时的时代。<br><br>
     坠落出时间线最底端，宇宙坍缩，挑战结束。</p>
     <button class="btn primary" id="btnHelpClose">知道了</button>
   </div>
@@ -443,6 +450,9 @@ const ERAS = [
 ];
 const START_ERA = 9;
 const MAX_ERA = ERAS.length - 1;
+const SECS_NORMAL = 120;   // 常规范式：每题秒数
+const SECS_RIFT = 60;      // 时空裂缝：每题秒数减半
+const RIFT_TIERS = [4];    // 裂缝专用高难题档（高考/拔高风格）
 function pad2(n){return String(n).padStart(2,'0')}
 
 /* ---------------- 音效 ---------------- */
@@ -965,6 +975,22 @@ function pickQuestion(era, forceDiff){
   return q;
 }
 
+/* 裂缝专用抽题：优先高考/拔高风格（d=4），并尽量让三题的题型互不重复 */
+function pickRiftQuestion(takenTopics){
+  const base = bankFor(S.sub);
+  const topics = takenTopics || new Set();
+  const fresh = q => !S.used.has(q.id);
+  let pool = base.filter(q => q.d >= 4);
+  if(!pool.length) pool = base.filter(q => q.d === 3);
+  if(!pool.length) pool = base;
+  let cand = pool.filter(q => fresh(q) && !topics.has(q.t));
+  if(!cand.length) cand = pool.filter(fresh);
+  if(!cand.length) cand = pool;
+  const q = cand[Math.floor(Math.random()*cand.length)];
+  S.used.add(q.id);
+  return q;
+}
+
 function newGame(sub){
   S = {
     sub: sub || pickId,
@@ -1051,7 +1077,7 @@ function showBrief(){
   $('briefName').textContent = era.n;
   $('briefSub').textContent = era.s;
   $('briefCount').textContent = qCountFor(S.era);
-  $('briefTime').textContent = 120;
+  $('briefTime').textContent = SECS_NORMAL;
   $('briefCores').textContent = S.cores;
   $('briefHint').textContent = S.cores > 0
     ? `你持有 ${S.cores} 枚冷冻核心：答错时可冻结时间线、抹去这次失误并换一道新题重答；用尽后答错即坠落一个时代。`
@@ -1061,8 +1087,13 @@ function showBrief(){
 
 function buildLevel(hard){
   const n = hard ? 3 : qCountFor(S.era);
-  S.queue = Array.from({length:n}, () => pickQuestion(S.era, hard ? 3 : null));
-  S.qi = 0; S.levelTotal = n; S.levelRight = 0;
+  S.queue = []; S.qi = 0; S.levelTotal = n; S.levelRight = 0;
+  const topics = new Set();
+  for(let i = 0; i < n; i++){
+    const q = hard ? pickRiftQuestion(topics) : pickQuestion(S.era, null);
+    S.queue.push(q);
+    if(q && q.t) topics.add(q.t);
+  }
 }
 
 function enterEra(){
@@ -1098,7 +1129,8 @@ function renderQuestion(){
     opts.appendChild(b);
   });
   $('feedback').classList.remove('show');
-  startTimer(S.mode === 'travel' ? 90 : 120);
+  clearFbOffset();
+  startTimer(S.mode === 'travel' ? SECS_RIFT : SECS_NORMAL);
 }
 
 function startTimer(seconds){
@@ -1201,8 +1233,14 @@ function useCore(){
   if(S.cores <= 0) return;
   S.cores--;
   S.total = Math.max(0, S.total - 1);
-  S.queue[S.qi] = pickQuestion(S.era, S.mode === 'travel' ? 3 : null);
+  if(S.mode === 'travel'){
+    const topics = new Set(S.queue.filter((_, i) => i !== S.qi).map(q => q && q.t).filter(Boolean));
+    S.queue[S.qi] = pickRiftQuestion(topics);
+  } else {
+    S.queue[S.qi] = pickQuestion(S.era, null);
+  }
   $('feedback').classList.remove('show');
+  clearFbOffset();
   renderHud();
   flash('flash-ok');
   Sfx.good();
@@ -1229,9 +1267,40 @@ function showFeedback(ok, q, text, headTag, fatal, canCore){
     btn.onclick = nextQuestion;
   }
   fb.classList.add('show');
-  const c = document.querySelector('.opt.correct');
-  if(c) c.scrollIntoView({block:'center', behavior:'smooth'});
+  syncFbOffset();
+  requestAnimationFrame(() => {
+    syncFbOffset();
+    /* 只在题目区内滚动到正确选项，避免 scrollIntoView 连带滚动整个页面 */
+    const wrap = document.querySelector('.qwrap');
+    const c = document.querySelector('.opt.correct');
+    if (wrap && c) {
+      const wrapTop = wrap.getBoundingClientRect().top;
+      const cTop = c.getBoundingClientRect().top;
+      const target = wrap.scrollTop + (cTop - wrapTop) - 16;
+      if (target > 0) wrap.scrollTo({ top: target, behavior: 'smooth' });
+    }
+  });
 }
+
+/* 让题干区为底部反馈面板留出等高的滚动空间，避免面板过高遮住题目与解析 */
+function syncFbOffset(){
+  const fb = $('feedback'), wrap = document.querySelector('.qwrap');
+  if(!fb || !wrap) return;
+  if(fb.classList.contains('show')){
+    wrap.style.paddingBottom = (fb.offsetHeight + 18) + 'px';
+  } else {
+    wrap.style.paddingBottom = '';
+  }
+}
+function clearFbOffset(){
+  const wrap = document.querySelector('.qwrap');
+  if(wrap) wrap.style.paddingBottom = '';
+}
+window.addEventListener('resize', () => {
+  if($('feedback') && $('feedback').classList.contains('show')){
+    requestAnimationFrame(syncFbOffset);
+  }
+});
 
 /* 答对：简短确认后自动进入下一题，不打断节奏 */
 let passTimer = 0;
@@ -1249,6 +1318,7 @@ function quickPass(){
 function nextQuestion(){
   clearTimeout(passTimer);
   $('feedback').classList.remove('show');
+  clearFbOffset();
   document.querySelectorAll('.pass-toast').forEach(el => el.remove());
   S.qi++;
   if(S.qi >= S.levelTotal){ levelDone(); return; }
@@ -1281,12 +1351,13 @@ async function levelDone(){
   $('btnTravel').style.display = travelReady ? 'block' : 'none';
   $('btnResNext').textContent = '进入 ' + ERAS[S.era].n;
   $('btnResNext').onclick = showBrief;
-  $('btnTravel').onclick = () => { Sfx.travel(); show('s-travel'); };
+  $('btnTravel').onclick = () => { Sfx.travel(); $('riftSecs').textContent = SECS_RIFT; show('s-travel'); };
   show('s-result');
 }
 
 async function levelFail(){
   $('feedback').classList.remove('show');
+  clearFbOffset();
   Sfx.down();
   if(window.__atmos) window.__atmos.warp(2);
   const to = S.era - 1;

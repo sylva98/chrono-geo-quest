@@ -1,10 +1,20 @@
 import asyncio, pathlib
 from playwright.async_api import async_playwright
 
-ROOT = pathlib.Path("/Users/a123/WorkBuddy/2026-11-06-16-24-47")
+ROOT = pathlib.Path(__file__).resolve().parent
 URL = (ROOT / "dist/index.html").as_uri()
 SHOT = ROOT / "shots"
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+import shutil, sys
+
+def find_chrome():
+    for p in ("/usr/bin/chromium", "/usr/bin/chromium-browser", "/usr/bin/google-chrome",
+              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"):
+        if pathlib.Path(p).exists():
+            return p
+    print("未找到 Chromium/Chrome，请安装或修改 CHROME 变量", file=sys.stderr)
+    sys.exit(1)
+
+CHROME = find_chrome()
 
 async def run(page, right, tag):
     await page.evaluate(f"""() => {{
@@ -33,6 +43,8 @@ async def main():
         await page.wait_for_timeout(600)
         await page.click("#btnStart")
         await page.wait_for_timeout(500)
+        await page.click('.sub-card[data-id="geo"]')
+        await page.wait_for_timeout(600)
         await page.click("#btnEnter")
         await page.wait_for_timeout(700)
 
