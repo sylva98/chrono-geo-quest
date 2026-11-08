@@ -1,0 +1,70 @@
+{
+ "date": "2026-11-08",
+ "players": [
+  {
+   "device": "d_zor6u32lmw7p9sfx",
+   "nick": "骷髅鬼",
+   "word": "我居然轻轻松松飞升了",
+   "cycle": 1,
+   "cycleName": "修仙记",
+   "topEra": "道祖",
+   "kicker": "飞升",
+   "generation": 1,
+   "steles": 2,
+   "subjects": [
+    "hist"
+   ],
+   "times": 1,
+   "last": "2026-11-08T10:51:16.53908+00:00"
+  },
+  {
+   "device": "d_5b908cbnmw7mhjy4",
+   "nick": "小幽魂",
+   "word": "降维打击",
+   "cycle": 0,
+   "cycleName": "时空纪元",
+   "topEra": "星光神域",
+   "kicker": "神格觉醒",
+   "generation": 1,
+   "steles": 1,
+   "subjects": [
+    "bio"
+   ],
+   "times": 1,
+   "last": "2026-11-08T09:21:21.492739+00:00"
+  }
+ ],
+ "subjects": [
+  {
+   "id": "geo",
+   "name": "地理",
+   "count": 0
+  },
+  {
+   "id": "hist",
+   "name": "历史",
+   "count": 1
+  },
+  {
+   "id": "bio",
+   "name": "生物",
+   "count": 1
+  },
+  {
+   "id": "poem",
+   "name": "诗歌",
+   "count": 0
+  }
+ ],
+ "funnel": [
+  2,
+  1,
+  0
+ ],
+ "delta": {
+  "new": [],
+  "lost": [],
+  "up": []
+ },
+ "prevDate": null
+}

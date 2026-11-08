@@ -25,7 +25,9 @@ html,body{margin:0;height:100%;color:var(--ink);
   font-family:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft Yahei",system-ui,sans-serif;
   overflow:hidden;overscroll-behavior:none}
 body{position:fixed;inset:0;overflow:hidden;overflow:clip;background:#04050c;transition:background 1.6s ease}
-#stars{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+#stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;
+  -webkit-mask-image:radial-gradient(ellipse 70% 54% at 50% 51%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.55) 55%, #000 90%);
+          mask-image:radial-gradient(ellipse 70% 54% at 50% 51%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.55) 55%, #000 90%)}
 .nebula{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;z-index:0;pointer-events:none;
   transition:background 1.6s ease}
 .n1{width:75vw;height:75vw;left:-25vw;top:-12vh;background:radial-gradient(circle,var(--accent-soft),transparent 70%);
@@ -78,6 +80,151 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 #s-subject{gap:10px}
 #s-subject h1{font-size:27px;letter-spacing:.16em;margin:4px 0 0;font-weight:600}
 #s-subject .sub{font-size:12.5px;color:var(--ink-dim);line-height:1.7;letter-spacing:.06em;margin:0}
+.cycle-bar{display:flex;gap:8px;margin:12px 0 0}
+.cycle-bar button{flex:1;display:flex;align-items:baseline;gap:6px;padding:9px 11px;border-radius:12px;
+  font-family:inherit;text-align:left;cursor:pointer;transition:.25s;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink-dim)}
+.cycle-bar button b{font-size:12.5px;font-weight:600;letter-spacing:.1em;color:var(--ink)}
+.cycle-bar button span{font-size:9.5px;letter-spacing:.04em;opacity:.75;margin-left:auto}
+.cycle-bar button.on{background:rgba(255,215,106,.10);border-color:rgba(255,215,106,.42);
+  box-shadow:0 0 24px -14px var(--gold)}
+.cycle-bar button.on b{color:var(--gold)}
+.cycle-bar button.lock{opacity:.42;cursor:not-allowed}
+html[data-cycle="1"] .cycle-bar button.on{background:rgba(127,227,255,.10);border-color:rgba(127,227,255,.4);
+  box-shadow:0 0 24px -14px #7fe3ff}
+html[data-cycle="1"] .cycle-bar button.on b{color:#9fe9ff}
+
+/* 二周目：修仙记 · 青蓝仙气（专属配图与动效） */
+html[data-cycle="1"]{--gold:#8fd8ff;--accent:#7fe3ff}
+html[data-cycle="1"] .win-bg{background-image:url("__ASSET:win-c1-feisheng.webp__")}
+html[data-cycle="1"] .over-bg{background-image:url("__ASSET:over-c1-daoxiao.webp__");filter:brightness(.72) saturate(.95)}
+/* 结算屏配色跟随周目换装 */
+html[data-cycle="1"] .win-rays{opacity:.5;
+  background:repeating-conic-gradient(from 0deg at 50% 44%,rgba(127,227,255,.09) 0 2.5deg,transparent 2.5deg 22deg)}
+html[data-cycle="1"] .win-stars i{background:#bdf0ff;box-shadow:0 0 9px 2px rgba(127,227,255,.6)}
+html[data-cycle="1"] .win-motes i{background:radial-gradient(circle,#c9f4ff 0%,rgba(127,227,255,0) 72%)}
+html[data-cycle="1"] #s-win .win-title{
+  background-image:linear-gradient(100deg,#1e6a7a 0%,#7fe3ff 26%,#e8fbff 50%,#7fe3ff 74%,#1e6a7a 100%);
+  background-size:220% 100%;
+  filter:drop-shadow(0 0 18px rgba(127,227,255,.4))}
+html[data-cycle="1"] .win-card{border-color:rgba(127,227,255,.25);
+  box-shadow:0 12px 44px -16px rgba(0,0,0,.8),0 0 34px -14px rgba(127,227,255,.4)}
+/* 灵云缓漂：修仙记结算屏专属 */
+.win-clouds{position:absolute;inset:0;display:none}
+html[data-cycle="1"] .win-clouds{display:block}
+.win-clouds i{position:absolute;height:150px;border-radius:50%;filter:blur(16px);
+  background:radial-gradient(ellipse at center,rgba(150,220,240,.16),rgba(150,220,240,0) 70%);
+  animation:cloudDrift ease-in-out infinite alternate}
+.win-clouds i:nth-child(1){left:-22%;top:14%;width:95%;animation-duration:26s}
+.win-clouds i:nth-child(2){left:30%;top:42%;width:85%;height:110px;animation-duration:34s;animation-delay:-8s}
+.win-clouds i:nth-child(3){left:-14%;top:66%;width:90%;height:130px;animation-duration:30s;animation-delay:-15s}
+@keyframes cloudDrift{from{transform:translateX(-5%) scale(1)}to{transform:translateX(7%) scale(1.06)}}
+
+/* 三周目：无我篇 · 水墨留白（专属配图与动效） */
+html[data-cycle="2"]{--gold:#dfe6ee;--accent:#c6d2de}
+html[data-cycle="2"] .win-bg{background-image:url("__ASSET:win-c2-wuwo.webp__")}
+html[data-cycle="2"] .over-bg{background-image:url("__ASSET:over-c2-chenlun.webp__");filter:brightness(.9)}
+/* 无我境不需要光轮、星光与灵气上升，只留一片缓落的尘埃 */
+html[data-cycle="2"] .win-rays,html[data-cycle="2"] .win-stars,html[data-cycle="2"] .win-motes{display:none}
+html[data-cycle="2"] .win-sigil .sigil-core{color:#fff;text-shadow:0 0 26px rgba(230,240,250,.9)}
+html[data-cycle="2"] #s-win .win-title{
+  background-image:linear-gradient(100deg,#6a7484 0%,#dfe6ee 26%,#ffffff 50%,#dfe6ee 74%,#6a7484 100%);
+  background-size:220% 100%;
+  filter:drop-shadow(0 0 18px rgba(215,228,240,.4))}
+html[data-cycle="2"] .btn.gold{background:linear-gradient(180deg,var(--gold),#98a6b6);color:#10161d}
+html[data-cycle="2"] .win-card,html[data-cycle="2"] .stela-box{border-color:rgba(215,228,240,.28)!important}
+/* 素尘缓落：无我境结算屏专属，极简、无声 */
+.win-dust{position:absolute;inset:0;display:none}
+html[data-cycle="2"] .win-dust{display:block}
+.win-dust i{position:absolute;top:-3%;width:3px;height:3px;border-radius:50%;
+  background:radial-gradient(circle,rgba(240,246,252,.85),rgba(240,246,252,0) 72%);
+  animation:dustFall linear infinite}
+.win-dust i:nth-child(1){left:11%;animation-duration:17s;animation-delay:.4s}
+.win-dust i:nth-child(2){left:24%;animation-duration:21s;animation-delay:5s;width:2px;height:2px}
+.win-dust i:nth-child(3){left:38%;animation-duration:15s;animation-delay:2.6s}
+.win-dust i:nth-child(4){left:52%;animation-duration:23s;animation-delay:8s;width:2px;height:2px}
+.win-dust i:nth-child(5){left:64%;animation-duration:18s;animation-delay:1.4s}
+.win-dust i:nth-child(6){left:75%;animation-duration:20s;animation-delay:6.4s;width:2px;height:2px}
+.win-dust i:nth-child(7){left:87%;animation-duration:16s;animation-delay:4.2s}
+.win-dust i:nth-child(8){left:46%;animation-duration:24s;animation-delay:10.5s;width:2px;height:2px}
+@keyframes dustFall{0%{opacity:0;transform:translateY(-16px)}14%{opacity:.5}100%{opacity:0;transform:translateY(760px)}}
+
+/* 谷底三味：奇点火星升（c0）· 道消碎屑沉（c1）· 沉沦气泡浮（c2） */
+.over-shards{position:absolute;inset:0;display:none}
+html[data-cycle="1"] .over-shards{display:block}
+.over-shards i{position:absolute;top:-4%;width:2px;height:7px;border-radius:1px;
+  background:linear-gradient(180deg,rgba(170,205,220,0),rgba(170,205,220,.6));
+  animation:shardFall linear infinite}
+.over-shards i:nth-child(1){left:10%;animation-duration:12s;animation-delay:.6s}
+.over-shards i:nth-child(2){left:22%;animation-duration:15s;animation-delay:4.8s;height:5px}
+.over-shards i:nth-child(3){left:35%;animation-duration:11s;animation-delay:2.2s}
+.over-shards i:nth-child(4){left:47%;animation-duration:16s;animation-delay:7.4s;height:5px}
+.over-shards i:nth-child(5){left:58%;animation-duration:13s;animation-delay:1.2s}
+.over-shards i:nth-child(6){left:69%;animation-duration:14.5s;animation-delay:5.6s;height:5px}
+.over-shards i:nth-child(7){left:81%;animation-duration:11.5s;animation-delay:3.4s}
+.over-shards i:nth-child(8){left:91%;animation-duration:15.5s;animation-delay:9s;height:5px}
+@keyframes shardFall{0%{opacity:0;transform:translateY(-12px) rotate(24deg)}14%{opacity:.55}
+  100%{opacity:0;transform:translateY(760px) rotate(-46deg)}}
+.over-bubbles{position:absolute;inset:0;display:none}
+html[data-cycle="2"] .over-bubbles{display:block}
+.over-bubbles i{position:absolute;bottom:-4%;width:6px;height:6px;border-radius:50%;
+  border:1px solid rgba(190,215,225,.42);background:rgba(190,215,225,.06);
+  animation:bubbleUp linear infinite}
+.over-bubbles i:nth-child(1){left:13%;animation-duration:13s;animation-delay:.8s}
+.over-bubbles i:nth-child(2){left:27%;animation-duration:17s;animation-delay:5.4s;width:4px;height:4px}
+.over-bubbles i:nth-child(3){left:41%;animation-duration:12s;animation-delay:2.8s}
+.over-bubbles i:nth-child(4){left:55%;animation-duration:18s;animation-delay:8.2s;width:4px;height:4px}
+.over-bubbles i:nth-child(5){left:66%;animation-duration:14s;animation-delay:1.6s}
+.over-bubbles i:nth-child(6){left:78%;animation-duration:16s;animation-delay:6.8s;width:4px;height:4px}
+.over-bubbles i:nth-child(7){left:89%;animation-duration:12.5s;animation-delay:4s}
+.over-bubbles i:nth-child(8){left:33%;animation-duration:19s;animation-delay:10.6s;width:3px;height:3px}
+@keyframes bubbleUp{0%{opacity:0;transform:translateY(12px)}16%{opacity:.45}
+  100%{opacity:0;transform:translateY(-760px)}}
+
+/* 火光三味：火柴余烬（c0）· 青灯将熄（c1）· 心灯微明（c2） */
+html[data-cycle="1"] .spark-flame{animation:sparkPulseC1 2.4s ease-in-out infinite;
+  background:radial-gradient(circle at 50% 62%,#eaffff 0%,#8fe6ff 34%,rgba(60,170,220,.5) 62%,rgba(60,170,220,0) 78%);
+  box-shadow:0 0 18px 4px rgba(127,227,255,.45),0 0 46px 10px rgba(60,170,220,.22)}
+html[data-cycle="1"] .spark-burst{border-color:rgba(160,235,255,.95);box-shadow:0 0 30px rgba(127,227,255,.7)}
+@keyframes sparkPulseC1{50%{transform:scale(1.16);
+  box-shadow:0 0 24px 7px rgba(127,227,255,.6),0 0 60px 16px rgba(60,170,220,.28)}}
+html[data-cycle="2"] .spark-flame{animation:sparkPulseC2 3.2s ease-in-out infinite;
+  background:radial-gradient(circle at 50% 62%,#ffffff 0%,#dfe9f2 34%,rgba(170,190,210,.4) 62%,rgba(170,190,210,0) 78%);
+  box-shadow:0 0 16px 3px rgba(220,232,244,.4),0 0 40px 8px rgba(190,205,220,.18)}
+html[data-cycle="2"] .spark-burst{border-color:rgba(230,240,250,.95);box-shadow:0 0 30px rgba(220,232,244,.6)}
+@keyframes sparkPulseC2{50%{transform:scale(1.1);
+  box-shadow:0 0 22px 6px rgba(220,232,244,.5),0 0 54px 14px rgba(190,205,220,.24)}}
+/* 点燃后（lit）的文字回暖，色随周目 */
+html[data-cycle="1"] #s-over.lit #overTitle{color:#bfeeff;filter:drop-shadow(0 0 18px rgba(127,227,255,.45))}
+html[data-cycle="1"] #s-over.lit .over-sub{color:#8fd8ff;text-shadow:0 0 12px rgba(127,227,255,.4)}
+html[data-cycle="1"] #s-over.lit .over-line{color:#a9d9e8}
+html[data-cycle="1"] .over-oracle .oracle-k{color:rgba(140,225,255,.85);border-color:rgba(140,225,255,.3)}
+html[data-cycle="1"] #sparkText{color:#c9f4ff;text-shadow:0 0 14px rgba(127,227,255,.4)}
+html[data-cycle="2"] #s-over.lit #overTitle{color:#eef3f8;filter:drop-shadow(0 0 18px rgba(220,232,244,.4))}
+html[data-cycle="2"] #s-over.lit .over-sub{color:#c6d2de;text-shadow:0 0 12px rgba(200,215,230,.3)}
+html[data-cycle="2"] #s-over.lit .over-line{color:#b8c4d2}
+html[data-cycle="2"] .over-oracle .oracle-k{color:rgba(210,225,240,.85);border-color:rgba(210,225,240,.3)}
+html[data-cycle="2"] #sparkText{color:#dfe9f2;text-shadow:0 0 14px rgba(210,225,240,.35)}
+/* 印记符号：颜色走 currentColor，随周目换装 */
+.win-sigil{color:var(--gold)}
+html[data-cycle="2"] .win-sigil{color:#eef3f8}
+/* 印记引文配色随周目 */
+html[data-cycle="1"] .win-oracle .oracle-k{color:rgba(140,225,255,.85);border-color:rgba(140,225,255,.3)}
+html[data-cycle="1"] #oracleText{color:#c9f4ff;text-shadow:0 0 14px rgba(127,227,255,.4)}
+html[data-cycle="2"] .win-oracle .oracle-k{color:rgba(210,225,240,.85);border-color:rgba(210,225,240,.3)}
+html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225,240,.35)}
+
+/* 科目卡片上的周目签 */
+.sub-card .ds .wtag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;
+  margin-right:5px;letter-spacing:.02em;vertical-align:1px}
+.wtag.w0{background:rgba(255,215,106,.16);color:#ffe0a0}
+.wtag.w1{background:rgba(127,227,255,.15);color:#a8e8ff}
+.wtag.w2{background:rgba(215,228,240,.15);color:#eef4fa}
+.wtag.wx{background:rgba(255,255,255,.06);color:rgba(142,163,196,.7)}
+.sub-card .st.lock{color:#ffb2bc;font-size:10.5px}
+.sub-card.seal{opacity:.62;border-style:dashed}
+.sub-card.seal:active{opacity:.8}
+
 .sub-list{display:flex;flex-direction:column;gap:9px;margin:14px 0 0;overflow-y:auto;
   scrollbar-width:none;min-height:0}
 .sub-list::-webkit-scrollbar{display:none}
@@ -117,6 +264,12 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .core{width:9px;height:14px;border-radius:3px;background:linear-gradient(180deg,#9fe9ff,#3aa7d8);
   box-shadow:0 0 10px rgba(120,220,255,.6);transition:transform .3s,opacity .3s}
 .core.used{background:rgba(255,255,255,.12);box-shadow:none;opacity:.5}
+/* 穿越中的裂痕计数：两道即崩裂 */
+.cores.rift-meter{gap:4px}
+.rift-lab{font-size:9.5px;letter-spacing:.14em;color:var(--ink-dim);margin-right:1px;transition:color .3s}
+.rift-lab.hot{color:var(--bad)}
+.rift-pip{width:13px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);transition:background .3s,box-shadow .3s}
+.rift-pip.fill{background:var(--bad);box-shadow:0 0 12px -2px var(--bad)}
 .score{font-size:11px;color:var(--ink-dim);letter-spacing:.1em;text-align:right;min-width:44px}
 .score b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
 /* 答对后的快速确认（不弹面板，自动进入下一题） */
@@ -154,7 +307,8 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .stem{position:relative;font-size:19px;line-height:1.62;letter-spacing:.02em;margin:0;font-weight:500;animation:fade .3s ease both}
 .opts{display:grid;gap:9px;margin-top:18px;flex:none}
 .opt{display:flex;gap:11px;align-items:center;text-align:left;padding:15px 14px;border-radius:14px;
-  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);color:var(--ink);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--ink);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
   font-size:15.5px;line-height:1.5;font-family:inherit;cursor:pointer;transition:.18s;letter-spacing:.01em;
   animation:optIn .4s ease both}
 .opt:nth-child(2){animation-delay:.05s}.opt:nth-child(3){animation-delay:.1s}.opt:nth-child(4){animation-delay:.15s}
@@ -264,8 +418,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 #s-win.active .win-title{animation:winUp .8s .55s both,shimmer 5.5s 1.6s linear infinite}
 #s-win.active .win-sub{animation:winUp .7s .7s both}
 #s-win.active .win-card{animation:winUp .8s .85s both}
-#s-win.active #btnAgain{animation:winUp .7s 1.15s both}
-#s-win.active #btnWinSwitch{animation:winUp .7s 1.3s both}
+#s-win.active .stela-box.reveal{animation:winUp .8s both}
 @keyframes winUp{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 .win-kicker{color:var(--gold);text-shadow:0 0 12px rgba(255,215,106,.4)}
 .win-sigil{position:relative;width:96px;height:96px;flex:none;margin-top:2px;background:none;border:0;
@@ -290,11 +443,178 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   text-shadow:0 0 14px rgba(255,215,106,.45)}
 #s-win .win-card{width:min(100%,330px);background:rgba(5,7,16,.74);backdrop-filter:blur(10px);
   border-color:rgba(255,215,106,.25);box-shadow:0 12px 44px -16px rgba(0,0,0,.8),0 0 34px -14px rgba(255,215,106,.45)}
+/* 结算数据块：按需求隐藏，但保留原占位高度，让下方星碑条与输入框停在原位 */
+#s-win .win-card{visibility:hidden;pointer-events:none}
 .win-oracle{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:2px;max-width:340px}
 .win-oracle[hidden]{display:none}
 .oracle-k{font-size:10px;letter-spacing:.5em;text-indent:.5em;color:rgba(255,215,106,.8);
   border-top:1px solid rgba(255,215,106,.35);border-bottom:1px solid rgba(255,215,106,.35);padding:3px 10px 3px 13px}
 #oracleText{font-size:13.5px;line-height:1.8;color:#ffe9b8;text-shadow:0 0 14px rgba(255,215,106,.35);animation:winUp .6s both}
+
+/* ---------- 星碑 ---------- */
+.stela-box{width:min(100%,330px);margin-top:9px;flex:none}
+.stela-fold{display:flex;align-items:center;gap:7px;width:100%;padding:10px 14px;border-radius:13px;
+  background:rgba(255,215,106,.07);border:1px solid rgba(255,215,106,.26);color:#ffe9b8;
+  font-family:inherit;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:.25s}
+.stela-fold b{font-weight:500}
+.stela-fold em{font-style:normal;font-size:9.5px;letter-spacing:.04em;padding:2px 6px;border-radius:5px;
+  background:rgba(255,215,106,.16);color:#ffe9b8;margin-left:auto;opacity:.9}
+.stela-fold i{font-style:normal;font-size:9px;opacity:.6;transition:.3s}
+.stela-box.open .stela-fold i{transform:rotate(180deg)}
+.stela-panel{margin-top:8px;border-radius:14px;padding:13px;text-align:left;
+  background:rgba(6,8,18,.78);border:1px solid rgba(255,215,106,.22);backdrop-filter:blur(12px);
+  animation:winUp .35s both}
+.stela-panel[hidden]{display:none}
+.sb-d{font-size:10.5px;line-height:1.7;color:var(--ink-dim);margin:0 0 10px}
+.sb-field{position:relative;margin-bottom:8px}
+.sb-field input{width:100%;height:38px;border-radius:11px;border:1px solid rgba(255,215,106,.2);
+  background:rgba(0,0,0,.32);color:#fff8e6;font-size:13px;padding:0 52px 0 11px;font-family:inherit;
+  letter-spacing:.04em;outline:none;transition:.2s}
+.sb-field input::placeholder{color:rgba(142,163,196,.5)}
+.sb-field input:focus{border-color:rgba(255,215,106,.55);box-shadow:0 0 0 3px rgba(255,215,106,.08)}
+.sb-field.bad input{border-color:rgba(255,107,125,.6)}
+.sb-count{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:10px;
+  color:rgba(142,163,196,.65);font-variant-numeric:tabular-nums}
+.sb-count.full{color:var(--gold)}
+.sb-err{font-size:10.5px;line-height:1.6;color:#ff9aa6;margin:0 0 8px}
+.sb-err[hidden]{display:none}
+.sb-btn{padding:12px;font-size:14px;letter-spacing:.2em}
+.sb-rule{font-size:9.5px;line-height:1.6;color:rgba(142,163,196,.6);margin:8px 0 0;text-align:center}
+.sb-layer{font-size:9.5px;color:rgba(255,215,106,.7);letter-spacing:.06em;margin:0 0 6px}
+
+/* 已入册 */
+.stela-mine2{border-radius:14px;padding:12px 13px;text-align:left;
+  background:linear-gradient(100deg,rgba(255,215,106,.13),rgba(255,215,106,.03));
+  border:1px solid rgba(255,215,106,.3);border-left:2px solid var(--gold)}
+.sm-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:5px}
+.sm-top span:first-child{font-size:10px;letter-spacing:.16em;color:var(--gold)}
+.sm-top span:last-child{font-size:9.5px;color:rgba(255,215,106,.6)}
+.sm-word{font-family:"Songti SC","Noto Serif SC",serif;font-size:16px;letter-spacing:.06em;
+  color:#fff6dc;margin:0 0 9px;line-height:1.5;word-break:break-all}
+.sm-acts{display:flex;gap:6px}
+.sm-acts button{flex:1;font-family:inherit;font-size:10.5px;letter-spacing:.04em;padding:7px 4px;
+  border-radius:8px;cursor:pointer;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);color:var(--ink-dim)}
+.sm-acts button.del{color:#ff9aa6;border-color:rgba(255,107,125,.26);background:rgba(255,107,125,.06)}
+.sm-acts button.wall{color:var(--gold);border-color:rgba(255,215,106,.3);background:rgba(255,215,106,.07)}
+
+/* ---------- 闭关 / 转世 ---------- */
+#s-seclu,#s-rebirth{justify-content:flex-start;padding:42px 20px 22px;gap:0}
+.seclu-scene{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.seclu-glow{position:absolute;left:50%;top:2%;width:130%;height:56%;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,rgba(215,228,240,.15),rgba(170,195,220,.04) 46%,transparent 72%)}
+.seclu-orb{position:relative;width:96px;height:96px;margin:8px 0 4px;display:grid;place-items:center;flex:none}
+.seclu-orb i{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(215,228,240,.14)}
+.seclu-orb i:nth-child(2){inset:13px;border-style:dashed;border-color:rgba(215,228,240,.24);animation:spin 28s linear infinite}
+.seclu-orb i:nth-child(3){inset:26px;border-color:rgba(215,228,240,.1)}
+.seclu-orb b{width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle,#f2f7fc,rgba(215,228,240,.18));
+  box-shadow:0 0 30px rgba(215,228,240,.75)}
+.seclu-title{font-family:"Songti SC","Noto Serif SC",serif;font-size:30px;letter-spacing:.26em;
+  text-indent:.26em;color:#f4f8fc;margin:8px 0 5px;font-weight:600;
+  text-shadow:0 0 34px rgba(200,220,240,.3)}
+.seclu-sub{font-size:10px;letter-spacing:.38em;text-indent:.38em;color:rgba(215,228,240,.55);margin:0 0 14px}
+.seclu-cd{display:flex;gap:8px;margin:2px 0 14px}
+.seclu-cd div{width:62px;padding:8px 0;border-radius:12px;text-align:center;
+  background:rgba(215,228,240,.05);border:1px solid rgba(215,228,240,.14)}
+.seclu-cd b{display:block;font-size:21px;font-weight:400;color:#f2f6fa;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.seclu-cd span{font-size:9.5px;letter-spacing:.16em;color:rgba(215,228,240,.4)}
+.seclu-card{width:min(100%,330px)}
+.seclu-card .res-row b{color:#f2f6fa}
+.seclu-note{font-size:10.5px;line-height:1.95;color:rgba(142,163,196,.66);
+  text-align:center;margin:14px 0 0;letter-spacing:.02em}
+.reb-plan{display:flex;gap:9px;width:min(100%,330px);margin:0 0 9px}
+.reb-plan>div{flex:1;border-radius:14px;padding:11px 12px}
+.reb-plan .lose{background:rgba(255,107,125,.05);border:1px solid rgba(255,107,125,.2)}
+.reb-plan .keep{background:rgba(127,227,212,.05);border:1px solid rgba(127,227,212,.22)}
+.reb-plan h4{font-size:10.5px;letter-spacing:.14em;margin:0 0 7px;font-weight:500}
+.reb-plan .lose h4{color:#ff9aa6}
+.reb-plan .keep h4{color:#7fe3d4}
+.reb-plan ul{margin:0;padding:0;list-style:none}
+.reb-plan li{font-size:10px;line-height:1.95;color:rgba(200,215,235,.85);padding-left:10px;position:relative}
+.reb-plan li::before{content:"";position:absolute;left:1px;top:7px;width:3px;height:3px;
+  border-radius:50%;background:currentColor;opacity:.55}
+
+/* ---------- 星碑墙 ---------- */
+#s-wall{gap:9px}
+.wall-top{display:flex;align-items:center;gap:10px;flex:none}
+.wall-back{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--ink-dim);
+  font-size:14px;cursor:pointer;font-family:inherit}
+.wall-top h1{font-size:20px;letter-spacing:.16em;margin:0;font-weight:600}
+.wall-kicker{font-size:9.5px;letter-spacing:.28em;color:rgba(255,215,106,.8);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.wall-top .cnt{margin-left:auto;font-size:10px;color:var(--ink-dim);letter-spacing:.04em;flex:none}
+/* 顶部大标题与「来到这里不容易」的鼓励语 */
+.wall-hero{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;padding:2px 0 1px}
+.wall-title{font-size:29px;letter-spacing:.26em;text-indent:.26em;font-weight:600;line-height:1.35;margin:0;
+  background:linear-gradient(100deg,#8a6a1e 0%,#ffd76a 26%,#fff3c4 50%,#ffd76a 74%,#8a6a1e 100%);
+  background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 18px rgba(255,215,106,.3));animation:shimmer 7s linear infinite}
+.wall-praise{margin:0;font-size:11.5px;line-height:1.9;color:rgba(205,218,236,.9);max-width:324px}
+.wall-praise em{font-style:normal;color:#ffe9b8;text-shadow:0 0 12px rgba(255,215,106,.3)}
+.wall-tabs{display:flex;gap:6px;flex:none;margin:2px 0 2px}
+.wall-tabs button{flex:1;font-family:inherit;font-size:10px;letter-spacing:.06em;padding:7px 0;
+  border-radius:9px;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.09);color:var(--ink-dim)}
+.wall-tabs button.on{background:rgba(255,215,106,.11);border-color:rgba(255,215,106,.36);color:#ffe9b8}
+.wall-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:7px;
+  scrollbar-width:none;padding-bottom:6px}
+.wall-list::-webkit-scrollbar{display:none}
+.wall-item{display:flex;gap:9px;padding:9px 10px;border-radius:12px;flex:none;align-items:center;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}
+.wall-item.me{background:linear-gradient(100deg,rgba(255,215,106,.12),rgba(255,215,106,.02));
+  border-color:rgba(255,215,106,.3)}
+.wall-ava{width:27px;height:27px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:11px;background:rgba(255,215,106,.12);color:var(--gold);border:1px solid rgba(255,215,106,.2)}
+.wall-body{min-width:0;flex:1}
+.wall-meta{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.wall-nick{font-size:11px;color:#e8f0ff;letter-spacing:.03em;max-width:92px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.wall-tag{font-size:8px;padding:1px 5px;border-radius:4px;letter-spacing:.02em;flex:none}
+.wall-tag.c0{background:rgba(255,215,106,.15);color:#ffe1a0;border:1px solid rgba(255,215,106,.3)}
+.wall-tag.c1{background:rgba(127,227,255,.13);color:#a8ecff;border:1px solid rgba(127,227,255,.3)}
+.wall-tag.me{background:var(--gold);color:#231a00;border:0;font-weight:600}
+.wall-tag.subj{background:rgba(160,196,255,.13);color:#bcd6ff;border:1px solid rgba(160,196,255,.28)}
+.wall-time{font-size:8.5px;color:rgba(142,163,196,.45);margin-left:auto;flex:none}
+.wall-meta2{font-size:8.5px;color:rgba(142,163,196,.42);margin-top:3px;letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wall-tag.c2{background:rgba(215,228,240,.13);color:#eef4fa;border:1px solid rgba(215,228,240,.3)}
+.wall-ava.c0{background:rgba(255,215,106,.12);color:#ffe1a0;border-color:rgba(255,215,106,.2)}
+.wall-ava.c1{background:rgba(127,227,255,.12);color:#a8ecff;border-color:rgba(127,227,255,.22)}
+.wall-ava.c2{background:rgba(215,228,240,.12);color:#eef4fa;border-color:rgba(215,228,240,.2)}
+.wall-item{padding:8px 10px}
+.wall-word{font-family:"Songti SC","Noto Serif SC",serif;font-size:13px;color:#f2f7ff;
+  letter-spacing:.04em;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wall-empty{text-align:center;font-size:11.5px;color:var(--ink-dim);line-height:2;padding:34px 10px}
+/* 碑右侧的周目印记：周目越高越大越繁复；无我境最盛但转速最冷 */
+.sigil-defs{position:absolute;width:0;height:0;overflow:hidden}
+.wall-sigil{flex:none;width:38px;height:38px;color:#ffe1a0;opacity:.8;display:grid;place-items:center}
+.wall-sigil svg{width:100%;height:100%;display:block;overflow:visible}
+.wall-sigil .sg-spin,.wall-sigil .sg-spin-r,.wall-sigil .sg-pulse,.wall-sigil .sg-breathe{transform-box:fill-box;transform-origin:center}
+.wall-sigil .sg-spin{animation:sgSpin 46s linear infinite}
+.wall-sigil .sg-spin-r{animation:sgSpin 62s linear infinite reverse}
+.wall-sigil .sg-pulse{animation:sgPulse 6s ease-in-out infinite}
+.wall-sigil .sg-breathe{animation:sgBreathe 9s ease-in-out infinite}
+.wall-sigil.c1{color:#a8ecff;opacity:.92;width:43px;height:43px;filter:drop-shadow(0 0 6px rgba(127,227,255,.35))}
+.wall-sigil.c1 .sg-spin{animation-duration:26s}
+.wall-sigil.c1 .sg-spin-r{animation-duration:40s}
+.wall-sigil.c2{color:#eef4fa;width:47px;height:47px;opacity:1;
+  filter:drop-shadow(0 0 10px rgba(205,228,250,.5)) drop-shadow(0 0 22px rgba(160,200,240,.25))}
+.wall-sigil.c2 .sg-spin{animation-duration:64s}
+.wall-sigil.c2 .sg-spin-r{animation-duration:96s}
+.wall-sigil.c2 .sg-pulse{animation-duration:5.6s}
+.wall-sigil.c2 .sg-breathe{animation-duration:8.4s}
+@keyframes sgSpin{to{transform:rotate(360deg)}}
+@keyframes sgPulse{0%,100%{opacity:.6;transform:scale(.93)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes sgBreathe{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.85;transform:scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.wall-sigil .sg-spin,.wall-sigil .sg-spin-r,.wall-sigil .sg-pulse,.wall-sigil .sg-breathe{animation:none}}
+html[data-cycle="1"] .stela-fold{background:rgba(127,227,255,.07);border-color:rgba(127,227,255,.24);color:#cdf3ff}
+html[data-cycle="1"] .stela-fold em{background:rgba(127,227,255,.16);color:#cdf3ff}
+html[data-cycle="1"] .sb-field input:focus{border-color:rgba(127,227,255,.55);box-shadow:0 0 0 3px rgba(127,227,255,.08)}
+html[data-cycle="1"] .stela-mine2{background:linear-gradient(100deg,rgba(127,227,255,.12),rgba(127,227,255,.02));
+  border-color:rgba(127,227,255,.28);border-left-color:#7fe3ff}
+html[data-cycle="1"] .sm-top span:first-child{color:#9fe9ff}
 .spacer{flex:1}
 
 /* ---------- 谷底 · 奇点结算彩蛋 ---------- */
@@ -398,6 +718,8 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 .rift.bad .rift-verdict{color:var(--bad);box-shadow:0 0 34px -12px var(--bad)}
 .rift.ok .rift-item.target{color:var(--gold);text-shadow:0 0 32px rgba(255,215,106,.6)}
 .rift.bad .rift-item.target{color:#ffb4bd;text-shadow:0 0 32px rgba(255,90,110,.5)}
+.rift.hold .rift-verdict{color:var(--ink);box-shadow:0 0 34px -14px rgba(255,255,255,.5)}
+.rift.hold .rift-item.target{color:var(--ink);text-shadow:0 0 26px rgba(255,255,255,.35)}
 .rift-sub{font-size:10.5px;letter-spacing:.28em;color:var(--ink-dim);opacity:0;transition:opacity .6s .25s}
 .rift-sub.show{opacity:.8}
 .flash{position:fixed;inset:0;z-index:39;pointer-events:none;opacity:0}.flash.go{animation:flashFade .5s ease both}
@@ -426,10 +748,10 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
 
 <main>
   <section class="screen active" id="s-title">
-    <div class="badge">CHRONO VOYAGER</div>
+    <div class="badge" id="titleBadge">CHRONO VOYAGER</div>
     <div class="orbit"><i></i><i></i><i></i><b></b></div>
-    <h1>时空纪元<span>知识闯关 · 二十一纪元</span></h1>
-    <p class="tagline">你从石器时代的火种旁醒来。<br>每答对一关，时间向前推进一个纪元；<br>任何一次失手，都会被抛回上一个时代。</p>
+    <h1 id="titleMain">时空纪元<span id="titleSub">知识闯关 · 二十一纪元</span></h1>
+    <p class="tagline" id="titleTag">你从石器时代的火种旁醒来。<br>每答对一关，时间向前推进一个纪元；<br>任何一次失手，都会被抛回上一个时代。</p>
     <div class="title-actions">
       <div class="best" id="bestLine">最高抵达 · 石器时代</div>
       <button class="btn primary" id="btnStart">启动跃迁</button>
@@ -438,9 +760,9 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   </section>
 
   <section class="screen" id="s-subject">
-    <div class="kicker">SELECT TIMELINE</div>
-    <h1>选择时间线</h1>
-    <p class="sub">点击卡片即刻跃迁。所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。</p>
+    <div class="kicker" id="subKicker">SELECT TIMELINE</div>
+    <h1 id="subTitle">选择时间线</h1>
+    <p class="sub" id="subDesc">点击卡片即刻跃迁。所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。</p>
     <div class="sub-list" id="subList"></div>
     <div class="spacer"></div>
     <button class="btn ghost" id="btnSubBack">返回</button>
@@ -453,7 +775,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     <div class="metrics">
       <div class="metric"><b id="briefCount">5</b><span>题量</span></div>
       <div class="metric"><b id="briefTime">120</b><span>每题秒数</span></div>
-      <div class="metric"><b id="briefCores">0</b><span>冷冻核心</span></div>
+      <div class="metric"><b id="briefCores">0</b><span id="briefCoreLabel">冷冻核心</span></div>
     </div>
     <p class="hint" id="briefHint">答错会消耗一枚冷冻核心；核心耗尽即刻坠落一个时代。</p>
     <div class="spacer"></div>
@@ -498,7 +820,7 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     <p class="sub" id="resSub">时间线向前推进</p>
     <div class="res-card">
       <div class="res-row"><span>本关正确</span><b id="resAcc">5 / 5</b></div>
-      <div class="res-row"><span>冷冻核心</span><b id="resCores">1</b></div>
+      <div class="res-row"><span id="resCoreLabel">冷冻核心</span><b id="resCores">1</b></div>
       <div class="res-row"><span>累计得分</span><b id="resScore">25</b></div>
     </div>
     <div class="spacer"></div>
@@ -507,13 +829,13 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
   </section>
 
   <section class="screen" id="s-travel">
-    <div class="kicker">SPACETIME RIFT</div>
-    <h1>时空裂隙开启</h1>
-    <p class="over-text">裂隙深处传来回响：三道高难问题，每题时限只有常规的一半。<br>全部答对，可连升两个纪元；<br>答错任何一题，你会被抛回出发时的时代。</p>
+    <div class="kicker" id="riftKicker">SPACETIME RIFT</div>
+    <h1 id="riftTitle">时空裂隙开启</h1>
+    <p class="over-text" id="riftDesc">裂隙深处传来回响：六道高难问题，每题限时 30 秒，冷冻核心失效。<br>裂隙只承受得起两次偏离——<br>全对连升两个纪元；错一题不进不退；错两题裂隙崩裂，连坠两个纪元。</p>
     <div class="metrics">
-      <div class="metric"><b>3</b><span>题量</span></div>
-      <div class="metric"><b id="riftSecs">60</b><span>每题秒数</span></div>
-      <div class="metric"><b>+2</b><span>跃升纪元</span></div>
+      <div class="metric"><b>6</b><span>题量</span></div>
+      <div class="metric"><b id="riftSecs">30</b><span>每题秒数</span></div>
+      <div class="metric"><b>±1~2</b><span id="riftUpLabel">纪元涨落</span></div>
     </div>
     <div class="spacer"></div>
     <button class="btn gold" id="btnTravelGo">跃入裂隙</button>
@@ -524,10 +846,12 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     <div class="over-scene" aria-hidden="true">
       <div class="over-bg"></div>
       <div class="over-embers"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="over-shards"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="over-bubbles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="over-vignette"></div>
     </div>
     <div class="over-content">
-      <div class="kicker over-kicker">SINGULARITY · 奇点</div>
+      <div class="kicker over-kicker" id="overKicker">SINGULARITY · 奇点</div>
       <button class="over-spark" id="overSpark" aria-label="手里那根火柴">
         <span class="spark-flame"></span>
         <span class="spark-burst"></span>
@@ -547,21 +871,71 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
     </div>
   </section>
 
+  <section class="screen" id="s-seclu">
+    <div class="seclu-scene"><div class="seclu-glow"></div></div>
+    <div class="kicker" id="secluKicker">SECLUSION · 闭 关</div>
+    <div class="seclu-orb"><i></i><i></i><i></i><b></b></div>
+    <h1 class="seclu-title">闭关</h1>
+    <p class="seclu-sub" id="secluSub">地 理 · 第 1 世</p>
+    <div class="seclu-cd">
+      <div><b id="secluD">00</b><span>天</span></div>
+      <div><b id="secluH">00</b><span>时</span></div>
+      <div><b id="secluM">00</b><span>分</span></div>
+    </div>
+    <div class="res-card seclu-card">
+      <div class="res-row"><span>最后心境</span><b id="secluEra">无我境</b></div>
+      <div class="res-row"><span>累计抵达</span><b id="secluTimes">0 次</b></div>
+      <div class="res-row"><span>转世开启</span><b id="secluAt">—</b></div>
+    </div>
+    <p class="seclu-note">到了无我境，就不必急着再刷。<br>五日后，此科目的三周目重归第一关，<br>而刻过的碑文，一块都不会少。</p>
+    <div class="spacer"></div>
+    <button class="btn" id="btnSecluGo" disabled>转 世 · 尚未开启</button>
+    <button class="btn ghost" id="btnSecluOut">返回 · 修其他科目</button>
+  </section>
+
+  <section class="screen" id="s-rebirth">
+    <div class="seclu-scene"><div class="seclu-glow"></div></div>
+    <div class="kicker" id="rebKicker">REBIRTH · 转 世</div>
+    <h1 class="seclu-title" style="font-size:27px;margin-top:14px">转世</h1>
+    <p class="seclu-sub" id="rebSub">地 理 · 将 入 第 2 世</p>
+    <div class="reb-plan">
+      <div class="lose">
+        <h4>将归零</h4>
+        <ul><li>三周目全部进度</li><li>玉符与定心珠</li><li>关卡与时限</li></ul>
+      </div>
+      <div class="keep">
+        <h4>将保留</h4>
+        <ul><li>历代全部星碑</li><li>累计抵达次数</li><li>最高心境记录</li></ul>
+      </div>
+    </div>
+    <div class="res-card seclu-card">
+      <div class="res-row"><span>这一世刻下的碑</span><b id="rebStela">0 块</b></div>
+      <div class="res-row"><span>转世后编号</span><b id="rebGen">第 2 世</b></div>
+      <div class="res-row"><span>下次闭关</span><b>再次抵达无我境</b></div>
+    </div>
+    <p class="seclu-note">转世不是清档，是换一副身体重新走。<br>星碑墙上，你的每一世都会留着。</p>
+    <div class="spacer"></div>
+    <button class="btn" id="btnRebirthGo">确认转世 · 从第一关重来</button>
+    <button class="btn ghost" id="btnRebirthNo">再等等</button>
+  </section>
+
   <section class="screen" id="s-win">
     <div class="win-scene" aria-hidden="true">
       <div class="win-bg"></div>
       <div class="win-rays"></div>
       <div class="win-stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="win-motes"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="win-clouds"><i></i><i></i><i></i></div>
+      <div class="win-dust"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="win-vignette"></div>
     </div>
     <div class="win-content">
-      <div class="kicker win-kicker">ASCENSION · 神格觉醒</div>
+      <div class="kicker win-kicker" id="winKicker">ASCENSION · 神格觉醒</div>
       <button class="win-sigil" id="winSigil" aria-label="神格印记">
         <svg class="sigil-ring" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="56" fill="none" stroke="rgba(255,215,106,.55)" stroke-width="1" stroke-dasharray="4 9"/>
-          <circle cx="60" cy="60" r="47" fill="none" stroke="rgba(255,215,106,.28)" stroke-width="1"/>
-          <g class="sigil-ticks" stroke="rgba(255,215,106,.8)" stroke-width="1.4">
+          <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1" stroke-dasharray="4 9"/>
+          <circle cx="60" cy="60" r="47" fill="none" stroke="currentColor" stroke-opacity=".28" stroke-width="1"/>
+          <g class="sigil-ticks" stroke="currentColor" stroke-width="1.4">
             <line x1="60" y1="6" x2="60" y2="14"/><line x1="60" y1="106" x2="60" y2="114"/>
             <line x1="6" y1="60" x2="14" y2="60"/><line x1="106" y1="60" x2="114" y2="60"/>
           </g>
@@ -569,43 +943,160 @@ main{position:absolute;inset:0;z-index:2;display:flex;justify-content:center}
         <span class="sigil-core">✦</span>
         <span class="sigil-burst"></span>
       </button>
-      <h1 class="win-title">神格觉醒</h1>
-      <p class="win-sub">时 空 主 宰</p>
+      <h1 class="win-title" id="winTitle">神格觉醒</h1>
+      <p class="win-sub" id="winSub">时 空 主 宰</p>
       <div class="res-card win-card">
-        <div class="res-row"><span>抵达纪元</span><b>星光神域</b></div>
+        <div class="res-row"><span id="winEraLabel">抵达纪元</span><b id="winEra">星光神域</b></div>
         <div class="res-row"><span>答题总数</span><b id="winTotal">0</b></div>
         <div class="res-row"><span>正确率</span><b id="winAcc">0%</b></div>
-        <div class="res-row"><span>时空穿越</span><b id="winTravel">0 次</b></div>
+        <div class="res-row"><span id="winTravelLabel">时空穿越</span><b id="winTravel">0 次</b></div>
         <div class="res-row"><span>用时</span><b id="winTime">0:00</b></div>
+      </div>
+      <div class="stela-box" id="stelaBox">
+        <button class="stela-fold" id="stelaFold">
+          <b>✦ 星碑</b><em id="stelaTag">时空纪元</em><i>▾</i>
+        </button>
+        <div class="stela-panel" id="stelaPanel" hidden>
+          <div id="stelaForm">
+            <p class="sb-layer" id="stelaLayer">第 1 次抵达 · 时空纪元</p>
+            <p class="sb-d">留下一句话，星碑会记住你来过几次。不登录、不绑定账号。</p>
+            <div class="sb-field">
+              <input id="stelaNick" maxlength="8" placeholder="取个名字（2–8 字）" autocomplete="off">
+              <span class="sb-count" id="nickCount">0 / 8</span>
+            </div>
+            <div class="sb-field">
+              <input id="stelaWord" maxlength="10" placeholder="一句话（10 字以内）" autocomplete="off">
+              <span class="sb-count" id="wordCount">0 / 10</span>
+            </div>
+            <p class="sb-err" id="stelaErr" hidden></p>
+            <button class="btn gold sb-btn" id="btnStelaPost">刻 上 星 碑</button>
+            <p class="sb-rule">公开可见 · 禁止违法与攻击 · 可随时改写或删除</p>
+          </div>
+          <div class="stela-mine2" id="stelaMine" hidden>
+            <div class="sm-top"><span id="smTitle">你的星碑</span><span id="smMeta"></span></div>
+            <p class="sm-word" id="smWord"></p>
+            <div class="sm-acts">
+              <button id="btnStelaEdit">改写</button>
+              <button id="btnStelaWall" class="wall">星碑墙</button>
+              <button id="btnStelaDel" class="del">删除</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="win-oracle" id="winOracle" hidden><span class="oracle-k">神谕</span><span id="oracleText"></span></div>
       <div class="spacer"></div>
-      <button class="btn gold" id="btnAgain">再闯一次时间线</button>
-      <button class="btn ghost" id="btnWinSwitch">切换时间线</button>
+      <!-- 觉醒屏只留场景与留言：跳转/再闯等入口都移到星碑墙 -->
     </div>
+  </section>
+
+  <section class="screen" id="s-wall">
+    <!-- 周目印记用的渐变定义（全局一次，供三套印记引用） -->
+    <svg class="sigil-defs" aria-hidden="true" focusable="false"><defs>
+      <linearGradient id="sgCyan" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#e8fbff"/><stop offset=".45" stop-color="#7fe3ff"/><stop offset="1" stop-color="#1e6a7a"/>
+      </linearGradient>
+      <linearGradient id="sgSilver" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#dfe6ee"/><stop offset="1" stop-color="#8b9aab"/>
+      </linearGradient>
+      <radialGradient id="sgSilverFill" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".55"/>
+        <stop offset=".55" stop-color="#dfe6ee" stop-opacity=".16"/>
+        <stop offset="1" stop-color="#dfe6ee" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="sgHalo" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#eaf3ff" stop-opacity=".22"/>
+        <stop offset=".6" stop-color="#cfe0f2" stop-opacity=".07"/>
+        <stop offset="1" stop-color="#cfe0f2" stop-opacity="0"/>
+      </radialGradient>
+    </defs></svg>
+    <div class="wall-top">
+      <button class="wall-back" id="btnWallBack">←</button>
+      <span class="wall-kicker" id="wallKicker">STELA WALL · 时空纪元</span>
+      <span class="cnt" id="wallCount">—</span>
+    </div>
+    <div class="wall-hero">
+      <h1 class="wall-title" id="wallTitle">星 碑 墙</h1>
+      <p class="wall-praise" id="wallPraise"><em>时间甩下了绝大多数人，你没有。</em><br>二十一纪元、无数次日升，你一次都没被甩下——这面墙上，该有你的名字。</p>
+    </div>
+    <div class="wall-tabs" id="wallTabs">
+      <button data-k="all" class="on">全部</button>
+      <button data-k="c0">时空纪元</button>
+      <button data-k="c1">修仙记</button>
+      <button data-k="c2">无我篇</button>
+      <button data-k="hot">常客 3+</button>
+    </div>
+    <div class="wall-list" id="wallList"></div>
+    <button class="btn gold" id="btnWallRebirth" hidden style="flex:none">转世 · 开启新一世</button>
+    <button class="btn gold" id="btnWallAgain" hidden style="flex:none">再闯一次</button>
+    <button class="btn ghost" id="btnWallSubs" hidden style="flex:none">返回科目</button>
   </section>
 </main>
 
 <div class="sheet" id="help">
   <div class="sheet-inner">
     <h3>玩法说明</h3>
-    <p>开局先选择时间线：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
+    <p id="helpBody">开局先选择时间线：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
     题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
-    常规关卡每题限时 120 秒，超时算错；答对后自动进入下一题。<br><br>
+    常规关卡每题限时 60 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
-    每通过两关开启一次时空穿越：3 道高考风格的拔高题，每题限时只有常规的一半（60 秒），三题题型互不重复。全对连升两级，错一题退回出发时的时代。<br><br>
+    每通过两关开启一次时空穿越：6 道高考风格的拔高题，每题限时 30 秒，六题题型互不重复。穿越中冷冻核心失效，且只承受得起两次偏离：全对连升两级；错一题不进不退，可继续答完余题；错第二题当场崩裂，直接连坠两级。<br><br>
     坠落出时间线最底端，宇宙坍缩，挑战结束。</p>
     <button class="btn primary" id="btnHelpClose">知道了</button>
   </div>
 </div>
 
 <script>
-const QUESTIONS = __QUESTIONS__;
+/* ---- 进度版本号：数值一变，所有玩家下次打开自动清空本地进度（全量重置） ----
+   保留：设备标识(chrono_dev)、音效设置(chrono_snd)、版本号自身 */
+const PROGRESS_VER = 2;   /* 2026-11-08 全量重置 */
+try{
+  if(localStorage.getItem('chrono_pv') !== String(PROGRESS_VER)){
+    Object.keys(localStorage)
+      .filter(k => k.indexOf('chrono_') === 0 && k !== 'chrono_pv' && k !== 'chrono_snd' && k !== 'chrono_dev')
+      .forEach(k => localStorage.removeItem(k));
+    localStorage.setItem('chrono_pv', String(PROGRESS_VER));
+  }
+}catch(e){}
+
+let QUESTIONS = null;   /* 题库外置在 questions.js，启动时动态注入 */
 const SUBJECTS = __SUBJECTS__;
 const MIX = {id:'mix', name:'混合', short:'混', desc:'全科混抽 · 跨科目总复习', chapter:'', accent:'#c49bff'};
 let pickId = 'geo';
 
-const ERAS = [
+/* ---- 题库预取：启动即拉取，进科目前若未就绪则等待（最多重试 3 次） ---- */
+let bankPending = null;
+function loadBank(){
+  if(QUESTIONS) return Promise.resolve(true);
+  if(!bankPending){
+    bankPending = new Promise((resolve, reject) => {
+      const sc = document.createElement('script');
+      sc.src = 'questions.js?v=__VER__';
+      sc.onload = () => { QUESTIONS = window.__QB__ || null; QUESTIONS ? resolve(true) : reject(new Error('BAD_BANK')); };
+      sc.onerror = () => reject(new Error('BANK_NET'));
+      document.head.appendChild(sc);
+    }).catch(e => { bankPending = null; throw e; });
+  }
+  return bankPending;
+}
+async function ensureBank(){
+  for(let i = 0; i < 3; i++){
+    try{ return await loadBank(); }catch(e){ if(i < 2) await new Promise(r => setTimeout(r, 900)); }
+  }
+  return false;
+}
+loadBank().then(() => {
+  const ss = document.getElementById('s-subject');
+  if(ss && (ss.classList.contains('on') || ss.classList.contains('active'))) renderSubjectPicker();
+}).catch(() => {});
+
+/* ---- 离线缓存：二次打开秒开（仅 https 环境，file:// 下跳过） ---- */
+if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
+  addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js?v=__VER__').catch(() => {});
+  });
+}
+
+const ERA_C0 = [
   {n:'虚无乌托邦', s:'时间尚未开始',      bg:'#010207', a:'#6f7ba8', a2:'#3c4468', mood:'void'},
   {n:'混沌奇点',   s:'一切规则的胚胎',    bg:'#070516', a:'#9d8cff', a2:'#5a48c8', mood:'chaos'},
   {n:'宇宙大爆炸', s:'光第一次奔跑',      bg:'#0d0610', a:'#ffb37a', a2:'#ff6b4a', mood:'bang'},
@@ -628,10 +1119,169 @@ const ERAS = [
   {n:'宇宙造物主时代', s:'抬手即是法则',  bg:'#100a04', a:'#ffcf8f', a2:'#d88f3a', mood:'creator'},
   {n:'星光神域',   s:'神格觉醒 · 时空主宰', bg:'#120d04', a:'#ffd76a', a2:'#ffb34a', mood:'divine'}
 ];
+
+/* ---------------- 第二周目：修仙记 · 二十一境界 ---------------- */
+const ERA_C1 = [
+  {n:'凡尘',     s:'未曾抬头看过天',      bg:'#0a0a0c', a:'#8a8f9c', a2:'#4a4f5c', mood:'mist'},
+  {n:'淬体一重', s:'筋骨第一次发烫',      bg:'#0c0908', a:'#c9a27a', a2:'#8a6440', mood:'ember'},
+  {n:'淬体三重', s:'疼，但站得住',        bg:'#0c0a06', a:'#d8b078', a2:'#9a7440', mood:'ember'},
+  {n:'淬体六重', s:'肉身开始记得',        bg:'#0a0b08', a:'#c8c07a', a2:'#8a8440', mood:'ember'},
+  {n:'淬体九重', s:'凡人的极限到了',      bg:'#0b0a07', a:'#e0c88a', a2:'#a89050', mood:'ember'},
+  {n:'引气入体', s:'第一缕灵气入脉',      bg:'#06110f', a:'#7fe8c8', a2:'#2a9e88', mood:'qi'},
+  {n:'炼气三层', s:'气在体内走了一圈',    bg:'#05120e', a:'#6ee8b0', a2:'#249a70', mood:'qi'},
+  {n:'炼气六重', s:'指尖有了微光',        bg:'#04121a', a:'#6fd8ff', a2:'#2a8ab0', mood:'qi'},
+  {n:'炼气九重', s:'丹田第一次发热',      bg:'#04101c', a:'#7fc8ff', a2:'#2a78c0', mood:'qi'},
+  {n:'筑基初期', s:'灵台初立，道心未定',  bg:'#05101e', a:'#8fd4ff', a2:'#3a7ec8', mood:'mist'},
+  {n:'筑基圆满', s:'地基已稳，只差一场雨', bg:'#061225', a:'#9fc0ff', a2:'#4a6ec8', mood:'mist'},
+  {n:'金丹期',   s:'一粒丹，自成天地',    bg:'#14100a', a:'#ffd76a', a2:'#c79a2e', mood:'pollen'},
+  {n:'元婴期',   s:'婴儿睁眼，看见自己',  bg:'#0f0a18', a:'#d0a8ff', a2:'#7a5ac8', mood:'wave'},
+  {n:'化神期',   s:'神念出窍，山河入怀',  bg:'#0d0818', a:'#c49bff', a2:'#6a48c8', mood:'sword'},
+  {n:'炼虚期',   s:'把虚空炼成自己的',    bg:'#080618', a:'#a89aff', a2:'#5a48b8', mood:'mist'},
+  {n:'合体期',   s:'身与道，不再分家',    bg:'#070a18', a:'#9fb8ff', a2:'#4a5ec8', mood:'wave'},
+  {n:'大乘期',   s:'抬手便是规矩',        bg:'#120e08', a:'#ffd28f', a2:'#c8924a', mood:'pollen'},
+  {n:'渡劫期',   s:'雷落下来，我接着',    bg:'#10061a', a:'#c8a0ff', a2:'#7a3ad8', mood:'spark'},
+  {n:'金仙',     s:'一念千里，不染尘埃',  bg:'#0a0e16', a:'#e8f4ff', a2:'#8aa8d0', mood:'snow'},
+  {n:'大罗',     s:'过去未来，皆在掌中',  bg:'#100c04', a:'#ffe9a0', a2:'#c8a03a', mood:'streak'},
+  {n:'道祖',     s:'我就是这条道的尽头',  bg:'#0d0b06', a:'#fff0c0', a2:'#ffc85a', mood:'divine'}
+];
+
+/* ---------------- 第三周目：无我篇 · 二十一境 ---------------- */
+const ERA_C2 = [
+  {n:'沉沦',   s:'连自己都懒得看',      bg:'#08080a', a:'#7c8494', a2:'#3c4250', mood:'ash'},
+  {n:'起念',   s:'第一个念头冒出来',    bg:'#090a0c', a:'#8a93a4', a2:'#424858', mood:'ash'},
+  {n:'执着',   s:'抓住一样东西不肯放',  bg:'#0a0a0d', a:'#96a0b0', a2:'#484e5e', mood:'ash'},
+  {n:'挣扎',   s:'越用力，缠得越紧',    bg:'#0b0b0e', a:'#a2acbc', a2:'#4e5566', mood:'ink'},
+  {n:'省身',   s:'回头看一眼走过的路',  bg:'#0b0c0f', a:'#aeb8c8', a2:'#545b6c', mood:'ash'},
+  {n:'知苦',   s:'承认难受，也是一种清醒', bg:'#0c0d10', a:'#b8c2d0', a2:'#5a6172', mood:'ash'},
+  {n:'觉察',   s:'知道自己在生气',      bg:'#0c0e12', a:'#c2ccd8', a2:'#606878', mood:'ash'},
+  {n:'观照',   s:'站在旁边看自己',      bg:'#0d0f13', a:'#ccd6e0', a2:'#666e7e', mood:'ink'},
+  {n:'破执',   s:'松开手，东西才落得下', bg:'#0d1015', a:'#d4dde6', a2:'#6c7484', mood:'ash'},
+  {n:'明心',   s:'心里那盏灯，刚刚点亮', bg:'#0e1116', a:'#dce4ec', a2:'#737b8b', mood:'fly'},
+  {n:'见性',   s:'第一次认出自己',      bg:'#0e1218', a:'#e2e9f0', a2:'#7a8292', mood:'ash'},
+  {n:'止观',   s:'先停下，再看见',      bg:'#0f1319', a:'#e8eef4', a2:'#818999', mood:'ink'},
+  {n:'静虑',   s:'一坐就是一整天',      bg:'#0f141b', a:'#edf2f7', a2:'#8890a0', mood:'ink'},
+  {n:'澄心',   s:'水面静下来，才看得见底', bg:'#10151c', a:'#f0f4f8', a2:'#8f97a7', mood:'ink'},
+  {n:'忘机',   s:'不再算计下一步',      bg:'#10161d', a:'#f2f6fa', a2:'#969eae', mood:'ash'},
+  {n:'忘形',   s:'身体只是借来的衣裳',  bg:'#10171f', a:'#f4f8fb', a2:'#9da5b5', mood:'ink'},
+  {n:'忘言',   s:'说得越少，懂得越多',  bg:'#111820', a:'#f6f9fc', a2:'#a4acbc', mood:'ink'},
+  {n:'空明',   s:'心里空出一整片天',    bg:'#111921', a:'#f8fbfd', a2:'#c8d2de', mood:'ink'},
+  {n:'无住',   s:'念起即散，不留痕',    bg:'#121a22', a:'#fafcfe', a2:'#d8dfe8', mood:'ash'},
+  {n:'无相',   s:'看山还是山，只是不再命名', bg:'#121b23', a:'#fcfdff', a2:'#e6ebf2', mood:'ink'},
+  {n:'无我境', s:'连「我」都不必再提',  bg:'#131c24', a:'#ffffff', a2:'#f2f5f9', mood:'ink'}
+];
+
+/* 周目元数据：一套玩法，三副皮。改文案只改这里 */
+const CYCLES = [
+  {id:0, name:'时空纪元', sub:'知识闯关 · 二十一纪元', stage:'纪元',
+   jump:'跃迁', jumpSub:'时间线向前推进', jumpKick:'ERA CLEARED', jumpTitle:'纪元跃迁',
+   fall:'坠落', fallSub:'时间线向后崩塌', fallKick:'TIMELINE COLLAPSE',
+   collapse:'坍缩', collapseSub:'宇宙收缩为一点',
+   rift:'时空裂缝', riftKick:'SPACETIME RIFT', riftTitle:'时空裂隙开启',
+   riftDesc:'裂隙深处传来回响：六道高难问题，每题限时 30 秒，冷冻核心失效。<br>裂隙只承受得起两次偏离——<br>全对连升两个纪元；错一题不进不退；错两题裂隙崩裂，连坠两个纪元。',
+   riftBtn:'接受时空穿越 · 连升两纪', riftGo:'跃入裂隙', riftNo:'稳住时间线',
+   riftHurt:'裂痕 1 / 2', riftHurtSub:'裂隙记下了这次偏离，还能走，再错一次将连坠两纪。',
+   riftBreak:'裂隙崩裂', riftBreakSub:'两次偏离已超出裂隙的承受，本次穿越作废。',
+   riftNext:'继续深入', riftLast:'走出裂隙', riftCollapse:'坠出裂隙',
+   riftHold:'穿越未果', riftHoldKick:'RIFT UNRESOLVED',
+   riftHoldSub:'裂隙没有认你，也没有吞你。你仍留在 ',
+   verdictHold:'≈ 未果 · 不进不退',
+   core:'冷冻核心',
+   word:'时间线', kick:'ERA', coreUse:'使用冷冻核心 · 时间回溯',
+   coreHow:'冻结时间线，抹去这次失误并换一道新题重答',
+   riftUp:'纪元涨落', enterVerb:'进入', fallVerb:'坠入', retryVerb:'重新挑战 ',
+   verdictUp:'⇈ 飞升 · 连进两纪', verdictDown:'↓ 坠落 · 按错题退一至两纪',
+   riftOk:'跃迁成功', riftOkSub:'裂隙承认了你：', riftFail:'跃迁失败',
+   riftFail1:'裂隙反噬，坠了一级，跌回 ',
+   riftFailSub:'裂隙反噬，连坠两级，跌回 ', travelLabel:'时空穿越', collapseTo:'奇点',
+   winEraLabel:'抵达纪元',
+   wallKick:'STELA WALL',
+   /* 星碑墙鼓励语：每个周目三句，按「第几世」轮换，每次转世看到的都不同 */
+   wallPraise:[
+     ['时间甩下了绝大多数人，你没有。','二十一纪元、无数次日升，你一次都没被甩下——这面墙上，该有你的名字。'],
+     ['能站到时间尽头的人，比你以为的少得多。','从石器到星光，你不是被时间推着走的那个，你是被时间记住的那个。'],
+     ['你不是运气好，你只是没停过。','二十一道关，每一道都可能坠落。你走到了最上面——这里该刻你的名字。']
+   ],
+   endNote:'坠落出时间线最底端，宇宙坍缩，挑战结束。',
+   winKick:'ASCENSION · 神格觉醒', winTitle:'神格觉醒', winSub:'时 空 主 宰',
+   overKick:'SINGULARITY · 奇点', overTitle:'宇宙收缩', overSub:'你坠到了时间线的尽头',
+   secs:60, riftSecs:30, eras:ERA_C0},
+
+  {id:1, name:'修仙记', sub:'修仙 · 二十一境界', stage:'境界',
+   jump:'破境', jumpSub:'道行精进', jumpKick:'REALM CLEARED', jumpTitle:'破境',
+   fall:'跌境', fallSub:'道基受损', fallKick:'FOUNDATION BROKEN',
+   collapse:'道消', collapseSub:'身死道未消',
+   rift:'天劫', riftKick:'HEAVENLY TRIBULATION', riftTitle:'九霄雷劫降临',
+   riftDesc:'劫云压顶，六道天雷化作考题，每题限时 30 秒，护道玉符失效。<br>道基只受得住两道雷——<br>全渡连破两境；错一道无功无过；错两道道基迸裂，连跌两境。',
+   riftBtn:'迎接天劫 · 连破两境', riftGo:'踏入雷池', riftNo:'暂避锋芒',
+   riftHurt:'裂痕 1 / 2', riftHurtSub:'道基记下了这道雷，还能走，再碎一次将连跌两境。',
+   riftBreak:'道基迸裂', riftBreakSub:'两道天雷已破道基，此劫作废。',
+   riftNext:'迎下一道雷', riftLast:'收势出劫', riftCollapse:'跌落雷池',
+   riftHold:'渡劫未果', riftHoldKick:'TRIBULATION UNRESOLVED',
+   riftHoldSub:'天雷敲了你一记，道基未损。你仍在 ',
+   verdictHold:'≈ 未果 · 道基无损，原地不动',
+   core:'护道玉符',
+   word:'道统', kick:'REALM', coreUse:'捏碎玉符 · 逆转一息',
+   coreHow:'捏碎玉符，逆转一息、换一道新题重答',
+   riftUp:'境界涨落', enterVerb:'迈入', fallVerb:'跌至', retryVerb:'重整道基 · ',
+   verdictUp:'⇈ 破境 · 连进两重', verdictDown:'↓ 跌境 · 按错题退一至两重',
+   riftOk:'渡劫成功', riftOkSub:'天雷认了你这个道：', riftFail:'渡劫失败',
+   riftFail1:'雷劫反噬，跌了一重，跌回 ',
+   riftFailSub:'雷劫反噬，连跌两重，跌回 ', travelLabel:'渡劫', collapseTo:'虚无',
+   winEraLabel:'所证境界',
+   arriveVerb:'飞升',   /* 从上一周目进入本世的按钮动词 */
+   wallKick:'IMMORTAL STELE',
+   wallPraise:[
+     ['二十一道雷劫，劈碎过无数道基。','你碎过、跌过，又重铸——这面墙，配得上你的道号。'],
+     ['能飞升的人，千年才出一个。','从筑基到飞升，你没借谁的光。把道号留在这里，理所应当。'],
+     ['道不是求来的，是熬出来的。','二十一境，一步一劫。你熬到了最后——这一笔，该由你来落。']
+   ],
+   endNote:'道基碎尽、跌出境界最底端，道消身殒，本世重来。',
+   winKick:'ASCENSION · 飞升', winTitle:'飞升', winSub:'道 祖',
+   overKick:'DAO XIAO · 道消', overTitle:'道消身殒', overSub:'你的道基碎在了这里',
+   secs:40, riftSecs:20, eras:ERA_C1},
+
+  {id:2, name:'无我篇', sub:'坐忘 · 二十一境', stage:'境界',
+   jump:'悟道', jumpSub:'心念澄明', jumpKick:'ENLIGHTENED', jumpTitle:'悟',
+   fall:'退转', fallSub:'道心散乱', fallKick:'REGRESSION',
+   collapse:'沉沦', collapseSub:'连自己都看不见了',
+   rift:'心魔劫', riftKick:'INNER DEMON', riftTitle:'心魔现前',
+   riftDesc:'心魔化作六道考题，每题限时 30 秒，定心珠失效。<br>心念只经得住两次动摇——<br>全破连悟两境；错一题不动心；错两题心魔入主，连退两境。',
+   riftBtn:'直面心魔 · 连悟两境', riftGo:'入定观心', riftNo:'暂且放下',
+   riftHurt:'裂痕 1 / 2', riftHurtSub:'心念记下了这次动摇，还能坐，再乱一次将连退两境。',
+   riftBreak:'心魔入主', riftBreakSub:'两次动摇已让心魔坐大，此番观心作废。',
+   riftNext:'继续观心', riftLast:'出定', riftCollapse:'退出观心',
+   riftHold:'观心未果', riftHoldKick:'MIND UNRESOLVED',
+   riftHoldSub:'心魔掀了一阵风，心念未散。你仍在 ',
+   verdictHold:'≈ 未果 · 心念未散，原地不动',
+   core:'定心珠',
+   word:'心相', kick:'MIND', coreUse:'使用定心珠 · 光阴倒流',
+   coreHow:'定住心神，抹去这次失误并换一道新题重答',
+   riftUp:'心境涨落', enterVerb:'步入', fallVerb:'退至', retryVerb:'重新坐下 · ',
+   verdictUp:'⇈ 悟道 · 连进两境', verdictDown:'↓ 退转 · 按错题退一至两境',
+   riftOk:'勘破心魔', riftOkSub:'心魔退散，你在', riftFail:'心魔得逞',
+   riftFail1:'心魔反噬，退了一境，跌回 ',
+   riftFailSub:'心魔反噬，连退两境，跌回 ', travelLabel:'心魔劫', collapseTo:'空无',
+   winEraLabel:'所证心境',
+   arriveVerb:'坐忘',   /* 从上一周目进入本世的按钮动词 */
+   wallKick:'SILENT STELE',
+   wallPraise:[
+     ['坐到最后的人，世上没有几个。','你把「我」都放下了，才走到这一屏——这里容不下太多名字。'],
+     ['万中无一，说的就是现在。','心魔问过你很多次，你一次都没答错——这面墙记得住这样的人。'],
+     ['不是所有人，都敢把「我」放下。','二十一境坐穿，你还是你，只是不再需要被记住——那就让这面墙替你记着。']
+   ],
+   endNote:'心念散尽、退到心境最底处，沉沦，本世重来。',
+   winKick:'CYCLE III · 无 我', winTitle:'无我境', winSub:'见 山 还 是 山',
+   overKick:'SINKING · 沉沦', overTitle:'沉沦', overSub:'连自己都懒得看了',
+   secs:30, riftSecs:15, eras:ERA_C2}
+];
+let CYCLE = 0;
+let TM = CYCLES[0];
+let ERAS = TM.eras;
+const GEN_DAYS = 5;        // 入无我境后闭关天数，到期方可转世
 const START_ERA = 9;
 const MAX_ERA = ERAS.length - 1;
-const SECS_NORMAL = 120;   // 常规范式：每题秒数
-const SECS_RIFT = 60;      // 时空裂缝：每题秒数减半
+function secsNormal(){ return TM.secs; }                    // 常规：三个周目递减 60 / 40 / 30
+function secsRift(){ return TM.riftSecs || Math.round(TM.secs / 2); } // 裂缝：30 / 20 / 15
 const RIFT_TIERS = [4];    // 裂缝专用高难题档（高考/拔高风格）
 function pad2(n){return String(n).padStart(2,'0')}
 
@@ -724,6 +1374,56 @@ const MUSIC = [
   {r:262, sc:[0,2,4,5,7,9,11], bpm:74, w:'sine', cut:3200, dens:.50, dv:.046}
 ];
 
+/* 二周目：修仙记 · 五声音阶（宫调），道行越深声越清，道祖处反而转空 */
+const MUSIC_C1 = [
+  {r:49,  sc:[0,3,5,7,10], bpm:32, w:'sine',     cut:420,  dens:.16, dv:.050},
+  {r:55,  sc:[0,2,4,7,9],  bpm:36, w:'sine',     cut:460,  dens:.18, dv:.048},
+  {r:58,  sc:[0,2,4,7,9],  bpm:38, w:'triangle', cut:520,  dens:.20, dv:.048},
+  {r:62,  sc:[0,2,5,7,9],  bpm:40, w:'sine',     cut:560,  dens:.22, dv:.046},
+  {r:65,  sc:[0,2,4,7,9],  bpm:42, w:'sine',     cut:620,  dens:.24, dv:.046},
+  {r:73,  sc:[0,2,4,7,9],  bpm:44, w:'sine',     cut:700,  dens:.26, dv:.044},
+  {r:82,  sc:[0,2,4,7,9],  bpm:46, w:'triangle', cut:780,  dens:.28, dv:.044},
+  {r:87,  sc:[0,2,5,7,9],  bpm:48, w:'sine',     cut:860,  dens:.30, dv:.042},
+  {r:98,  sc:[0,2,4,7,9],  bpm:50, w:'sine',     cut:940,  dens:.32, dv:.042},
+  {r:110, sc:[0,2,4,7,9],  bpm:52, w:'sine',     cut:1020, dens:.33, dv:.042},
+  {r:123, sc:[0,2,4,7,9],  bpm:54, w:'triangle', cut:1120, dens:.34, dv:.040},
+  {r:131, sc:[0,2,5,7,9],  bpm:56, w:'sine',     cut:1240, dens:.36, dv:.040},
+  {r:147, sc:[0,2,4,7,9],  bpm:58, w:'sine',     cut:1380, dens:.38, dv:.038},
+  {r:165, sc:[0,2,4,7,9],  bpm:60, w:'triangle', cut:1520, dens:.40, dv:.038},
+  {r:175, sc:[0,2,5,7,9],  bpm:62, w:'sine',     cut:1660, dens:.42, dv:.036},
+  {r:196, sc:[0,2,4,7,9],  bpm:64, w:'sine',     cut:1800, dens:.44, dv:.036},
+  {r:220, sc:[0,2,4,7,9],  bpm:70, w:'triangle', cut:2000, dens:.46, dv:.034},
+  {r:233, sc:[0,1,5,7,8],  bpm:78, w:'square',   cut:2200, dens:.44, dv:.034},
+  {r:247, sc:[0,2,4,7,9],  bpm:52, w:'sine',     cut:2400, dens:.30, dv:.038},
+  {r:262, sc:[0,2,4,7,9],  bpm:56, w:'triangle', cut:2500, dens:.32, dv:.036},
+  {r:330, sc:[0,2,4,7,9,12], bpm:46, w:'sine',   cut:2600, dens:.24, dv:.040}
+];
+
+/* 三周目：无我篇 · 极简钟磬，越往上越慢越稀，无我境只剩几粒泛音 */
+const MUSIC_C2 = [
+  {r:49,  sc:[0,3,7],      bpm:26, w:'sine', cut:300,  dens:.10, dv:.050},
+  {r:55,  sc:[0,3,7],      bpm:27, w:'sine', cut:320,  dens:.10, dv:.050},
+  {r:58,  sc:[0,3,7],      bpm:28, w:'sine', cut:340,  dens:.11, dv:.048},
+  {r:62,  sc:[0,2,7],      bpm:28, w:'sine', cut:360,  dens:.11, dv:.048},
+  {r:65,  sc:[0,2,7],      bpm:29, w:'sine', cut:380,  dens:.12, dv:.048},
+  {r:73,  sc:[0,2,7],      bpm:30, w:'sine', cut:420,  dens:.12, dv:.046},
+  {r:82,  sc:[0,2,7],      bpm:30, w:'sine', cut:440,  dens:.12, dv:.046},
+  {r:87,  sc:[0,2,7],      bpm:31, w:'sine', cut:460,  dens:.13, dv:.046},
+  {r:98,  sc:[0,2,7],      bpm:32, w:'sine', cut:500,  dens:.13, dv:.044},
+  {r:110, sc:[0,2,7],      bpm:32, w:'sine', cut:540,  dens:.13, dv:.044},
+  {r:123, sc:[0,2,7],      bpm:33, w:'sine', cut:580,  dens:.14, dv:.044},
+  {r:131, sc:[0,2,7],      bpm:34, w:'sine', cut:620,  dens:.14, dv:.042},
+  {r:147, sc:[0,2,7],      bpm:35, w:'sine', cut:680,  dens:.15, dv:.042},
+  {r:165, sc:[0,2,7],      bpm:36, w:'sine', cut:720,  dens:.15, dv:.040},
+  {r:175, sc:[0,2,7],      bpm:37, w:'sine', cut:780,  dens:.16, dv:.040},
+  {r:196, sc:[0,2,7],      bpm:38, w:'sine', cut:840,  dens:.16, dv:.038},
+  {r:220, sc:[0,2,7],      bpm:39, w:'sine', cut:900,  dens:.17, dv:.038},
+  {r:233, sc:[0,2,7],      bpm:40, w:'sine', cut:960,  dens:.17, dv:.036},
+  {r:247, sc:[0,2,7],      bpm:42, w:'sine', cut:1040, dens:.18, dv:.036},
+  {r:262, sc:[0,2,7],      bpm:44, w:'sine', cut:1100, dens:.18, dv:.034},
+  {r:262, sc:[0,7,12],     bpm:30, w:'sine', cut:1200, dens:.09, dv:.040}
+];
+
 const Music = {
   era:9, cfg:MUSIC[9], timer:0, next:0, drone:null, muted:false, step:0,
   get ctx(){ return Sfx.ctx; },
@@ -740,7 +1440,8 @@ const Music = {
     }, 150);
   },
   setEra(i, instant){
-    const c = MUSIC[Math.max(0, Math.min(MUSIC.length-1, i))];
+    const bank = [MUSIC, MUSIC_C1, MUSIC_C2][CYCLE] || MUSIC;
+    const c = bank[Math.max(0, Math.min(bank.length-1, i))];
     if(!c) return;
     const changed = c !== this.cfg;
     this.cfg = c; this.era = i;
@@ -846,13 +1547,20 @@ const Music = {
     const e = ERAS[eraIdx];
     mood = e.mood;
     accent = hex2rgb(e.a);
-    density = ({void:.15, chaos:.4, bang:.6, dark:.25, smoke:.35, steam:.35}[mood]) || .75;
-    speed = ({void:.2, dark:.3, warp:1.6, bang:1, spark:.9}[mood]) || .55;
+    density = ({void:.15, chaos:.4, bang:.6, dark:.25, smoke:.35, steam:.35,
+      ash:.4, ink:.28, mist:.24, qi:.6, sword:.3}[mood]) || .75;
+    speed = ({void:.2, dark:.3, warp:1.6, bang:1, spark:.9,
+      ash:.4, ink:.15, mist:.2, qi:.5, sword:1.5}[mood]) || .55;
     seed();
   }
 
   function spawn(){
     const W = w, H = h, m = mood;
+    if(m==='qi') return {t:'qi', x:R()*W, y:H+8, vx:(R()-.5)*.2, vy:-(.25+R()*.5), r:R()*1.6+.7, ph:R()*6.28};
+    if(m==='mist') return {t:'mist', x:R()*W, y:R()*H, vx:(R()>.5?1:-1)*(.06+R()*.12), vy:(R()-.5)*.04, r:R()*46+30, ph:R()*6.28};
+    if(m==='sword') return {t:'sword', x:R()*W, y:R()*H*.9, ang:-.5+R()*1.1, v:3.2+R()*3, len:26+R()*40, life:1};
+    if(m==='ink') return {t:'ink', x:R()*W, y:R()*H, vx:(R()-.5)*.1, vy:(R()-.5)*.08, r:R()*40+24, ph:R()*6.28};
+    if(m==='ash') return {t:'ash', x:R()*W, y:-8, vx:(R()-.5)*.15, vy:.15+R()*.3, r:R()*1.4+.5, ph:R()*6.28};
     if(m==='ember') return {t:'ember', x:R()*W, y:H+8, vx:(R()-.5)*.3, vy:-(.5+R()*1.1), r:R()*2+.8, life:1};
     if(m==='snow') return {t:'snow', x:R()*W, y:-8, vx:(R()-.5)*.4, vy:.35+R()*.7, r:R()*2.2+1, ph:R()*6.28};
     if(m==='spore') return {t:'spore', x:R()*W, y:H+8, vx:(R()-.5)*.2, vy:-(.18+R()*.4), r:R()*2.4+1.2, ph:R()*6.28};
@@ -875,7 +1583,8 @@ const Music = {
     return {t:'dust', x:R()*W, y:R()*H, vx:(R()-.5)*.25, vy:(R()-.5)*.2, r:R()*1.5+.5, ph:R()*6.28};
   }
   const MAXP = {ember:60, snow:70, spore:36, leaf:30, fly:26, pollen:40, smoke:14, spark:12, code:22,
-    streak:16, wave:36, shoot:3, in:44, out:60, aurora:3, glyph:26, stardust:40, dust:30};
+    streak:16, wave:36, shoot:3, in:44, out:60, aurora:3, glyph:26, stardust:40, dust:30,
+    qi:34, mist:9, sword:7, ink:10, ash:40};
 
   function drawParts(dt){
     const want = MAXP[mood] || 30;
@@ -919,11 +1628,49 @@ const Music = {
         ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.ph*2);
         ctx.fillStyle=`rgba(200,220,120,${(.3+.2*Math.sin(p.ph*3)).toFixed(2)})`;
         ctx.fillRect(-p.r*dpr,-p.r*dpr*.4,p.r*dpr*2,p.r*dpr*.8);ctx.restore();
+      } else if(p.t==='qi'){
+        p.x+=p.vx*dt*.06+Math.sin(p.ph*1.8)*.35; p.y+=p.vy*dt*.06;
+        if(p.y<-10){parts[i]=spawn();continue}
+        const g=.45+.45*Math.sin(p.ph*2.2);
+        ctx.fillStyle=`rgba(${ar},${ag},${ab},${(.3*g+.08).toFixed(2)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr*(0.9+.4*g),0,6.283);ctx.fill();
+        ctx.fillStyle=`rgba(${ar},${ag},${ab},${(.12*g).toFixed(2)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y+8*dpr,p.r*dpr*.6,0,6.283);ctx.fill();
+      } else if(p.t==='mist'){
+        p.x+=p.vx*dt*.06; p.y+=p.vy*dt*.06;
+        if(p.x<-120||p.x>w+120){parts[i]=spawn();continue}
+        const g=.6+.4*Math.sin(p.ph*.9);
+        ctx.fillStyle=`rgba(${ar},${ag},${ab},${(.045*g).toFixed(3)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr,0,6.283);ctx.fill();
+        ctx.fillStyle=`rgba(${ar},${ag},${ab},${(.03*g).toFixed(3)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr*1.5,0,6.283);ctx.fill();
+      } else if(p.t==='sword'){
+        p.x+=Math.cos(p.ang)*p.v*dt*.06; p.y+=Math.sin(p.ang)*p.v*dt*.06;
+        p.life-=dt*.0011;
+        if(p.life<=0||p.x<-60||p.x>w+60||p.y<-60||p.y>h+60){parts[i]=spawn();continue}
+        const grd=ctx.createLinearGradient(p.x,p.y,p.x-Math.cos(p.ang)*p.len*dpr,p.y-Math.sin(p.ang)*p.len*dpr);
+        grd.addColorStop(0,`rgba(255,255,255,${(p.life*.75).toFixed(2)})`);
+        grd.addColorStop(1,`rgba(${ar},${ag},${ab},0)`);
+        ctx.strokeStyle=grd;ctx.lineWidth=dpr*1.1;ctx.beginPath();
+        ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-Math.cos(p.ang)*p.len*dpr,p.y-Math.sin(p.ang)*p.len*dpr);ctx.stroke();
+      } else if(p.t==='ink'){
+        p.x+=p.vx*dt*.06; p.y+=p.vy*dt*.06; p.ph+=dt*.0004;
+        if(p.x<-100||p.x>w+100||p.y<-100||p.y>h+100){parts[i]=spawn();continue}
+        const g=.7+.3*Math.sin(p.ph*2);
+        ctx.fillStyle=`rgba(206,220,236,${(.05*g).toFixed(3)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr,0,6.283);ctx.fill();
+        ctx.fillStyle=`rgba(206,220,236,${(.028*g).toFixed(3)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr*1.7,0,6.283);ctx.fill();
+      } else if(p.t==='ash'){
+        p.x+=p.vx*dt*.06+Math.sin(p.ph*1.4)*.2; p.y+=p.vy*dt*.06;
+        if(p.y>h+8){parts[i]=spawn();continue}
+        ctx.fillStyle=`rgba(212,222,234,${(.22+.16*Math.sin(p.ph*2.6)).toFixed(2)})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*dpr*.75,0,6.283);ctx.fill();
       } else if(p.t==='fly'){
         p.x+=p.vx*dt*.06; p.y+=p.vy*dt*.06;
         if(p.x<0||p.x>w||p.y<h*.25||p.y>h){parts[i]=spawn();continue}
         const g=Math.max(0,Math.sin(p.ph*2.2));
-        ctx.fillStyle=`rgba(255,200,120,${(g*.8).toFixed(2)})`;
+        ctx.fillStyle=`rgba(${ar},${ag},${ab},${(g*.8).toFixed(2)})`;
         ctx.beginPath();ctx.arc(p.x,p.y,(p.r+g*1.6)*dpr,0,6.283);ctx.fill();
       } else if(p.t==='pollen'){
         p.x+=p.vx*dt*.06+Math.sin(p.ph*1.4)*.2; p.y+=p.vy*dt*.06;
@@ -1059,12 +1806,16 @@ let S = null;
 let timerHandle = 0, timerState = null;
 
 const $ = id => document.getElementById(id);
-const TITLE_BASE = '时空纪元 · 知识闯关';
 const show = id => {
+  if(id !== 's-seclu' && typeof secluTimer !== 'undefined' && secluTimer){ clearInterval(secluTimer); secluTimer = null; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $(id).classList.add('active');
-  const idle = id === 's-title' || id === 's-subject' || !S || !S.sub;
-  document.title = idle ? TITLE_BASE : subjectById(S.sub).name + ' · 时空纪元';
+  const idle = id === 's-title' || id === 's-subject';
+  const who = (id === 's-seclu' || id === 's-rebirth') ? subjectById(pickId).name : '';
+  if(idle){ document.title = '时空纪元 · 知识闯关'; }
+  else if(who){ document.title = who + ' · 无我篇'; }
+  else if(S && S.sub){ document.title = subjectById(S.sub).name + ' · ' + TM.name; }
+  else { document.title = TM.name + ' · 知识闯关'; }
 };
 
 function qCountFor(era){
@@ -1092,20 +1843,101 @@ function subjectById(id){
 function bankFor(sub){
   return sub === 'mix' ? QUESTIONS : QUESTIONS.filter(q => q.sub === sub);
 }
-function bestFor(sub){
+function bestKey(sub, cycle){
+  const c = (cycle === undefined ? CYCLE : cycle);
+  return c === 0 ? ('chrono_best_' + sub) : ('chrono_best_c' + c + '_' + sub);
+}
+function bestFor(sub, cycle){
+  const c = (cycle === undefined ? CYCLE : cycle);
   try{
-    let v = localStorage.getItem('chrono_best_' + sub);
-    if(v === null && sub === 'geo') v = localStorage.getItem('chrono_best');
+    let v = localStorage.getItem(bestKey(sub, c));
+    if(v === null && c === 0 && sub === 'geo') v = localStorage.getItem('chrono_best');
+    if(v === null) return -1;
     const n = Number(v);
     return isNaN(n) ? -1 : n;
   }catch(e){ return -1; }
+}
+function maxEraOf(c){ return CYCLES[c].eras.length - 1; }
+/* 通关标记：必须真正打赢最高境那一关才算数。
+   只「到达」最高境（升境/穿越跳上去）但没打完就退出，不能解锁下一周目 */
+function winKey(sub, c){
+  return 'chrono_win_c' + c + '_' + sub;
+}
+function winFlag(sub, c){
+  try{ return localStorage.getItem(winKey(sub, c)) === '1'; }catch(e){ return false; }
+}
+function setWinFlag(sub, c){
+  try{ localStorage.setItem(winKey(sub, c), '1'); }catch(e){}
+}
+function clearedCycle(sub, c){
+  return bestFor(sub, c) >= maxEraOf(c) && winFlag(sub, c);
+}
+
+/* ---- 世数：每个科目各自轮回，互不影响 ---- */
+function genFor(sub){
+  try{ return Math.max(1, Number(localStorage.getItem('chrono_gen_' + sub)) || 1); }catch(e){ return 1; }
+}
+function setGen(sub, n){
+  try{ localStorage.setItem('chrono_gen_' + sub, String(Math.max(1, n))); }catch(e){}
+}
+/* ---- 该科目现在该走哪一周目：由进度单向推进，不可手选 ---- */
+function cycleForSub(sub){
+  for(let c = 0; c < CYCLES.length; c++){
+    if(!clearedCycle(sub, c)) return c;
+  }
+  return CYCLES.length - 1;   // 三周目也通了 → 停在无我境，等闭关到期
+}
+function reachedWuwo(sub){ return clearedCycle(sub, 2); }
+
+/* ---- 闭关：本地缓存服务端解锁时间，离线也能读 ---- */
+function lockUntil(sub){
+  try{ return Number(localStorage.getItem('chrono_lock_' + sub)) || 0; }catch(e){ return 0; }
+}
+function setLockUntil(sub, ts){
+  try{
+    if(ts) localStorage.setItem('chrono_lock_' + sub, String(ts));
+    else localStorage.removeItem('chrono_lock_' + sub);
+  }catch(e){}
+}
+function inSeclusion(sub){
+  if(!reachedWuwo(sub)) return false;
+  const t = lockUntil(sub);
+  return t > Date.now();
+}
+
+function fmtLeft(ms){
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor(ms % 86400000 / 3600000);
+  return {d, h, m: Math.floor(ms % 3600000 / 60000)};
+}
+
+/* 一张卡片要说清：这是第几世、走到哪条道途、什么状态 */
+function subBadge(id){
+  const cyc = cycleForSub(id);
+  const gen = genFor(id);
+  const name = CYCLES[cyc].name;
+  const cls = ['w0', 'w1', 'w2'][cyc] || 'wx';
+  if(reachedWuwo(id)){
+    const left = lockUntil(id) - Date.now();
+    if(left > 0){
+      const t = fmtLeft(left);
+      return {tag: name, cls, gen, state: '闭关 · ' + Math.max(1, Math.ceil(left / 86400000)) + ' 天', lock: true, seal: true};
+    }
+    return {tag: name, cls, gen, state: '可转世', lock: true, seal: false};
+  }
+  const best = bestFor(id, cyc);
+  if(best < 0 && cyc === 0){
+    return {tag: '未启程', cls: 'wx', gen: 0, state: '未开始', lock: false, seal: false, fresh: true};
+  }
+  const era = best >= START_ERA ? CYCLES[cyc].eras[Math.min(best, maxEraOf(cyc))].n : '尚未开始';
+  return {tag: name, cls, gen, state: era, lock: false, seal: false, fresh: false};
 }
 
 function renderSubjectPicker(){
   const list = $('subList');
   const ready = readySubjects();
   const cards = ready.map(s => ({s, off:false}));
-  cards.push({s: {...MIX, count: QUESTIONS.length}, off: ready.length < 2});
+  cards.push({s: {...MIX, count: (QUESTIONS || []).length}, off: ready.length < 2});
   SUBJECTS.filter(s => s.count === 0).forEach(s => cards.push({s, off:true}));
 
   if(!cards.some(c => c.s.id === pickId && !c.off)){
@@ -1113,29 +1945,54 @@ function renderSubjectPicker(){
   }
 
   list.innerHTML = cards.map(({s, off}) => {
-    const best = bestFor(s.id);
-    const st = off
-      ? (s.count === 0 ? '建设中' : '需 2 科')
-      : (best >= START_ERA ? ERAS[Math.min(best, MAX_ERA)].n : '未开始');
-    const cnt = s.count ? s.count + ' 题' : '暂无题库';
-    return `<button class="sub-card${s.id === pickId && !off ? ' on' : ''}${off ? ' off' : ''}" data-id="${s.id}" data-off="${off ? 1 : 0}">
+    if(off){
+      const st = s.count === 0 ? '建设中' : '需 2 科';
+      return `<button class="sub-card off" data-id="${s.id}" data-off="1">
+        <span class="ic">${s.short}</span>
+        <span class="tx"><b class="nm">${s.name}</b><span class="ds">${s.desc}</span></span>
+        <span class="st">${st}</span>
+      </button>`;
+    }
+    const b = subBadge(s.id);
+    const meta = b.fresh
+      ? `<i class="wtag wx">未启程</i>尚无记录`
+      : `<i class="wtag ${b.cls}">${b.tag}</i>第 ${b.gen} 世`;
+    return `<button class="sub-card${b.lock ? ' seal' : ''}" data-id="${s.id}" data-off="0" data-lock="${b.lock ? 1 : 0}" title="${s.desc} · ${s.count} 题">
       <span class="ic">${s.short}</span>
-      <span class="tx"><b class="nm">${s.name}</b><span class="ds">${s.desc} · ${cnt}</span></span>
-      <span class="st">${st}</span>
+      <span class="tx"><b class="nm">${s.name}</b><span class="ds">${meta}</span></span>
+      <span class="st${b.lock ? ' lock' : ''}">${b.state}</span>
     </button>`;
   }).join('');
 
   list.querySelectorAll('.sub-card').forEach(el => {
-    el.onclick = () => {
+    el.onclick = async () => {
       if(el.dataset.off === '1'){ Sfx.bad(); return; }
-      pickId = el.dataset.id;
-      try{ localStorage.setItem('chrono_last_sub', pickId); }catch(e){}
-      beginRun(pickId);
+      const id = el.dataset.id;
+      pickId = id;
+      try{ localStorage.setItem('chrono_last_sub', id); }catch(e){}
+      if(el.dataset.lock === '1'){
+        if(reachedWuwo(id) && lockUntil(id) > Date.now()){ showSeclusion(id); }
+        else { showRebirth(id); }
+        return;
+      }
+      if(!QUESTIONS){
+        /* 题库尚未就绪：等待预取完成（带重试），失败则提示后留在原页 */
+        el.style.opacity = '.6';
+        const ok = await ensureBank();
+        el.style.opacity = '';
+        if(!ok){ flash('flash-red'); return; }
+        renderSubjectPicker();
+      }
+      beginRun(id);
     };
   });
 }
 
 function openSubjects(){
+  document.documentElement.dataset.cycle = String(CYCLE);
+  $('subKicker').textContent = 'SELECT SUBJECT';
+  $('subTitle').textContent = '选择科目';
+  $('subDesc').innerHTML = '每科一条道途，进度各自独立。周目随进度自动推进，<b>不能手动切换</b>。';
   renderSubjectPicker();
   show('s-subject');
 }
@@ -1158,7 +2015,7 @@ function pickQuestion(era, forceDiff){
   return q;
 }
 
-/* 裂缝专用抽题：优先高考/拔高风格（d=4），并尽量让三题的题型互不重复 */
+/* 裂缝专用抽题：优先高考/拔高风格（d=4），并尽量让六题的题型互不重复 */
 function pickRiftQuestion(takenTopics){
   const base = bankFor(S.sub);
   const topics = takenTopics || new Set();
@@ -1176,7 +2033,7 @@ function pickRiftQuestion(takenTopics){
 
 function newGame(sub){
   S = {
-    sub: sub || pickId,
+    sub: sub || pickId, cycle: CYCLE,
     era: START_ERA, cores: 0, score: 0, used: new Set(),
     passes: 0, travels: 0, travelWins: 0,
     total: 0, correct: 0, streak: 0, bestStreak: 0,
@@ -1187,18 +2044,101 @@ function newGame(sub){
 }
 
 /* ---------------- 主题 ---------------- */
+function hexMix(h1,h2,t){
+  const p = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const a = p(h1), b = p(h2);
+  return '#' + a.map((v,i) => Math.round(v + (b[i]-v)*t).toString(16).padStart(2,'0')).join('');
+}
+/* 周目给纪元色再染一层：修仙偏青蓝，无我近乎去色，保持一点纪元底色 */
+function eraTint(hex){
+  if(CYCLE === 1) return hexMix(hex, '#7fe3ff', .74);
+  if(CYCLE === 2) return hexMix(hex, '#c6d2de', .8);
+  return hex;
+}
 function applyEra(era){
   const e = ERAS[Math.max(0, era)];
   const root = document.documentElement;
-  root.style.setProperty('--accent', e.a);
-  root.style.setProperty('--accent2', e.a2);
-  root.style.setProperty('--accent-soft', e.a + '2e');
+  root.style.setProperty('--accent', eraTint(e.a));
+  root.style.setProperty('--accent2', eraTint(e.a2));
+  root.style.setProperty('--accent-soft', eraTint(e.a) + '2e');
   document.body.style.background = e.bg;
   const meta = document.querySelector('meta[name=theme-color]');
   if(meta) meta.setAttribute('content', e.bg);
   if(window.__atmos) window.__atmos.setEra(Math.max(0, era));
   if(typeof Music !== 'undefined') Music.setEra(Math.max(0, era));
   syncSndBtn();
+}
+
+/* ---------------- 周目 ---------------- */
+function cycleText(){
+  if(CYCLE === 0){
+    return {
+      badge:'CHRONO VOYAGER',
+      tag:'你从石器时代的火种旁醒来。<br>每答对一关，时间向前推进一个纪元；<br>任何一次失手，都会被抛回上一个时代。',
+      start:'启动跃迁', kicker:'SELECT TIMELINE', title:'选择时间线',
+      desc:'点击卡片即刻跃迁。所有科目共用同一条纪元阶梯，进度各自独立记录。<br>混合 = 多科目混抽，更适合期末总复习。',
+      enter:'进入纪元', best:'最高境界'
+    };
+  }
+  if(CYCLE === 1){
+    return {
+      badge:'IMMORTAL PATH',
+      tag:'你在凡尘的清晨醒来，体内空无一物。<br>每答对一关，道行向前推进一重境界；<br>任何一次失手，都会跌回上一重天。',
+      start:'踏上道途', kicker:'CHOOSE YOUR DAO', title:'选择道统',
+      desc:'点击卡片即刻入道。所有科目共用同一条境界阶梯，道行各自独立记录。<br>混合 = 多科混抽，适合总复习。',
+      enter:'迈入境界', best:'最高道行'
+    };
+  }
+  return {
+    badge:'SILENT MIND',
+    tag:'你在一个没有风的清晨坐下，什么也没带。<br>每答对一关，心念沉静一层；<br>任何一次失手，都会退回上一层。<br>走到无我境，就该歇一歇了。',
+    start:'入定', kicker:'SIT AND FORGET', title:'选择心相',
+    desc:'点击卡片即刻入定。所有科目共用同一条心境阶梯，心念各自独立记录。<br>混合 = 多科混抽，适合总复习。',
+    enter:'入此境', best:'最高心境'
+  };
+}
+
+function helpText(){
+  const t = TM, half = secsRift();
+  return `开局先选择${t.word}：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条${t.stage}阶梯，进度独立记录。<br><br>
+  题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
+  常规关卡每题限时 ${t.secs} 秒，超时算错；答对后自动进入下一题。<br><br>
+  答错时若持有<b>${t.core}</b>，可选择「${t.coreUse}」：抹去这次失误、换一道同难度新题重答（${t.core} -1）；选择放弃则${t.fall}一个${t.stage}。每通过一关获得一枚，最多 3 枚。<br><br>
+  每通过两关开启一次${t.rift}：6 道高考风格的拔高题，每题限时 ${half} 秒，六题题型互不重复，${t.core}失效。<b>${t.rift}只承受得起两次偏离</b>：全对连升两级；错一题不进不退，可继续把余下题目答完；错第二题时${t.rift}即刻崩裂，直接连坠两级。<br><br>
+  ${t.endNote}`;
+}
+
+function renderCycleUI(){
+  /* 首页与选科页不预设周目，保持中性 */
+  $('titleBadge').textContent = 'CHRONO VOYAGER';
+  $('titleMain').firstChild.nodeValue = '时空纪元';
+  $('titleSub').textContent = '知识闯关 · 三重道途';
+  $('titleTag').innerHTML = '从石器时代的火种旁醒来，走过仙途，最后坐到无我。<br>每答对一关，向前一步；<br>任何一次失手，都会被退回上一层。';
+  $('btnStart').textContent = '选 择 科 目';
+  $('briefCoreLabel').textContent = TM.core;
+  $('resCoreLabel').textContent = TM.core;
+  $('btnEnter').textContent = cycleText().enter;
+  $('btnTravel').textContent = TM.riftBtn;
+  $('riftKicker').textContent = TM.riftKick;
+  $('riftTitle').textContent = TM.riftTitle;
+  $('riftDesc').innerHTML = TM.riftDesc;
+  $('riftUpLabel').textContent = TM.riftUp;
+  $('riftSecs').textContent = secsRift();
+  $('btnTravelGo').textContent = TM.riftGo;
+  $('btnTravelNo').textContent = TM.riftNo;
+  $('helpBody').innerHTML = helpText();
+
+  if($('s-subject').classList.contains('active')) renderSubjectPicker();
+}
+
+/* 周目不再由玩家切换，只由科目的进度推进 */
+function applyCycle(n){
+  CYCLE = Math.max(0, Math.min(CYCLES.length - 1, n));
+  TM = CYCLES[CYCLE]; ERAS = TM.eras;
+  document.documentElement.dataset.cycle = String(CYCLE);
+  renderCycleUI();
+  applyEra(S ? S.era : START_ERA);
+  return true;
 }
 
 /* ---------------- 进度条 ---------------- */
@@ -1212,6 +2152,22 @@ function renderHud(){
   $('scoreVal').textContent = S.score;
   const cores = $('cores');
   cores.innerHTML = '';
+  if(S.mode === 'travel'){
+    /* 穿越中：冷冻核心失效，改为显示「裂痕」——两次就崩 */
+    cores.classList.add('rift-meter');
+    const n = S.travelWrong || 0;
+    const lab = document.createElement('span');
+    lab.className = 'rift-lab' + (n >= 2 ? ' hot' : '');
+    lab.textContent = n >= 2 ? '崩裂' : '裂痕';
+    cores.appendChild(lab);
+    for(let i=0;i<2;i++){
+      const d = document.createElement('div');
+      d.className = 'rift-pip' + (i < n ? ' fill' : '');
+      cores.appendChild(d);
+    }
+    return;
+  }
+  cores.classList.remove('rift-meter');
   if(S.cores > 0){
     const ico = document.createElement('span');
     ico.className = 'core-ico';
@@ -1247,8 +2203,13 @@ function transit(text, sub){
 }
 
 /* ---------------- 关卡流程 ---------------- */
-function beginRun(sub){
+function beginRun(sub, forceCycle){
+  const c = (forceCycle == null) ? cycleForSub(sub) : forceCycle;
+  CYCLE = Math.max(0, Math.min(CYCLES.length - 1, c));
+  TM = CYCLES[CYCLE]; ERAS = TM.eras;
+  document.documentElement.dataset.cycle = String(CYCLE);
   newGame(sub);
+  renderCycleUI();
   applyEra(S.era);
   showBrief();
 }
@@ -1256,20 +2217,20 @@ function beginRun(sub){
 function showBrief(){
   applyEra(S.era);
   const era = ERAS[S.era];
-  $('briefKicker').textContent = 'ERA ' + pad2(S.era) + ' · ' + subjectById(S.sub).name;
+  $('briefKicker').textContent = TM.kick + ' ' + pad2(S.era) + ' · ' + subjectById(S.sub).name;
   $('briefName').textContent = era.n;
   $('briefSub').textContent = era.s;
   $('briefCount').textContent = qCountFor(S.era);
-  $('briefTime').textContent = SECS_NORMAL;
+  $('briefTime').textContent = secsNormal();
   $('briefCores').textContent = S.cores;
   $('briefHint').textContent = S.cores > 0
-    ? `你持有 ${S.cores} 枚冷冻核心：答错时可冻结时间线、抹去这次失误并换一道新题重答；用尽后答错即坠落一个时代。`
-    : '当前没有冷冻核心：任何一次答错或超时，都会让你坠落一个时代。';
+    ? `你持有 ${S.cores} 枚${TM.core}：答错时可${TM.coreHow}；用尽后答错即${TM.fall}一个${TM.stage}。`
+    : `当前没有${TM.core}：任何一次答错或超时，都会让你${TM.fall}一个${TM.stage}。`;
   show('s-brief');
 }
 
 function buildLevel(hard){
-  const n = hard ? 3 : qCountFor(S.era);
+  const n = hard ? 6 : qCountFor(S.era);
   S.queue = []; S.qi = 0; S.levelTotal = n; S.levelRight = 0;
   const topics = new Set();
   for(let i = 0; i < n; i++){
@@ -1313,7 +2274,7 @@ function renderQuestion(){
   });
   $('feedback').classList.remove('show');
   clearFbOffset();
-  startTimer(S.mode === 'travel' ? SECS_RIFT : SECS_NORMAL);
+  startTimer(S.mode === 'travel' ? secsRift() : secsNormal());
 }
 
 function startTimer(seconds){
@@ -1353,6 +2314,7 @@ function timeUp(){
   markCorrect(q);
   S.total++;
   S.streak = 0;
+  if(S.mode === 'travel') S.travelAnswered++;
   handleWrong(q, '时间耗尽，时间线发生了偏移。');
 }
 
@@ -1372,6 +2334,7 @@ function answer(idx, btn, ev){
   const q = S.queue[S.qi];
   lockOptions();
   S.total++;
+  if(S.mode === 'travel') S.travelAnswered++;
   if(idx === q.a){
     S.correct++; S.levelRight++; S.streak++;
     S.bestStreak = Math.max(S.bestStreak, S.streak);
@@ -1402,18 +2365,34 @@ function handleWrong(q, lead){
   wrap.classList.add('shake');
   setTimeout(() => wrap.classList.remove('shake'), 450);
   if(navigator.vibrate) navigator.vibrate([30, 40, 30]);
+  if(S.mode === 'travel'){
+    /* 穿越中核心失效：答错不再立刻退出，而是记一次裂痕。
+       第一道裂痕：继续作答，结算时退一级；第二道裂痕：裂隙崩裂，当场结算连退两级。 */
+    S.travelWrong = Math.min(2, (S.travelWrong || 0) + 1);
+    flash('flash-red');
+    renderHud();
+    if(S.travelWrong >= 2){
+      showFeedback(false, q, lead + ' ' + TM.riftBreakSub, TM.riftBreak, true, false);
+      $('btnNext').textContent = TM.riftCollapse;
+      $('btnNext').onclick = () => travelResult();
+      return;
+    }
+    showFeedback(false, q, lead + ' ' + TM.riftHurtSub, TM.riftHurt, false, false);
+    $('btnNext').textContent = (S.qi + 1 >= S.levelTotal) ? TM.riftLast : TM.riftNext;
+    return;
+  }
   if(S.cores > 0){
     flash('flash-red');
     showFeedback(false, q, lead + ' 你可以冻结时间线，抹去这次失误。', '时空偏移', false, true);
   } else {
     flash('flash-red');
-    showFeedback(false, q, lead + ' 冷冻核心已耗尽，时间线崩塌。', '时间线崩塌', true);
+    showFeedback(false, q, lead + ' ' + TM.core + '已耗尽，时间线崩塌。', '时间线崩塌', true);
   }
 }
 
 /* 主动使用冷冻核心：抹去本题失误，换一道同难度新题 */
 function useCore(){
-  if(S.cores <= 0) return;
+  if(S.cores <= 0 || S.mode === 'travel') return;   /* 穿越中核心不可用 */
   S.cores--;
   S.total = Math.max(0, S.total - 1);
   if(S.mode === 'travel'){
@@ -1516,25 +2495,25 @@ async function levelDone(){
   if(S.era >= MAX_ERA){ winGame(); return; }
   const won = S.era + 1;
   flash('flash-ok');
-  await transit('跃迁 → ' + ERAS[won].n, '时间线向前推进');
+  await transit(TM.jump + ' → ' + ERAS[won].n, TM.jumpSub);
   S.era = won;
   applyEra(S.era);
   saveBest(S.era);
   Sfx.up();
   renderRail();
-  $('resKicker').textContent = 'ERA CLEARED';
+  $('resKicker').textContent = TM.jumpKick;
   $('resIcon').textContent = '↑';
   $('resIcon').style.color = 'var(--ok)';
-  $('resTitle').textContent = '纪元跃迁';
+  $('resTitle').textContent = TM.jumpTitle;
   $('resSub').textContent = ERAS[S.era].n + ' · ' + ERAS[S.era].s;
   $('resAcc').textContent = S.levelRight + ' / ' + S.levelTotal;
   $('resCores').textContent = S.cores + ' 枚';
   $('resScore').textContent = S.score;
   const travelReady = S.passes % 2 === 0;
   $('btnTravel').style.display = travelReady ? 'block' : 'none';
-  $('btnResNext').textContent = '进入 ' + ERAS[S.era].n;
+  $('btnResNext').textContent = TM.enterVerb + ' ' + ERAS[S.era].n;
   $('btnResNext').onclick = showBrief;
-  $('btnTravel').onclick = () => { Sfx.travel(); $('riftSecs').textContent = SECS_RIFT; show('s-travel'); };
+  $('btnTravel').onclick = () => { Sfx.travel(); $('riftSecs').textContent = secsRift(); show('s-travel'); };
   show('s-result');
 }
 
@@ -1546,36 +2525,36 @@ async function levelFail(){
   const to = S.era - 1;
   S.cores = 0;
   if(to < 0){
-    await transit('坍缩 → 奇点', '宇宙收缩为一点');
+    await transit(TM.collapse + ' → ' + TM.collapseTo, TM.collapseSub);
     gameOver();
     return;
   }
-  await transit('坠落 → ' + ERAS[to].n, '时间线向后崩塌');
+  await transit(TM.fall + ' → ' + ERAS[to].n, TM.fallSub);
   S.era = to;
   applyEra(S.era);
   renderRail();
-  $('resKicker').textContent = 'TIMELINE COLLAPSE';
+  $('resKicker').textContent = TM.fallKick;
   $('resIcon').textContent = '↓';
   $('resIcon').style.color = 'var(--bad)';
-  $('resTitle').textContent = '坠入 ' + ERAS[S.era].n;
-  $('resSub').textContent = ERAS[S.era].s + ' · 冷冻核心清零，题目重新随机';
+  $('resTitle').textContent = TM.fallVerb + ' ' + ERAS[S.era].n;
+  $('resSub').textContent = ERAS[S.era].s + ' · ' + TM.core + '清零，题目重新随机';
   $('resAcc').textContent = S.levelRight + ' / ' + S.levelTotal;
   $('resCores').textContent = '0 枚';
   $('resScore').textContent = S.score;
   $('btnTravel').style.display = 'none';
-  $('btnResNext').textContent = '重新挑战 ' + ERAS[S.era].n;
+  $('btnResNext').textContent = TM.retryVerb + ERAS[S.era].n;
   $('btnResNext').onclick = showBrief;
   show('s-result');
 }
 
 /* ---------------- 时空穿越：抽卡式揭示 ---------------- */
-function riftReveal(targetEra, ok){
+function riftReveal(targetEra, ok, hold){
   return new Promise(resolve => {
     const ROW = 76;
     const overlay = document.createElement('div');
-    overlay.className = 'rift ' + (ok ? 'ok' : 'bad') + ' spinning';
+    overlay.className = 'rift ' + (ok ? 'ok' : (hold ? 'hold' : 'bad')) + ' spinning';
     overlay.innerHTML =
-      '<div class="rift-kicker">' + (ok ? 'SPACETIME RIFT · ASCEND' : 'SPACETIME RIFT · COLLAPSE') + '</div>' +
+      '<div class="rift-kicker">' + TM.riftKick + (ok ? ' · ASCEND' : (hold ? ' · UNRESOLVED' : ' · COLLAPSE')) + '</div>' +
       '<div class="rift-window" id="riftWin"><div class="rift-reel" id="riftReel"></div></div>' +
       '<div class="rift-verdict" id="riftVerdict"></div>' +
       '<div class="rift-sub" id="riftSub"></div>';
@@ -1604,14 +2583,16 @@ function riftReveal(targetEra, ok){
     setTimeout(() => {
       overlay.classList.remove('spinning');
       win.classList.add('landed');
-      verdict.textContent = ok ? '⇈ 飞升 · 连进两纪' : '↓ 坠落 · 退回出发时代';
+      verdict.textContent = ok ? TM.verdictUp : (hold ? TM.verdictHold : TM.verdictDown);
       verdict.classList.add('show');
-      sub.textContent = ok ? ('抵达 ' + ERAS[targetEra].n) : ('回到 ' + ERAS[targetEra].n);
+      sub.textContent = ok ? ('抵达 ' + ERAS[targetEra].n) : (hold ? ('仍在 ' + ERAS[targetEra].n) : ('回到 ' + ERAS[targetEra].n));
       sub.classList.add('show');
       if(ok){
         flash('flash-ok');
         Sfx.ascend();
         if(window.__atmos) window.__atmos.burst(.5, .48, window.__hex2rgb('#ffd76a'));
+      } else if(hold){
+        if(window.__atmos) window.__atmos.warp(1.2);
       } else {
         flash('flash-red');
         Sfx.descend();
@@ -1629,6 +2610,8 @@ function riftReveal(targetEra, ok){
 function startTravel(){
   S.travelFrom = S.era;
   S.mode = 'travel';
+  S.travelWrong = 0;
+  S.travelAnswered = 0;
   buildLevel(true);
   renderRail(); renderHud();
   show('s-play');
@@ -1636,12 +2619,16 @@ function startTravel(){
 }
 
 async function travelResult(){
-  const allRight = S.levelRight === 3;
+  const allRight = S.levelRight === S.levelTotal;
   S.travels++;
   const from = S.travelFrom;
-  const target = allRight ? Math.min(MAX_ERA, from + 2) : from;
+  const wrong = S.levelTotal - S.levelRight;
+  const collapse = !allRight && wrong >= 2;   /* 第二道裂痕：当场崩裂 */
+  const hold = !allRight && wrong === 1;      /* 只错一题：不进不退 */
+  const target = allRight ? Math.min(MAX_ERA, from + 2)
+               : collapse ? Math.max(0, from - 2) : from;
 
-  await riftReveal(target, allRight);
+  await riftReveal(target, allRight, hold);
 
   if(allRight){
     S.travelWins++;
@@ -1655,10 +2642,10 @@ async function travelResult(){
     $('resKicker').textContent = 'RIFT CONQUERED';
     $('resIcon').textContent = '⇈';
     $('resIcon').style.color = 'var(--gold)';
-    $('resTitle').textContent = '跃迁成功';
-    $('resSub').textContent = '裂隙承认了你：' + ERAS[S.era].n;
-  } else {
-    S.era = from;
+    $('resTitle').textContent = TM.riftOk;
+    $('resSub').textContent = TM.riftOkSub + ERAS[S.era].n;
+  } else if(collapse){
+    S.era = target;   /* 崩裂：连坠两级 */
     S.cores = 0;
     applyEra(S.era);
     Sfx.down();
@@ -1666,16 +2653,27 @@ async function travelResult(){
     $('resKicker').textContent = 'RIFT REJECTED';
     $('resIcon').textContent = '↺';
     $('resIcon').style.color = 'var(--bad)';
-    $('resTitle').textContent = '被裂隙抛回';
-    $('resSub').textContent = '你回到了出发时的 ' + ERAS[S.era].n + '，冷冻核心清零。';
+    $('resTitle').textContent = TM.riftFail;
+    $('resSub').textContent = TM.riftFailSub + ERAS[S.era].n + '，' + TM.core + '清零。';
+  } else {
+    /* 只错一题：裂隙不认也不吞，原地停留；核心不没收 */
+    S.era = target;
+    applyEra(S.era);
+    renderRail();
+    $('resKicker').textContent = TM.riftHoldKick;
+    $('resIcon').textContent = '≈';
+    $('resIcon').style.color = 'var(--ink-dim)';
+    $('resTitle').textContent = TM.riftHold;
+    $('resSub').textContent = TM.riftHoldSub + ERAS[S.era].n + '。';
   }
-  $('resAcc').textContent = S.levelRight + ' / 3';
+  $('resAcc').textContent = S.levelRight + ' / ' + Math.max(1, S.travelAnswered || S.levelTotal);
   $('resCores').textContent = S.cores + ' 枚';
   $('resScore').textContent = S.score;
   $('btnTravel').style.display = 'none';
   $('btnResNext').textContent = '继续';
   $('btnResNext').onclick = showBrief;
   S.mode = 'normal';
+  renderHud();
   show('s-result');
 }
 
@@ -1686,12 +2684,15 @@ function fmtTime(ms){
 }
 function saveBest(era){
   try{
-    const key = 'chrono_best_' + (S.sub || 'geo');
-    if(era > bestFor(S.sub || 'geo')) localStorage.setItem(key, String(era));
+    const sub = S.sub || 'geo';
+    if(era > bestFor(sub)) localStorage.setItem(bestKey(sub), String(era));
   }catch(e){}
 }
 function gameOver(){
   const acc = S.total ? Math.round(S.correct / S.total * 100) : 0;
+  $('overKicker').textContent = TM.overKick;
+  $('btnReborn').textContent = ['从谷底爬起', '重铸道基', '重新坐下'][CYCLE] || '重新开始';
+  $('btnOverSwitch').textContent = ['切换时间线', '切换道统', '返回科目'][CYCLE] || '返回';
   $('overEra').textContent = ERAS[Math.max(0, S.era)].n;
   $('overCorrect').textContent = S.correct + ' / ' + S.total;
   $('overAcc').textContent = acc + '%';
@@ -1705,18 +2706,510 @@ function gameOver(){
 }
 function winGame(){
   const acc = S.total ? Math.round(S.correct / S.total * 100) : 0;
+  $('winKicker').textContent = TM.winKick;
+  $('winTitle').textContent = TM.winTitle;
+  $('winSub').textContent = TM.winSub;
+  $('winEraLabel').textContent = TM.winEraLabel;
+  $('winEra').textContent = ERAS[MAX_ERA].n;
   $('winTotal').textContent = S.correct + ' / ' + S.total;
   $('winAcc').textContent = acc + '%';
+  $('winTravelLabel').textContent = TM.travelLabel;
   $('winTravel').textContent = S.travelWins + ' 次成功 / ' + S.travels + ' 次';
   $('winTime').textContent = fmtTime(Date.now() - S.t0);
   saveBest(MAX_ERA);
+  setWinFlag(S.sub, CYCLE);   /* 打赢最高境，这一周目才算通 */
   winEggReset();
+  if(CYCLE >= CYCLES.length - 1){
+    lockOnWuwo(S.sub);   /* 入无我境：服务端开始 5 天冷却计时 */
+  }
+  /* 星碑输入延迟浮现：先看场景与动效，再留言（跳转入口都在星碑墙） */
+  const sb = $('stelaBox');
+  sb.classList.remove('reveal');
+  sb.hidden = true;
+  clearTimeout(winStelaTimer);
+  winStelaTimer = setTimeout(() => { sb.hidden = false; sb.classList.add('reveal'); }, 2600);
   flash('flash-ok');
   show('s-win');
+  S.visits = bumpVisit(CYCLE);
+  stelaRender();
+  stelaFlush();
   Sfx.up();
   setTimeout(() => Sfx.good(), 420);
   if(window.__atmos) window.__atmos.warp(1.6);
 }
+
+/* ---------------- 星碑 · 云同步 ---------------- */
+const SB_URL = 'https://kykpowxzhtkxjkcflfuq.supabase.co/rest/v1';
+const SB_KEY = 'sb_publishable_VtZvQFyVdWWhZGAVMUFagA_9oM9THXQ';
+function sbHead(){
+  return {apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json'};
+}
+async function sbGet(path){
+  const r = await fetch(SB_URL + path, {headers: sbHead()});
+  if(!r.ok){
+    let m = 'HTTP ' + r.status;
+    try{ const j = await r.json(); m = j.message || j.hint || m; }catch(e){}
+    throw new Error(m);
+  }
+  return r.json();
+}
+async function sbRpc(fn, body){
+  const r = await fetch(SB_URL + '/rpc/' + fn, {method:'POST', headers: sbHead(), body: JSON.stringify(body)});
+  const txt = await r.text();
+  let j = {};
+  try{ j = txt ? JSON.parse(txt) : {}; }catch(e){}
+  if(!r.ok) throw new Error(j.message || j.hint || ('HTTP ' + r.status));
+  return j;
+}
+/* 数据库是否已升级到第二阶段（带 generation / 转世表）。
+   null=还不知道，true=已升级，false=旧结构——旧结构下自动降级，功能不中断 */
+let SB_S2 = null;
+function isSchemaMissing(msg){
+  return /p_generation|PGRST202|Could not find the function|schema cache/i.test(String(msg || ''));
+}
+async function stelaPost(body){
+  if(SB_S2 === false){
+    const b = Object.assign({}, body); delete b.p_generation;
+    return sbRpc('stela_post', b);
+  }
+  try{
+    const r = await sbRpc('stela_post', body);
+    SB_S2 = true;
+    return r;
+  }catch(e){
+    if(!isSchemaMissing(e.message)) throw e;
+    SB_S2 = false;
+    const b = Object.assign({}, body); delete b.p_generation;
+    return sbRpc('stela_post', b);
+  }
+}
+async function wallRows(q){
+  const tail = '&order=times.desc,updated_at.desc&limit=60' + q;
+  if(SB_S2 === false)
+    return sbGet('/stela?select=id,cycle,nick,word,times,subject,updated_at' + tail);
+  try{
+    const rows = await sbGet('/stela?select=id,cycle,generation,nick,word,times,subject,updated_at' + tail);
+    SB_S2 = true;
+    return rows;
+  }catch(e){
+    if(!/generation|42703|schema cache/i.test(String(e.message || ''))) throw e;
+    SB_S2 = false;
+    return sbGet('/stela?select=id,cycle,nick,word,times,subject,updated_at' + tail);
+  }
+}
+
+/* 匿名设备标识：只用于「认领自己那块碑」，不含任何个人信息 */
+function deviceId(){
+  let d = null;
+  try{ d = localStorage.getItem('chrono_dev'); }catch(e){}
+  if(!d){
+    d = 'd_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    try{ localStorage.setItem('chrono_dev', d); }catch(e){}
+  }
+  return d;
+}
+/* ---------------- 闭关 / 转世 ---------------- */
+/* 冷却时间以服务端 now() 为准，本地只做缓存，改系统时间无效 */
+async function rebirthLock(sub){
+  try{
+    const j = await sbRpc('rebirth_lock', {p_device: deviceId(), p_subject: sub, p_days: GEN_DAYS});
+    const ts = (j && j.unlock_at) ? Date.parse(j.unlock_at) : 0;
+    if(ts) setLockUntil(sub, ts);
+    return ts;
+  }catch(e){ return 0; }
+}
+async function rebirthSync(sub){
+  try{
+    const j = await sbRpc('rebirth_state', {p_device: deviceId(), p_subject: sub});
+    if(j && j.unlock_at) setLockUntil(sub, Date.parse(j.unlock_at));
+    else setLockUntil(sub, 0);
+    return j;
+  }catch(e){ return null; }
+}
+async function rebirthClaim(sub){
+  try{
+    const j = await sbRpc('rebirth_claim', {p_device: deviceId(), p_subject: sub});
+    if(j && j.generation) return Number(j.generation);
+    /* 服务端说还在冷却：把解锁时间写回本机，防止清缓存跳过冷却 */
+    if(j && j.error === 'COOLING' && j.unlock_at){
+      const ts = Date.parse(j.unlock_at);
+      if(ts) setLockUntil(sub, ts);
+    }
+    return 0;
+  }catch(e){ return 0; }
+}
+
+/* 入无我境：立刻上锁，服务端校准，离线时用本地时间兜底 */
+function lockOnWuwo(sub){
+  setLockUntil(sub, Date.now() + GEN_DAYS * 86400000);
+  rebirthLock(sub);
+}
+
+let secluTimer = null;
+function reachTotal(){
+  let n = 0;
+  for(let c = 0; c < CYCLES.length; c++) n += visitCount(c);
+  return n;
+}
+function tickSeclu(sub){
+  const left = lockUntil(sub) - Date.now();
+  if(left <= 0){
+    $('secluD').textContent = '00';
+    $('secluH').textContent = '00';
+    $('secluM').textContent = '00';
+    $('btnSecluGo').disabled = false;
+    $('btnSecluGo').textContent = '转 世 · 已开启';
+    if(secluTimer){ clearInterval(secluTimer); secluTimer = null; }
+    return;
+  }
+  const t = fmtLeft(left);
+  $('secluD').textContent = pad2(t.d);
+  $('secluH').textContent = pad2(t.h);
+  $('secluM').textContent = pad2(t.m);
+  $('btnSecluGo').textContent = '转 世 · ' + Math.max(1, Math.ceil(left / 86400000)) + ' 天后开启';
+}
+function showSeclusion(sub){
+  pickId = sub;
+  document.documentElement.dataset.cycle = '2';
+  const until = lockUntil(sub);
+  $('secluSub').textContent = subjectById(sub).name + ' · 第 ' + genFor(sub) + ' 世';
+  $('secluEra').textContent = CYCLES[2].eras[maxEraOf(2)].n;
+  $('secluTimes').textContent = reachTotal() + ' 次';
+  $('secluAt').textContent = until ? new Date(until).toLocaleString('zh-CN',
+    {month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'}) : '—';
+  show('s-seclu');
+  tickSeclu(sub);
+  if(secluTimer) clearInterval(secluTimer);
+  secluTimer = setInterval(() => tickSeclu(sub), 1000);
+  rebirthSync(sub).then(() => { tickSeclu(sub); });
+}
+
+function showRebirth(sub){
+  pickId = sub;
+  const g = genFor(sub);
+  $('rebSub').textContent = subjectById(sub).name + ' · 将 入 第 ' + (g + 1) + ' 世';
+  $('rebGen').textContent = '第 ' + (g + 1) + ' 世';
+  $('rebStela').textContent = Object.keys(stelaStore()).length + ' 块';
+  show('s-rebirth');
+}
+
+/* 转世：清进度、进下一世，碑文一块不动 */
+async function doRebirth(sub){
+  const btn = $('btnRebirthGo');
+  btn.disabled = true;
+  btn.textContent = '正在转世…';
+  const gen = await rebirthClaim(sub);
+  if(!gen && lockUntil(sub) > Date.now()){
+    btn.disabled = false;
+    btn.textContent = '确认转世 · 从第一关重来';
+    $('rebGen').textContent = '还没到时候';
+    return;
+  }
+  try{
+    localStorage.removeItem('chrono_best_' + sub);
+    localStorage.removeItem('chrono_best_c1_' + sub);
+    localStorage.removeItem('chrono_best_c2_' + sub);
+    localStorage.removeItem('chrono_lock_' + sub);
+    localStorage.removeItem(winKey(sub, 0));
+    localStorage.removeItem(winKey(sub, 1));
+    localStorage.removeItem(winKey(sub, 2));
+  }catch(e){}
+  setGen(sub, gen || (genFor(sub) + 1));
+  /* 新一世从空碑开始刻，旧碑留在云端墙上 */
+  const all = stelaStore();
+  delete all.c0; delete all.c1; delete all.c2;
+  try{ localStorage.setItem('chrono_stela', JSON.stringify(all)); }catch(e){}
+
+  btn.disabled = false;
+  btn.textContent = '确认转世 · 从第一关重来';
+  flash('flash-ok');
+  Sfx.up();
+  beginRun(sub, 0);
+}
+
+function stelaStore(){
+  try{ return JSON.parse(localStorage.getItem('chrono_stela') || '{}'); }catch(e){ return {}; }
+}
+function stelaGet(cycle){ return stelaStore()['c' + cycle] || null; }
+function stelaSet(cycle, v){
+  const all = stelaStore();
+  if(v) all['c' + cycle] = v; else delete all['c' + cycle];
+  try{ localStorage.setItem('chrono_stela', JSON.stringify(all)); }catch(e){}
+}
+function visitCount(cycle){
+  try{ return Number(localStorage.getItem('chrono_visit_c' + cycle) || 0); }catch(e){ return 0; }
+}
+function bumpVisit(cycle){
+  const n = visitCount(cycle) + 1;
+  try{ localStorage.setItem('chrono_visit_c' + cycle, String(n)); }catch(e){}
+  return n;
+}
+
+/* 内容过滤：先在前端挡一道，数据库还有一层兜底 */
+const STELA_BAD = ['垃圾','废物','傻逼','傻b','智障','去死','滚开','妈的','操你','狗东西','贱货','婊','死全家','脑残','弱智','自杀','约炮','色情','赌博'];
+function stelaCheck(nick, word){
+  if(nick.length < 2 || nick.length > 8) return '昵称要 2–8 个字';
+  if(word.length < 1 || word.length > 10) return '留言最多 10 个字';
+  const all = nick + ' ' + word;
+  if(/(https?:\/\/|www\.|\.com|\.cn|微信|v信|vx|威信|加我|扫码|二维码|\d{7,})/i.test(all)) return '不能留网址或联系方式';
+  const low = all.toLowerCase();
+  if(STELA_BAD.some(w => low.includes(w))) return '这句话不太友好，换一种说法吧';
+  if(/^[\x00-\x7F\s]+$/.test(nick) && nick.replace(/[^A-Za-z]/g,'').length > 6) return '昵称别用一长串字母';
+  return '';
+}
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function ago(iso){
+  const t = new Date(iso).getTime();
+  if(!t) return '';
+  const d = Date.now() - t;
+  if(d < 6e4) return '刚刚';
+  if(d < 36e5) return Math.floor(d / 6e4) + ' 分钟前';
+  if(d < 864e5) return Math.floor(d / 36e5) + ' 小时前';
+  if(d < 7 * 864e5) return Math.floor(d / 864e5) + ' 天前';
+  const dt = new Date(iso);
+  return (dt.getMonth() + 1) + '/' + dt.getDate();
+}
+
+function stelaError(msg){
+  const el = $('stelaErr');
+  if(!msg){ el.hidden = true; el.textContent = ''; return; }
+  el.hidden = false; el.textContent = msg;
+}
+function stelaCounts(){
+  const n = $('stelaNick').value.trim().length;
+  const w = $('stelaWord').value.trim().length;
+  const nc = $('nickCount'), wc = $('wordCount');
+  nc.textContent = n + ' / 8';
+  wc.textContent = w + ' / 10';
+  nc.className = 'sb-count' + (n > 8 ? ' over' : n >= 2 ? ' full' : '');
+  wc.className = 'sb-count' + (w > 10 ? ' over' : w >= 1 ? ' full' : '');
+}
+
+function stelaRender(){
+  const box = $('stelaBox'), panel = $('stelaPanel');
+  if(!box) return;
+  const p = stelaGet(CYCLE);
+  const times = (S && S.visits) || visitCount(CYCLE) || 1;
+  const myGen = genFor((S && S.sub) || pickId);
+  $('stelaTag').textContent = TM.name + ' · 第 ' + myGen + ' 世';
+  if(p){
+    $('stelaForm').hidden = true;
+    $('stelaMine').hidden = false;
+    $('smTitle').textContent = p.nick;
+    $('smMeta').textContent = '第 ' + (p.times || times) + ' 次 · ' + TM.name + ' · 第 ' + myGen + ' 世';
+    $('smWord').textContent = p.word;
+    $('stelaFold').querySelector('b').textContent = '✦ 我的星碑';
+  } else {
+    $('stelaForm').hidden = false;
+    $('stelaMine').hidden = true;
+    $('stelaLayer').textContent = '第 ' + times + ' 次抵达 · ' + TM.name + ' · 第 ' + myGen + ' 世';
+    $('stelaFold').querySelector('b').textContent = '✦ 在星碑上留下名字';
+  }
+  if(!p && !box.dataset.auto){
+    box.dataset.auto = '1';
+    box.classList.add('open');
+    panel.hidden = false;
+  }
+}
+
+async function stelaSubmit(){
+  const nick = $('stelaNick').value.trim();
+  const word = $('stelaWord').value.trim();
+  const msg = stelaCheck(nick, word);
+  if(msg){ stelaError(msg); Sfx.bad(); return; }
+  stelaError('');
+  const btn = $('btnStelaPost');
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = '刻 碑 中 …';
+  const times = (S && S.visits) || visitCount(CYCLE) || 1;
+  const prev = stelaGet(CYCLE);
+  const dev = (prev && prev.device) || deviceId();
+  const gen = genFor((S && S.sub) || pickId);
+  const body = {p_device: dev, p_cycle: CYCLE, p_nick: nick, p_word: word,
+                p_times: times, p_subject: (S && S.sub) || null, p_generation: gen};
+  try{
+    const res = await stelaPost(body);
+    stelaSet(CYCLE, {id: res.id, nick, word, times, at: Date.now(), device: dev, gen});
+    Sfx.good();
+    stelaRender();
+    $('stelaPanel').hidden = false;
+    $('stelaBox').classList.add('open');
+    /* 刻碑成功：直接带去星碑墙，看自己与大家的留言 */
+    setTimeout(() => { openWall(); }, 650);
+  }catch(e){
+    stelaSet(CYCLE, {id: null, nick, word, times, at: Date.now(), pending: 1, device: dev, gen});
+    stelaError('星碑暂时没连上，已先存在本机，联网后会自动补上。');
+    stelaRender();
+    $('stelaPanel').hidden = false;
+    $('stelaBox').classList.add('open');
+  }finally{
+    btn.disabled = false; btn.textContent = old;
+  }
+}
+
+/* 离线写入的碑，联网后补传 */
+async function stelaFlush(){
+  const p = stelaGet(CYCLE);
+  if(!p || p.id || !p.pending) return;
+  try{
+    const res = await stelaPost({
+      p_device: p.device || deviceId(), p_cycle: CYCLE, p_nick: p.nick, p_word: p.word,
+      p_times: p.times, p_subject: (S && S.sub) || null, p_generation: p.gen || genFor(pickId)
+    });
+    p.id = res.id; delete p.pending; stelaSet(CYCLE, p);
+    stelaRender();
+  }catch(e){}
+}
+
+async function stelaDelete(){
+  const p = stelaGet(CYCLE);
+  if(!p) return;
+  if(!window.confirm('删除这块星碑？删除后可以重新刻。')) return;
+  if(p.id){
+    try{ await sbRpc('stela_del', {p_id: String(p.id), p_device: p.device || deviceId()}); }catch(e){}
+  }
+  stelaSet(CYCLE, null);
+  Sfx.bad();
+  stelaRender();
+}
+
+/* ---------------- 星碑墙 ---------------- */
+let wallKind = 'all';
+let winStelaTimer = null;
+async function openWall(){
+  Sfx.tick();
+  show('s-wall');
+  /* 墙上的去向按钮：星碑墙是觉醒后的唯一入口 */
+  const sub = (S && S.sub) || pickId;
+  /* 顶部大标题 + 本周目的鼓励语：三周目各不相同，同一周目按「世」轮换 */
+  const praise = TM.wallPraise;
+  const pi = (Math.max(1, genFor(sub)) - 1) % praise.length;
+  $('wallKicker').textContent = TM.wallKick + ' · ' + TM.name;
+  $('wallPraise').innerHTML = '<em>' + praise[pi][0] + '</em><br>' + praise[pi][1];
+  const rb = $('btnWallRebirth');
+  const again = $('btnWallAgain');
+  if(reachedWuwo(sub)){
+    /* 已证无我境：转世/闭关接管，不再重复闯关 */
+    again.hidden = true;
+    rb.hidden = false;
+    if(lockUntil(sub) > Date.now()){
+      rb.textContent = '闭关中 · 查看转世';
+      rb.onclick = () => { Sfx.tick(); showSeclusion(sub); };
+    }else{
+      rb.textContent = '转世 · 开启新一世';
+      rb.onclick = () => { Sfx.tick(); showRebirth(sub); };
+    }
+  }else{
+    rb.hidden = true;
+    again.hidden = false;
+    /* 按钮不做「再闯一次」：直接指引下一周目（时空纪元 → 修仙记 → 无我篇） */
+    const nextC = Math.min(CYCLES.length - 1, cycleForSub(sub));
+    const nxt = CYCLES[nextC];
+    again.textContent = nextC > CYCLE
+      ? ((nxt.arriveVerb || '前行') + ' · 进入' + nxt.name)
+      : ('继续 · ' + nxt.name);
+    again.onclick = () => { Sfx.travel(); beginRun(sub); };
+  }
+  $('btnWallSubs').hidden = false;
+  $('btnWallSubs').onclick = () => { Sfx.tick(); openSubjects(); };
+  renderWallTabs();
+  $('wallCount').textContent = '…';
+  $('wallList').innerHTML = '<div class="wall-empty">星碑正在苏醒…</div>';
+  await loadWall(wallKind);
+}
+function renderWallTabs(){
+  $('wallTabs').querySelectorAll('button').forEach(b => {
+    b.classList.toggle('on', b.dataset.k === wallKind);
+  });
+}
+async function loadWall(kind){
+  let q = '';
+  if(kind === 'c0') q = '&cycle=eq.0';
+  else if(kind === 'c1') q = '&cycle=eq.1';
+  else if(kind === 'c2') q = '&cycle=eq.2';
+  else if(kind === 'hot') q = '&times=gte.3';
+  try{
+    const rows = await wallRows(q);
+    renderWall(rows);
+  }catch(e){
+    $('wallCount').textContent = '离线';
+    $('wallList').innerHTML = '<div class="wall-empty">星碑墙暂时连不上。<br>检查网络后再试一次。</div>';
+  }
+}
+/* 碑右侧的周目印记：低周目朴素、高周目繁复 */
+const WALL_SIGIL = [
+  /* 时空纪元：双环 + 四向刻度 + 缓转虚圈 + 四芒星核（朴素但不再空） */
+  `<svg viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="17.5" fill="none" stroke="currentColor" stroke-opacity=".45"/>
+    <g class="sg-spin"><circle cx="24" cy="24" r="13.8" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-dasharray="1.6 3.4"/>
+      <circle cx="24" cy="10.2" r="1.5" fill="currentColor" fill-opacity=".9"/></g>
+    <g stroke="currentColor" stroke-opacity=".32">
+      <line x1="24" y1="3.6" x2="24" y2="7"/><line x1="24" y1="41" x2="24" y2="44.4"/>
+      <line x1="3.6" y1="24" x2="7" y2="24"/><line x1="41" y1="24" x2="44.4" y2="24"/>
+    </g>
+    <path d="M24 17.4 25.9 22.1 30.6 24 25.9 25.9 24 30.6 22.1 25.9 17.4 24 22.1 22.1Z" fill="currentColor" fill-opacity=".9"/>
+  </svg>`,
+  /* 修仙记：渐变双环反向旋转 + 方胜 + 环轨灵点 */
+  `<svg viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="19" fill="none" stroke="url(#sgCyan)" stroke-opacity=".55"/>
+    <g class="sg-spin-r"><circle cx="24" cy="24" r="15.4" fill="none" stroke="url(#sgCyan)" stroke-opacity=".5" stroke-dasharray="3 4"/></g>
+    <g class="sg-spin"><circle cx="24" cy="24" r="11.2" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-dasharray="1.4 3.1"/>
+      <circle cx="24" cy="12.8" r="1.5" fill="currentColor"/></g>
+    <path d="M24 13.4 31.4 24 24 34.6 16.6 24Z" fill="none" stroke="url(#sgCyan)" stroke-opacity=".85"/>
+    <path d="M24 19.2 26.4 24 24 28.8 21.6 24Z" fill="currentColor" fill-opacity=".45"/>
+    <circle cx="24" cy="24" r="1.9" fill="currentColor"/>
+  </svg>`,
+  /* 无我篇：呼吸光晕 + 三层渐变虚环差速旋转 + 双轨灵点 + 八芒星核（最盛、最冷） */
+  `<svg viewBox="0 0 48 48">
+    <g class="sg-breathe"><circle cx="24" cy="24" r="21" fill="url(#sgHalo)"/></g>
+    <g class="sg-spin"><circle cx="24" cy="24" r="21.4" fill="none" stroke="url(#sgSilver)" stroke-opacity=".4" stroke-dasharray="1 4.2"/></g>
+    <g class="sg-spin-r"><circle cx="24" cy="24" r="17.8" fill="none" stroke="url(#sgSilver)" stroke-opacity=".6" stroke-dasharray="7 6"/></g>
+    <circle cx="24" cy="24" r="14.2" fill="none" stroke="url(#sgSilver)" stroke-opacity=".3"/>
+    <g class="sg-spin"><circle cx="24" cy="24" r="10.6" fill="none" stroke="currentColor" stroke-opacity=".26"/>
+      <circle cx="24" cy="13.4" r="1.3" fill="#fff" fill-opacity=".95"/>
+      <circle cx="24" cy="34.6" r=".85" fill="#fff" fill-opacity=".65"/></g>
+    <g class="sg-pulse"><path d="M24 7.6 26.5 19.5 36.4 24 26.5 28.5 24 40.4 21.5 28.5 11.6 24 21.5 19.5Z"
+      fill="url(#sgSilverFill)" stroke="url(#sgSilver)" stroke-opacity=".75"/></g>
+    <circle cx="24" cy="24" r="2.4" fill="#fff" fill-opacity=".95"/>
+  </svg>`
+];
+
+function renderWall(rows){
+  const me = stelaGet(CYCLE);
+  const myId = me && me.id;
+  $('wallCount').textContent = rows.length + ' 块';
+  if(!rows.length){
+    $('wallList').innerHTML = '<div class="wall-empty">这里还没有碑。<br>你可以是第一个。</div>';
+    return;
+  }
+  const CYC_NAME = ['时空纪元', '修仙记', '无我篇'];
+  const SUBJ_NAME = {};
+  SUBJECTS.forEach(s => { SUBJ_NAME[s.id] = s.name; });
+  SUBJ_NAME.mix = '混合';
+  $('wallList').innerHTML = rows.map(r => {
+    const mine = myId && r.id === myId;
+    const cy = Math.max(0, Math.min(2, Number(r.cycle) || 0));
+    const gen = Math.max(1, Number(r.generation) || 1);
+    const sn = r.subject ? (SUBJ_NAME[r.subject] || r.subject) : null;
+    return `<div class="wall-item${mine ? ' me' : ''}">
+      <div class="wall-ava c${cy}">${escHtml(String(r.nick).slice(0, 1))}</div>
+      <div class="wall-body">
+        <div class="wall-meta">
+          <span class="wall-nick">${escHtml(r.nick)}</span>
+          ${mine ? '<span class="wall-tag me">你</span>' : ''}
+          <span class="wall-tag c${cy}">${CYC_NAME[cy]}</span>
+          ${sn ? `<span class="wall-tag subj">${escHtml(sn)}觉醒</span>` : ''}
+        </div>
+        <div class="wall-word">${escHtml(r.word)}</div>
+        <div class="wall-meta2">第 ${r.times} 次抵达 · 第 ${gen} 世 · ${ago(r.updated_at)}</div>
+      </div>
+      <div class="wall-sigil c${cy}" aria-hidden="true">${WALL_SIGIL[cy]}</div>
+    </div>`;
+  }).join('');
+}
+
 
 /* ---------------- 神格结算彩蛋：点击印记唤醒神谕 ---------------- */
 const ORACLES = [
@@ -1726,11 +3219,29 @@ const ORACLES = [
   '宇宙记得每一次答对的瞬间——那是它学会思考的时刻。',
   '现在，连时间也要抬头看你。'
 ];
+const ORACLES_C1 = [
+  '你从凡尘一路走上来，每一步都算数。',
+  '雷劫没有劈碎你，只是替你烧掉了多余的杂念。',
+  '你证的道不在天上，在你自己身上。',
+  '那个连灵气都引不进的少年，已经站在这里了。',
+  '从今往后，你就是别人口中的传说。'
+];
+const ORACLES_C2 = [
+  '山还是山，水还是水，看的人已经不在了。',
+  '你答对了那么多题，最后一题，没有题。',
+  '无我不是没有你，是终于不必再抓着什么不放。',
+  '走到这里，「赢」这个字已经用不上了。',
+  '坐下来，什么都不做，也是一种抵达。'
+];
+function oracles(){ return [ORACLES, ORACLES_C1, ORACLES_C2][CYCLE] || ORACLES; }
 let oracleIdx = -1;
 function winEggReset(){
   oracleIdx = -1;
   $('winOracle').hidden = true;
   $('winSigil').classList.remove('boom');
+  /* 印记符号随周目：✦ 星格 · ☯ 道印 · ○ 圆相 */
+  const core = $('winSigil').querySelector('.sigil-core');
+  if(core) core.textContent = ['✦','☯','○'][CYCLE] || '✦';
 }
 $('winSigil').addEventListener('click', () => {
   const sigil = $('winSigil');
@@ -1738,15 +3249,16 @@ $('winSigil').addEventListener('click', () => {
   void sigil.offsetWidth;
   sigil.classList.add('boom');
   try{ Sfx.good(); }catch(e){}
-  oracleIdx = (oracleIdx + 1) % ORACLES.length;
+  const list = oracles();
+  oracleIdx = (oracleIdx + 1) % list.length;
   const box = $('winOracle'), txt = $('oracleText');
   box.hidden = false;
-  txt.textContent = '「' + ORACLES[oracleIdx] + '」';
+  txt.textContent = '「' + list[oracleIdx] + '」';
   txt.style.animation = 'none';
   void txt.offsetWidth;
   txt.style.animation = '';
   if(window.__atmos && window.__hex2rgb){
-    window.__atmos.burst(innerWidth / 2, innerHeight * .34, window.__hex2rgb('#ffd76a'));
+    window.__atmos.burst(innerWidth / 2, innerHeight * .34, window.__hex2rgb(['#ffd76a','#7fe3ff','#dfe6ee'][CYCLE] || '#ffd76a'));
   }
 });
 
@@ -1765,8 +3277,8 @@ function overEggReset(){
   $('overOracle').hidden = true;
   $('overSpark').classList.remove('boom');
   $('s-over').classList.remove('lit');
-  $('overTitle').textContent = '宇宙收缩';
-  $('overSub').textContent = '你坠到了时间线的尽头';
+  $('overTitle').textContent = TM.overTitle;
+  $('overSub').textContent = TM.overSub;
 }
 $('overSpark').addEventListener('click', () => {
   const spark = $('overSpark');
@@ -1778,7 +3290,7 @@ $('overSpark').addEventListener('click', () => {
     sparkLit = true;
     $('s-over').classList.add('lit');
     $('overTitle').textContent = '谷底即起点';
-    $('overSub').textContent = '每一步都是高点';
+    $('overSub').textContent = ['每一步都是高点', '道基碎了，还能再筑', '沉到底，才看得见' + '自己'][CYCLE] || '每一步都是高点';
   }
   sparkIdx = (sparkIdx + 1) % SPARKS.length;
   const box = $('overOracle'), txt = $('sparkText');
@@ -1788,7 +3300,7 @@ $('overSpark').addEventListener('click', () => {
   void txt.offsetWidth;
   txt.style.animation = '';
   if(window.__atmos && window.__hex2rgb){
-    window.__atmos.burst(innerWidth / 2, innerHeight * .38, window.__hex2rgb('#ff9636'));
+    window.__atmos.burst(innerWidth / 2, innerHeight * .38, window.__hex2rgb(['#ff9636','#7fe3ff','#dfe6ee'][CYCLE] || '#ff9636'));
   }
 });
 
@@ -1797,9 +3309,11 @@ $('btnStart').onclick = () => { Sfx.init(); Music.start(); Music.setEra(START_ER
 $('btnSubBack').onclick = () => show('s-title');
 $('btnEnter').onclick = enterEra;
 $('btnReborn').onclick = () => beginRun(S ? S.sub : pickId);
-$('btnAgain').onclick = () => beginRun(S ? S.sub : pickId);
 $('btnOverSwitch').onclick = openSubjects;
-$('btnWinSwitch').onclick = openSubjects;
+$('btnSecluOut').onclick = openSubjects;
+$('btnSecluGo').onclick = () => { if($('btnSecluGo').disabled) return; Sfx.tick(); showRebirth(pickId); };
+$('btnRebirthGo').onclick = () => doRebirth(pickId);
+$('btnRebirthNo').onclick = openSubjects;
 $('btnTravelGo').onclick = startTravel;
 $('btnTravelNo').onclick = () => { S.mode = 'normal'; showBrief(); };
 function syncSndBtn(){
@@ -1820,16 +3334,54 @@ $('btnHow').onclick = () => { $('help').classList.add('open'); };
 $('btnHelpClose').onclick = () => { $('help').classList.remove('open'); };
 $('help').addEventListener('click', e => { if(e.target.id === 'help') $('help').classList.remove('open'); });
 
+/* ---- 星碑交互 ---- */
+$('stelaFold').onclick = () => {
+  const box = $('stelaBox'), panel = $('stelaPanel');
+  const open = box.classList.toggle('open');
+  panel.hidden = !open;
+  if(open){ stelaRender(); panel.hidden = false; }
+  Sfx.tick();
+};
+$('stelaNick').addEventListener('input', () => { stelaCounts(); stelaError(''); });
+$('stelaWord').addEventListener('input', () => { stelaCounts(); stelaError(''); });
+$('btnStelaPost').onclick = stelaSubmit;
+$('btnStelaEdit').onclick = () => {
+  const p = stelaGet(CYCLE);
+  if(!p) return;
+  $('stelaNick').value = p.nick;
+  $('stelaWord').value = p.word;
+  $('stelaForm').hidden = false;
+  $('stelaMine').hidden = true;
+  stelaCounts(); stelaError('');
+  Sfx.tick();
+};
+$('btnStelaDel').onclick = stelaDelete;
+$('btnStelaWall').onclick = openWall;
+$('btnWallBack').onclick = () => { Sfx.tick(); show('s-win'); };
+$('wallTabs').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if(!b) return;
+  wallKind = b.dataset.k;
+  renderWallTabs();
+  $('wallList').innerHTML = '<div class="wall-empty">星碑正在苏醒…</div>';
+  loadWall(wallKind);
+  Sfx.tick();
+});
+
 (function initBest(){
+  document.documentElement.dataset.cycle = String(CYCLE);
   try{
     const last = localStorage.getItem('chrono_last_sub') || 'geo';
-    const best = bestFor(last);
-    if(best >= START_ERA){
-      $('bestLine').textContent = '上次 · ' + subjectById(last).name + ' · 最高 ' + ERAS[Math.min(best, MAX_ERA)].n;
+    const lc = cycleForSub(last);
+    const lb = bestFor(last, lc);
+    if(lb >= START_ERA){
+      $('bestLine').textContent = '上次 · ' + subjectById(last).name + ' · 第 ' +
+        genFor(last) + ' 世 · ' + CYCLES[lc].eras[Math.min(lb, maxEraOf(lc))].n;
     }
     if(localStorage.getItem('chrono_last_sub')) pickId = last;
     if(localStorage.getItem('chrono_snd') === '0') Sfx.on = false;
   }catch(e){}
+  renderCycleUI();
   applyEra(START_ERA);
 })();
 </script>

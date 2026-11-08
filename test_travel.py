@@ -19,7 +19,7 @@ CHROME = find_chrome()
 async def run(page, right, tag):
     await page.evaluate(f"""() => {{
         S.era = 10; S.travelFrom = 10; S.mode = 'travel';
-        S.levelRight = {right}; S.levelTotal = 3; S.cores = 1;
+        S.levelRight = {right}; S.levelTotal = 6; S.cores = 1;
         show('s-play'); renderHud();
         travelResult();
     }}""")
@@ -40,6 +40,7 @@ async def main():
         page.on("console", lambda m: errs.append(f"{m.type}: {m.text}") if m.type == "error" else None)
         page.on("pageerror", lambda e: errs.append(f"pageerror: {e}"))
         await page.goto(URL)
+        await page.wait_for_function("() => Array.isArray(QUESTIONS) && QUESTIONS.length > 0", timeout=20000)
         await page.wait_for_timeout(600)
         await page.click("#btnStart")
         await page.wait_for_timeout(500)
@@ -48,8 +49,8 @@ async def main():
         await page.click("#btnEnter")
         await page.wait_for_timeout(700)
 
-        await run(page, 3, "ascend")
-        await run(page, 2, "fall")
+        await run(page, 6, "ascend")
+        await run(page, 4, "fall")
         print("errors:", errs)
         await browser.close()
 

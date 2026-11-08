@@ -30,6 +30,7 @@ async def main():
         page.on("pageerror", lambda e: errs.append(f"pageerror: {e}"))
 
         await page.goto(URL)
+        await page.wait_for_function("() => Array.isArray(QUESTIONS) && QUESTIONS.length > 0", timeout=20000)
         await page.wait_for_timeout(700)
         await page.screenshot(path=str(SHOT / "t1-title.png"))
 
