@@ -11,3 +11,6 @@ shots/
 __pycache__/
 *.pyc
 .DS_Store
+
+# API 推送用的 blob 缓存
+.blob_cache.json
