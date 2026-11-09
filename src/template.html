@@ -298,6 +298,10 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
   stroke-dasharray:119.4;stroke-dashoffset:0;transition:stroke .3s}
 .ring.warn .fg{stroke:#ffb547}
 .ring.danger .fg{stroke:var(--bad)}
+/* 长题干时倒计时环弱化，避免与正文争夺注意力（告警态仍恢复醒目） */
+.ring.dim{opacity:.32}
+.ring.dim.warn,.ring.dim.danger{opacity:1}
+.btn:disabled{opacity:.5;pointer-events:none}
 .secs{font-size:14px;min-width:26px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
 .secs.danger{color:var(--bad);animation:pulse 1s infinite}
 .stemwrap{position:relative;margin-top:6px}
@@ -305,6 +309,12 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
   color:var(--accent);opacity:.07;letter-spacing:0;pointer-events:none;font-variant-numeric:tabular-nums;
   user-select:none}
 .stem{position:relative;font-size:19px;line-height:1.62;letter-spacing:.02em;margin:0;font-weight:500;animation:fade .3s ease both}
+/* 长题干：字号略小、行距更大，降低阅读压力 */
+.stem.long{font-size:16px;line-height:1.88;letter-spacing:.015em;font-weight:400}
+/* 材料题分层：材料区（小字宽行距）+ 设问区（稍大、左描边强调） */
+.stem .mat{font-size:15px;line-height:1.9;color:var(--ink-dim);font-weight:400;letter-spacing:.015em}
+.stem .ask{margin-top:12px;padding-left:10px;border-left:3px solid var(--accent);
+  font-size:16.5px;line-height:1.6;color:var(--ink);font-weight:500}
 .opts{display:grid;gap:9px;margin-top:18px;flex:none}
 .opt{display:flex;gap:11px;align-items:center;text-align:left;padding:15px 14px;border-radius:14px;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--ink);
@@ -2323,7 +2333,26 @@ function renderQuestion(){
   $('qPos').textContent = pad2(S.qi+1) + ' / ' + pad2(S.levelTotal);
   $('qTopic').textContent = q.t;
   const stem = $('stem');
-  stem.textContent = q.q;
+  stem.classList.remove('long');
+  const ring = document.querySelector('.ring');
+  if(ring) ring.classList.remove('dim');
+  /* 材料题分层：长题干且能以句末标点切出「设问尾句」时，拆为材料区 + 设问区 */
+  const L = q.q.length;
+  let split = false;
+  if(L >= 56){
+    const m = q.q.match(/^([\s\S]*[。！？])([^。！？]{4,55})$/);
+    if(m && m[1].length >= 28){
+      split = true;
+      stem.innerHTML = '<div class="mat"></div><div class="ask"></div>';
+      stem.querySelector('.mat').textContent = m[1];
+      stem.querySelector('.ask').textContent = m[2];
+      if(ring) ring.classList.add('dim');
+    }
+  }
+  if(!split){
+    stem.textContent = q.q;
+    if(L >= 80) stem.classList.add('long');
+  }
   stem.style.animation = 'none';
   void stem.offsetWidth;
   stem.style.animation = '';
@@ -2439,29 +2468,30 @@ function handleWrong(q, lead){
     flash('flash-red');
     renderHud();
     if(S.travelWrong >= 2){
-      showFeedback(false, q, lead + ' ' + TM.riftBreakSub, TM.riftBreak, true, false);
+      showFeedback(false, q, '', '', true, false);
       $('btnNext').textContent = TM.riftCollapse;
       $('btnNext').onclick = () => travelResult();
       return;
     }
-    showFeedback(false, q, lead + ' ' + TM.riftHurtSub, TM.riftHurt, false, false);
+    showFeedback(false, q, '', '', false, false);
     $('btnNext').textContent = (S.qi + 1 >= S.levelTotal) ? TM.riftLast : TM.riftNext;
     return;
   }
   if(S.cores > 0){
     flash('flash-red');
     S.retakes.add(q.id);   /* 答错进待重考池（若用核心抹掉失误则移出） */
-    showFeedback(false, q, lead + ' 你可以冻结时间线，抹去这次失误。', '时空偏移', false, true);
+    showFeedback(false, q, '', '', false, true);
   } else {
     flash('flash-red');
     S.retakes.add(q.id);
-    showFeedback(false, q, lead + ' ' + TM.core + '已耗尽，时间线崩塌。', '时间线崩塌', true);
+    showFeedback(false, q, '', '', true);
   }
 }
 
 /* 主动使用冷冻核心：抹去本题失误，换一道同难度新题 */
 function useCore(){
   if(S.cores <= 0 || S.mode === 'travel') return;   /* 穿越中核心不可用 */
+  clearFbLock();
   S.cores--;
   S.total = Math.max(0, S.total - 1);
   if(S.retakes) S.retakes.delete(S.queue[S.qi].id);   /* 失误已抹掉，不再重考 */
@@ -2496,14 +2526,40 @@ function fbBody(q, lead){
   return h;
 }
 
+/* 答错阅读锁：强制停留 seconds 秒后才可点按钮，保证解析/口诀被看到 */
+let fbLockTimer = 0, fbLockBase = '';
+function fbLock(seconds){
+  clearFbLock();
+  const btn = $('btnNext'), core = $('btnCore');
+  btn.disabled = true; core.disabled = true;
+  /* 延迟到调用方设置完最终按钮文案后，再套上倒计时 */
+  fbLockTimer = setTimeout(() => {
+    fbLockBase = btn.textContent;
+    let left = seconds;
+    const tick = () => {
+      if(left > 0){ btn.textContent = fbLockBase + '（' + left + ' 秒）'; left--; }
+      else { clearFbLock(); btn.textContent = fbLockBase; }
+    };
+    tick();
+    fbLockTimer = setInterval(tick, 1000);
+  }, 0);
+}
+function clearFbLock(){
+  if(fbLockTimer){ clearTimeout(fbLockTimer); clearInterval(fbLockTimer); fbLockTimer = 0; }
+  const btn = $('btnNext'), core = $('btnCore');
+  if(btn) btn.disabled = false;
+  if(core) core.disabled = false;
+}
+
 function showFeedback(ok, q, text, headTag, fatal, canCore){
   const fb = $('feedback'), head = $('fbHead'), body = $('fbText'), btn = $('btnNext'), core = $('btnCore');
   head.className = 'fb-head' + (ok ? '' : ' bad');
-  head.textContent = ok ? '时空稳定 +5' : (headTag || '时空偏移');
+  /* 答错面板不再显示「时空偏移」等标题与引导语，直接呈现解析内容 */
+  head.style.display = ok ? '' : 'none';
   if(ok){
     body.textContent = (text ? text + ' ' : '') + '解析：' + q.e;
   } else {
-    body.innerHTML = fbBody(q, text);
+    body.innerHTML = fbBody(q, '');
   }
   core.style.display = canCore ? 'block' : 'none';
   if(canCore){
@@ -2518,6 +2574,7 @@ function showFeedback(ok, q, text, headTag, fatal, canCore){
     btn.textContent = (S.qi + 1 >= S.levelTotal) ? '完成本纪元' : '继续';
     btn.onclick = nextQuestion;
   }
+  if(!ok) fbLock(5);   /* 强制阅读窗口：5 秒后才允许继续，确保解析被看到 */
   fb.classList.add('show');
   syncFbOffset();
   requestAnimationFrame(() => {
@@ -2569,6 +2626,7 @@ function quickPass(){
 
 function nextQuestion(){
   clearTimeout(passTimer);
+  clearFbLock();
   $('feedback').classList.remove('show');
   clearFbOffset();
   document.querySelectorAll('.pass-toast').forEach(el => el.remove());
