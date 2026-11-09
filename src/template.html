@@ -243,6 +243,18 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
 .sub-card.on .ic{background:var(--accent);color:#02121c}
 .sub-card.off{opacity:.42}
 .sub-card.off .st{color:rgba(255,255,255,.4)}
+/* 学段大卡：两步选科的第一级 */
+.stage-card{display:flex;align-items:center;gap:14px;padding:18px 16px;border-radius:16px;text-align:left;width:100%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--ink);
+  font-family:inherit;cursor:pointer;transition:.18s;animation:optIn .4s ease both}
+.stage-card:nth-child(2){animation-delay:.06s}.stage-card:nth-child(3){animation-delay:.12s}
+.stage-card:active{transform:scale(.99)}
+.stage-card .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:19px;
+  background:var(--sc,#c49bff);color:#02121c;flex:none;font-weight:600}
+.stage-card .tx{flex:1;min-width:0}
+.stage-card .nm{font-size:17px;letter-spacing:.1em;display:block}
+.stage-card .ds{font-size:11.5px;color:var(--ink-dim);margin-top:4px;letter-spacing:.05em;display:block}
+.stage-card .st{font-size:11px;color:var(--ink-dim);letter-spacing:.06em;flex:none;text-align:right;line-height:1.5}
 
 /* ---------- HUD ---------- */
 #s-play{padding-top:calc(env(safe-area-inset-top) + 12px);gap:10px}
@@ -783,6 +795,15 @@ html[data-cycle="1"] .sm-top span:first-child{color:#9fe9ff}
     </div>
   </section>
 
+  <section class="screen" id="s-stage">
+    <div class="kicker" id="stageKicker">SELECT STAGE</div>
+    <h1 id="stageTitle">选择学段</h1>
+    <p class="sub" id="stageDesc">同一套玩法，三条学段线。各学段题库与进度完全独立。</p>
+    <div class="sub-list" id="stageList"></div>
+    <div class="spacer"></div>
+    <button class="btn ghost" id="btnStageBack">返回</button>
+  </section>
+
   <section class="screen" id="s-subject">
     <div class="kicker" id="subKicker">SELECT TIMELINE</div>
     <h1 id="subTitle">选择时间线</h1>
@@ -1059,7 +1080,7 @@ html[data-cycle="1"] .sm-top span:first-child{color:#9fe9ff}
 <div class="sheet" id="help">
   <div class="sheet-inner">
     <h3>玩法说明</h3>
-    <p id="helpBody">开局先选择时间线：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条纪元阶梯，进度独立记录。<br><br>
+    <p id="helpBody">开局先选择学段：<b>小学</b>、<b>初中</b>（中考），后续开放<b>高中</b>；再选科目：<b>语文</b>、<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（本学段多科混抽）。各学段、各科目的进度独立记录。<br><br>
     题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
     常规关卡每题限时 60 秒，超时算错；答对后自动进入下一题。<br><br>
     答错时若持有<b>冷冻核心</b>，可选择「使用冷冻核心 · 时间回溯」：抹去这次失误、换一道同难度新题重答（核心 -1）；选择放弃则坠落一个时代。每通过一关获得一枚核心，最多 3 枚。<br><br>
@@ -1084,8 +1105,36 @@ try{
 
 let QUESTIONS = null;   /* 题库外置在 questions.js，启动时动态注入 */
 const SUBJECTS = __SUBJECTS__;
-const MIX = {id:'mix', name:'混合', short:'混', desc:'全科混抽 · 跨科目总复习', chapter:'', accent:'#c49bff'};
-let pickId = 'geo';
+/* 学段：xc=小学(初考) / cz=中考 / gz=高考，科目 id 已并入学段（geo-cz），存档天然隔离 */
+const STAGES = [
+  {id:'xc', name:'小学', sub:'初考 · 生字词 · 古诗 · 日积月累', accent:'#ffd76a'},
+  {id:'cz', name:'初中', sub:'中考 · 系统复习 · 材料情境题', accent:'#4fd1ff'},
+  {id:'gz', name:'高中', sub:'高考 · 长材料 · 综合提升', accent:'#c8a2ff'}
+];
+function stageMeta(id){ return STAGES.find(s => s.id === id) || null; }
+function stageName(id){ const s = stageMeta(id); return s ? s.name : id; }
+function mixFor(stage){
+  return {id:'mix-' + stage, name:'混合', short:'混', desc:stageName(stage) + '全科混抽 · 总复习', chapter:'', accent:'#c49bff', stage};
+}
+/* 旧版存档迁移：chrono_best_geo → chrono_best_geo-cz（四科历史存档全部归中考） */
+try{
+  if(!localStorage.getItem('chrono_stage_mig')){
+    ['geo','hist','bio','poem'].forEach(sub => {
+      ['chrono_best_' + sub, 'chrono_best_c1_' + sub, 'chrono_best_c2_' + sub,
+       'chrono_win_c0_' + sub, 'chrono_win_c1_' + sub, 'chrono_win_c2_' + sub].forEach(k => {
+        const v = localStorage.getItem(k);
+        if(v === null) return;
+        const nk = k.slice(0, k.length - sub.length) + sub + '-cz';
+        if(localStorage.getItem(nk) === null) localStorage.setItem(nk, v);
+        localStorage.removeItem(k);
+      });
+    });
+    const last = localStorage.getItem('chrono_last_sub');
+    if(last && ['geo','hist','bio','poem'].includes(last)) localStorage.setItem('chrono_last_sub', last + '-cz');
+    localStorage.setItem('chrono_stage_mig', '1');
+  }
+}catch(e){}
+let pickId = null;
 
 /* ---- 题库预取：启动即拉取，进科目前若未就绪则等待（最多重试 3 次） ---- */
 let bankPending = null;
@@ -1109,8 +1158,12 @@ async function ensureBank(){
   return false;
 }
 loadBank().then(() => {
-  const ss = document.getElementById('s-subject');
-  if(ss && (ss.classList.contains('on') || ss.classList.contains('active'))) renderSubjectPicker();
+  ['s-subject', 's-stage'].forEach(sid => {
+    const el = document.getElementById(sid);
+    if(el && el.classList.contains('active')){
+      sid === 's-stage' ? renderStagePicker() : renderSubjectPicker();
+    }
+  });
 }).catch(() => {});
 
 /* ---- 离线缓存：二次打开秒开（仅 https 环境，file:// 下跳过） ---- */
@@ -1861,11 +1914,12 @@ function shuffle(a){
 /* ---------------- 科目 ---------------- */
 function readySubjects(){ return SUBJECTS.filter(s => s.count > 0); }
 function subjectById(id){
-  if(id === 'mix') return MIX;
+  if(id && id.slice(0, 4) === 'mix-') return mixFor(id.slice(4));
   return SUBJECTS.find(s => s.id === id) || SUBJECTS[0];
 }
 function bankFor(sub){
-  return sub === 'mix' ? QUESTIONS : QUESTIONS.filter(q => q.sub === sub);
+  if(sub && sub.slice(0, 4) === 'mix-') return QUESTIONS.filter(q => q.stage === sub.slice(4));
+  return QUESTIONS.filter(q => q.sub === sub);
 }
 function bestKey(sub, cycle){
   const c = (cycle === undefined ? CYCLE : cycle);
@@ -1957,15 +2011,18 @@ function subBadge(id){
   return {tag: name, cls, gen, state: era, lock: false, seal: false, fresh: false};
 }
 
-function renderSubjectPicker(){
+function renderSubjectPicker(stage){
+  curStage = stage || curStage || 'cz';
   const list = $('subList');
-  const ready = readySubjects();
+  const inStage = SUBJECTS.filter(s => s.stage === curStage);
+  const ready = inStage.filter(s => s.count > 0);
   const cards = ready.map(s => ({s, off:false}));
-  cards.push({s: {...MIX, count: (QUESTIONS || []).length}, off: ready.length < 2});
-  SUBJECTS.filter(s => s.count === 0).forEach(s => cards.push({s, off:true}));
+  const stageQ = (QUESTIONS || []).filter(q => q.stage === curStage);
+  cards.push({s: {...mixFor(curStage), count: stageQ.length}, off: ready.length < 2});
+  inStage.filter(s => s.count === 0).forEach(s => cards.push({s, off:true}));
 
   if(!cards.some(c => c.s.id === pickId && !c.off)){
-    pickId = ready.length ? ready[0].id : MIX.id;
+    pickId = ready.length ? ready[0].id : mixFor(curStage).id;
   }
 
   list.innerHTML = cards.map(({s, off}) => {
@@ -2012,13 +2069,52 @@ function renderSubjectPicker(){
   });
 }
 
+/* 学段选择：只展示有题库的学段；只有一个学段时自动跳过本页 */
+let curStage = 'cz';
+function stagesWithContent(){
+  const set = new Set(SUBJECTS.filter(s => s.count > 0).map(s => s.stage));
+  return STAGES.filter(st => set.has(st.id));
+}
+function renderStagePicker(){
+  const list = $('stageList');
+  const stages = stagesWithContent();
+  $('stageKicker').textContent = 'SELECT STAGE';
+  $('stageTitle').textContent = '选择学段';
+  list.innerHTML = stages.map(st => {
+    const subs = SUBJECTS.filter(s => s.stage === st.id && s.count > 0);
+    const total = subs.reduce((a, s) => a + s.count, 0);
+    const best = Math.max(...subs.map(s => bestFor(s.id)), -1);
+    const prog = best >= 0 ? CYCLES[CYCLE].eras[Math.min(best, maxEraOf(CYCLE))].n : '未启程';
+    return `<button class="stage-card" data-stage="${st.id}" style="--sc:${st.accent}">
+      <span class="ic">${st.name[0]}</span>
+      <span class="tx"><b class="nm">${st.name}</b><span class="ds">${st.sub}</span></span>
+      <span class="st">${subs.length} 科<br>${total} 题<br>${prog}</span>
+    </button>`;
+  }).join('');
+  list.querySelectorAll('.stage-card').forEach(el => {
+    el.onclick = () => {
+      Sfx.tick();
+      renderSubjectPicker(el.dataset.stage);
+      $('subKicker').textContent = stageName(el.dataset.stage).toUpperCase() + ' · SELECT TIMELINE';
+      $('subDesc').innerHTML = `<b>${stageName(el.dataset.stage)}</b>学段 · 点击卡片即刻跃迁，各科目进度独立记录。混合 = 本学段全科混抽。`;
+      show('s-subject');
+    };
+  });
+}
+
 function openSubjects(){
   document.documentElement.dataset.cycle = String(CYCLE);
-  $('subKicker').textContent = 'SELECT SUBJECT';
-  $('subTitle').textContent = '选择科目';
-  $('subDesc').innerHTML = '每科一条道途，进度各自独立。周目随进度自动推进，<b>不能手动切换</b>。';
-  renderSubjectPicker();
-  show('s-subject');
+  const stages = stagesWithContent();
+  if(stages.length <= 1){
+    renderSubjectPicker(stages.length ? stages[0].id : 'cz');
+    $('subKicker').textContent = 'SELECT TIMELINE';
+    $('subTitle').textContent = '选择科目';
+    $('subDesc').innerHTML = '每科一条道途，进度各自独立。周目随进度自动推进，<b>不能手动切换</b>。';
+    show('s-subject');
+    return;
+  }
+  renderStagePicker();
+  show('s-stage');
 }
 
 /* ---------------- 抽题 ---------------- */
@@ -2175,7 +2271,7 @@ function cycleText(){
 
 function helpText(){
   const t = TM, half = secsRift();
-  return `开局先选择${t.word}：<b>地理</b>、<b>历史</b>、<b>生物</b>、<b>诗歌</b>，或 <b>混合</b>（四科混抽）。各科目共用同一条${t.stage}阶梯，进度独立记录。<br><br>
+  return `开局先选择学段（小学 / 初中 / 高中），再选择科目或混合（本学段多科混抽）。各学段共用同一条${t.stage}阶梯，进度独立记录。<br><br>
   题目来自各科知识清单，每次进入关卡随机抽题，选项顺序也随机。<br><br>
   常规关卡每题限时 ${t.secs} 秒，超时算错；答对后自动进入下一题。<br><br>
   答错时若持有<b>${t.core}</b>，可选择「${t.coreUse}」：抹去这次失误、换一道同难度新题重答（${t.core} -1）；选择放弃则${t.fall}一个${t.stage}。每通过一关获得一枚，最多 3 枚。<br><br>
@@ -2517,7 +2613,8 @@ function shortExp(e){
   return first && first.length < s.length ? first + '。' : s;
 }
 function fbBody(q, lead){
-  const mn = (window.__MN__ || {})[q.t];
+  const MN = window.__MN__ || {};
+  const mn = MN[q.stage + ':' + q.t] || MN[q.t];   /* 口诀按学段命名空间优先匹配 */
   let h = '';
   if(lead) h += '<div class="fb-lead">' + lead + '</div>';
   h += '<div class="fb-exp"><i>解</i>' + shortExp(q.e) + '</div>';
@@ -3344,7 +3441,7 @@ function renderWall(rows){
   const CYC_NAME = ['时空纪元', '修仙记', '无我篇'];
   const SUBJ_NAME = {};
   SUBJECTS.forEach(s => { SUBJ_NAME[s.id] = s.name; });
-  SUBJ_NAME.mix = '混合';
+  SUBJ_NAME['mix-xc'] = '混合'; SUBJ_NAME['mix-cz'] = '混合'; SUBJ_NAME['mix-gz'] = '混合';
   $('wallList').innerHTML = rows.map(r => {
     const mine = myId && r.id === myId;
     const cy = Math.max(0, Math.min(2, Number(r.cycle) || 0));
@@ -3463,7 +3560,8 @@ $('overSpark').addEventListener('click', () => {
 
 /* ---------------- 交互绑定 ---------------- */
 $('btnStart').onclick = () => { Sfx.init(); Music.start(); Music.setEra(START_ERA, true); Music.buildDrone(); openSubjects(); };
-$('btnSubBack').onclick = () => show('s-title');
+$('btnSubBack').onclick = () => { stagesWithContent().length > 1 ? openSubjects() : show('s-title'); };
+$('btnStageBack').onclick = () => show('s-title');
 $('btnEnter').onclick = enterEra;
 $('btnReborn').onclick = () => beginRun(S ? S.sub : pickId);
 $('btnOverSwitch').onclick = openSubjects;
@@ -3528,7 +3626,7 @@ $('wallTabs').addEventListener('click', e => {
 (function initBest(){
   document.documentElement.dataset.cycle = String(CYCLE);
   try{
-    const last = localStorage.getItem('chrono_last_sub') || 'geo';
+    const last = localStorage.getItem('chrono_last_sub') || 'geo-cz';
     const lc = cycleForSub(last);
     const lb = bestFor(last, lc);
     if(lb >= START_ERA){

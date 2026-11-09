@@ -1,6 +1,16 @@
 [
   {
+    "id": "yw",
+    "stage": "xc",
+    "name": "语文",
+    "short": "语",
+    "desc": "生字词 · 古诗默写 · 日积月累",
+    "chapter": "四年级上册 第 1—8 单元",
+    "accent": "#ffd76a"
+  },
+  {
     "id": "geo",
+    "stage": "cz",
     "name": "地理",
     "short": "地",
     "desc": "疆域 · 人口 · 气候 · 河流",
@@ -9,6 +19,7 @@
   },
   {
     "id": "hist",
+    "stage": "cz",
     "name": "历史",
     "short": "史",
     "desc": "中国近代史 · 第 1—12 课",
@@ -17,6 +28,7 @@
   },
   {
     "id": "bio",
+    "stage": "cz",
     "name": "生物",
     "short": "生",
     "desc": "动物 · 细菌真菌 · 病毒",
@@ -25,6 +37,7 @@
   },
   {
     "id": "poem",
+    "stage": "cz",
     "name": "诗歌",
     "short": "诗",
     "desc": "名句 · 字词 · 赏析 · 常识",

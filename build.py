@@ -3,18 +3,26 @@ import base64, json, pathlib, re, sys, random, hashlib
 root = pathlib.Path(__file__).parent
 tpl = (root / "src/template.html").read_text(encoding="utf-8")
 meta = json.loads((root / "src/subjects.json").read_text(encoding="utf-8"))
+# 科目 id 并入学段（subjects.json 里写基础 id + stage，构建后统一为 yw-xc / geo-cz 等）
+meta = [dict(s, id=f"{s['id']}-{s['stage']}" if s.get("stage") else s["id"]) for s in meta]
 
-# 汇总所有科目题库：src/data/<subject>.json（mnemos.json 是口诀表，单独处理）
+# 汇总所有科目题库：src/data/<subject>[-<stage>]-N.json（mnemos.json 是口诀表，单独处理）
+# 学段：xc=小学(初考) / cz=中考 / gz=高考；文件名带学段前缀的归该学段，无前缀默认中考
+STAGES = ("xc", "cz", "gz")
 questions = []
 for f in sorted((root / "src/data").glob("*.json")):
     if f.name == "mnemos.json":
         continue
-    sub = f.stem.split("-")[0]          # 文件名前缀即科目：hist-1.json / hist-2.json → hist
+    parts = f.stem.split("-")
+    sub = parts[0]
+    stage = parts[1] if len(parts) >= 3 and parts[1] in STAGES else "cz"
+    sid = f"{sub}-{stage}"              # 科目 id 并入学段：geo-1.json → geo-cz，天然隔离存档
     bank = json.loads(f.read_text(encoding="utf-8"))
     for q in bank:
-        q["sub"] = sub
+        q["sub"] = sid
+        q["stage"] = stage
     questions += bank
-    print(f"  {f.name}: {len(bank)} 题 → {sub}")
+    print(f"  {f.name}: {len(bank)} 题 → {sid}")
 
 # 记忆口诀表：按专题索引 {t: {m: 口诀, k: 知识关联}}，注入 window.__MN__
 MNEMO = json.loads((root / "src/data/mnemos.json").read_text(encoding="utf-8"))
@@ -31,7 +39,7 @@ for q in questions:
     q["o"] = [q["o"][i] for i in order]
     q["a"] = order.index(q["a"])
 
-# 每科配额统计，供前端显示
+# 每科配额统计，供前端显示（科目 id 已含学段后缀，如 geo-cz）
 for s in meta:
     pool = [q for q in questions if q.get("sub") == s["id"]]
     s["count"] = len(pool)
