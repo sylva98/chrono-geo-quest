@@ -132,7 +132,8 @@ dist.mkdir(exist_ok=True, parents=True)
 (dist / "sw.js").write_text(SW_JS, encoding="utf-8")
 # 复制素材到 dist/assets/
 adist = dist / "assets"
-adist.mkdir(exist_ok=True)
+if not adist.exists():
+    adist.mkdir()
 for f in sorted(assets_dir.iterdir()):
     if f.is_file():
         (adist / f.name).write_bytes(f.read_bytes())

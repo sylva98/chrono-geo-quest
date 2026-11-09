@@ -15,7 +15,7 @@ MSG="${1:-release: $(date '+%Y-%m-%d %H:%M')}"
 TOKEN_FILE="/root/.gh_token_chrono"
 
 echo "== 0/4 对齐远端 main（远端有新提交则先拉取）=="
-if git fetch origin main 2>/dev/null && [ "$(git rev-list --count main...origin/main)" != "0" ]; then
+if git fetch origin main 2>/dev/null && [ "$(git rev-list --count main..origin/main)" != "0" ]; then
   if [ "$(git rev-list --count origin/main..main)" = "0" ]; then
     echo "远端有新提交，快进合并："
     git merge --ff-only origin/main
@@ -23,7 +23,7 @@ if git fetch origin main 2>/dev/null && [ "$(git rev-list --count main...origin/
     echo "⚠ 本地与远端各有新提交，请先手动处理分叉后重试"; exit 1
   fi
 else
-  echo "远端无新提交，继续"
+  echo "远端无新提交（本地可能领先），继续"
 fi
 
 echo "== 1/4 提交本地改动（如有）=="
