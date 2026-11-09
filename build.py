@@ -4,15 +4,20 @@ root = pathlib.Path(__file__).parent
 tpl = (root / "src/template.html").read_text(encoding="utf-8")
 meta = json.loads((root / "src/subjects.json").read_text(encoding="utf-8"))
 
-# 汇总所有科目题库：src/data/<subject>.json
+# 汇总所有科目题库：src/data/<subject>.json（mnemos.json 是口诀表，单独处理）
 questions = []
 for f in sorted((root / "src/data").glob("*.json")):
+    if f.name == "mnemos.json":
+        continue
     sub = f.stem.split("-")[0]          # 文件名前缀即科目：hist-1.json / hist-2.json → hist
     bank = json.loads(f.read_text(encoding="utf-8"))
     for q in bank:
         q["sub"] = sub
     questions += bank
     print(f"  {f.name}: {len(bank)} 题 → {sub}")
+
+# 记忆口诀表：按专题索引 {t: {m: 口诀, k: 知识关联}}，注入 window.__MN__
+MNEMO = json.loads((root / "src/data/mnemos.json").read_text(encoding="utf-8"))
 
 # 统一分配全局唯一 id，并按题干哈希稳定打乱选项
 seen = {}
@@ -52,7 +57,7 @@ assets_dir = root / "src/assets"
 
 # 内容版本号：题库或任一素材变化 → VER 变化 → SW 换新缓存、素材 URL 失效旧缓存
 import hashlib
-ver_src = payload_q.encode() + b"".join(sorted(f.read_bytes() for f in assets_dir.iterdir() if f.is_file()))
+ver_src = payload_q.encode() + json.dumps(MNEMO, ensure_ascii=False).encode() + b"".join(sorted(f.read_bytes() for f in assets_dir.iterdir() if f.is_file()))
 VER = hashlib.md5(ver_src).hexdigest()[:10]
 
 ASSET_FILES = sorted(f.name for f in assets_dir.iterdir() if f.is_file())
@@ -128,7 +133,7 @@ assert "__QUESTIONS__" not in out and "__SUBJECTS__" not in out and "__VER__" no
 dist = root / "dist"
 dist.mkdir(exist_ok=True, parents=True)
 (dist / "index.html").write_text(out, encoding="utf-8")
-(dist / "questions.js").write_text("window.__QB__=" + payload_q + ";", encoding="utf-8")
+(dist / "questions.js").write_text("window.__QB__=" + payload_q + ";\nwindow.__MN__=" + json.dumps(MNEMO, ensure_ascii=False, separators=(",", ":")) + ";", encoding="utf-8")
 (dist / "sw.js").write_text(SW_JS, encoding="utf-8")
 # 复制素材到 dist/assets/
 adist = dist / "assets"
