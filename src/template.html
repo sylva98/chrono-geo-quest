@@ -359,19 +359,20 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
   scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;padding-right:6px}
 .fb-text::-webkit-scrollbar{width:3px}
 .fb-text::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:3px}
-/* 答错学习区：原因 → 精简解析 → 知识关联 → 记忆口诀 */
+/* 答错学习区：精简解析 → 记忆口诀（黄色醒目） */
 .fb-lead{font-size:11.5px;color:rgba(255,158,150,.9);margin:0 0 8px;letter-spacing:.02em}
-.fb-exp,.fb-link{font-size:13px;line-height:1.7;color:#cfdcf2;margin:0 0 9px}
-.fb-exp i,.fb-link i{display:inline-block;font-style:normal;font-size:10px;letter-spacing:.1em;
+.fb-exp{font-size:13px;line-height:1.7;color:#cfdcf2;margin:0 0 9px}
+.fb-exp i{display:inline-block;font-style:normal;font-size:10px;letter-spacing:.1em;
   color:rgba(160,190,220,.9);background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
   border-radius:4px;padding:1px 6px;margin-right:7px;vertical-align:1px}
-.fb-link{font-size:12px;color:#9fb2cc}
-.fb-memo{margin:4px 0 4px;padding:10px 13px;border-radius:11px;
-  background:linear-gradient(120deg,rgba(255,215,106,.13),rgba(255,215,106,.04));
-  border:1px solid rgba(255,215,106,.32);font-size:13.5px;line-height:1.75;color:#ffe9b8;font-weight:500}
-.fb-memo span{display:inline-block;font-size:10px;letter-spacing:.14em;font-weight:600;
-  color:#ffd76a;border:1px solid rgba(255,215,106,.5);border-radius:4px;
-  padding:1px 6px;margin-right:9px;vertical-align:1px}
+.fb-memo{margin:8px 0 4px;padding:12px 14px;border-radius:12px;
+  background:linear-gradient(120deg,rgba(255,199,64,.26),rgba(255,199,64,.08));
+  border:1px solid rgba(255,206,74,.62);font-size:14.5px;line-height:1.8;color:#ffe08a;font-weight:600;
+  box-shadow:0 6px 22px -10px rgba(255,203,70,.5);animation:memoGlow 2.6s ease-in-out infinite}
+@keyframes memoGlow{50%{border-color:rgba(255,214,102,.95);box-shadow:0 6px 26px -8px rgba(255,203,70,.7)}}
+.fb-memo span{display:inline-block;font-size:10px;letter-spacing:.14em;font-weight:700;
+  color:#3b2b04;background:linear-gradient(180deg,#ffe08a,#ffc93e);border:1px solid rgba(255,222,120,.9);
+  border-radius:4px;padding:1.5px 8px;margin-right:9px;vertical-align:1px}
 .feedback>.btn{flex:none;padding:13px 16px;font-size:15px}
 .core-use{background:linear-gradient(180deg,#a8ecff,#3aa7d8);color:#02121c;border:0;font-weight:600;
   box-shadow:0 8px 26px -10px #6fd4ff;margin-bottom:8px;letter-spacing:.08em;animation:coreGlow 2.4s ease-in-out infinite}
@@ -2646,7 +2647,6 @@ function fbBody(q, lead){
   let h = '';
   if(lead) h += '<div class="fb-lead">' + lead + '</div>';
   h += '<div class="fb-exp"><i>解</i>' + shortExp(q.e) + '</div>';
-  if(mn && mn.k) h += '<div class="fb-link"><i>联 · ' + q.t + '</i>' + mn.k + '</div>';
   if(mn && mn.m) h += '<div class="fb-memo"><span>口诀</span>' + mn.m + '</div>';
   return h;
 }
