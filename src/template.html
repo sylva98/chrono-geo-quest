@@ -2118,6 +2118,19 @@ function openSubjects(){
 }
 
 /* ---------------- 抽题 ---------------- */
+/* 跨局防重复：每科记最近 200 个抽过的题（chrono_seen_<sub>），抽题时优先没见过的 */
+function seenLoad(sub){
+  try{ return JSON.parse(localStorage.getItem('chrono_seen_' + sub) || '[]'); }catch(e){ return []; }
+}
+function seenPersist(){
+  if(!S || !S.seen) return;
+  try{ localStorage.setItem('chrono_seen_' + S.sub, JSON.stringify([...S.seen].slice(-200))); }catch(e){}
+}
+function markSeen(q){
+  if(!S.seen) S.seen = new Set();
+  S.seen.add(q.id);
+  seenPersist();
+}
 function pickQuestion(era, forceDiff){
   const base = bankFor(S.sub);
   /* 坠层重考：只有坠落回退后，重新组卷时才会优先混入曾答错的题 */
@@ -2127,6 +2140,7 @@ function pickQuestion(era, forceDiff){
       const q = cand[Math.floor(Math.random()*cand.length)];
       S.used.add(q.id);
       S.retakes.delete(q.id);
+      markSeen(q);
       if(!S.retakes.size) S.retakeMode = false;
       return q;
     }
@@ -2135,15 +2149,22 @@ function pickQuestion(era, forceDiff){
   const tiers = forceDiff ? [forceDiff] : shuffle(tierFor(era).slice());
   for(const d of tiers){
     let pool = base.filter(q => q.d === d && !S.used.has(q.id));
+    /* 同难度池里优先抽最近几局没出过的题，避免反复出现同一小撮 */
+    if(pool.length > 4 && S.seen && S.seen.size){
+      const fresh = pool.filter(q => !S.seen.has(q.id));
+      if(fresh.length) pool = fresh;
+    }
     if(!pool.length) pool = base.filter(q => q.d === d);
     if(!pool.length) continue;
     const q = pool[Math.floor(Math.random()*pool.length)];
     S.used.add(q.id);
+    markSeen(q);
     return q;
   }
   const fallback = base.filter(q => !S.used.has(q.id));
   const q = (fallback.length ? fallback : base)[Math.floor(Math.random()* (fallback.length ? fallback.length : base.length))];
   S.used.add(q.id);
+  markSeen(q);
   return q;
 }
 
@@ -2158,8 +2179,14 @@ function pickRiftQuestion(takenTopics){
   let cand = pool.filter(q => fresh(q) && !topics.has(q.t));
   if(!cand.length) cand = pool.filter(fresh);
   if(!cand.length) cand = pool;
+  /* 裂缝也优先抽最近没见过的 */
+  if(cand.length > 1 && S.seen && S.seen.size){
+    const fresher = cand.filter(q => !S.seen.has(q.id));
+    if(fresher.length) cand = fresher;
+  }
   const q = cand[Math.floor(Math.random()*cand.length)];
   S.used.add(q.id);
+  markSeen(q);
   return q;
 }
 
@@ -2167,6 +2194,7 @@ function newGame(sub){
   S = {
     sub: sub || pickId, cycle: CYCLE,
     era: START_ERA, cores: 0, score: 0, used: new Set(),
+    seen: new Set(seenLoad(sub || pickId)),
     retakes: new Set(), retakeMode: false,
     passes: 0, travels: 0, travelWins: 0,
     total: 0, correct: 0, streak: 0, bestStreak: 0,
@@ -3248,23 +3276,26 @@ function stelaRender(){
   const times = (S && S.visits) || visitCount(CYCLE) || 1;
   const myGen = genFor((S && S.sub) || pickId);
   $('stelaTag').textContent = TM.name + ' · 第 ' + myGen + ' 世';
+  /* 每次通关都可以改刻：表单始终可见并预填旧昵称，旧碑信息同时展示 */
   if(p){
-    $('stelaForm').hidden = true;
     $('stelaMine').hidden = false;
     $('smTitle').textContent = p.nick;
     $('smMeta').textContent = '第 ' + (p.times || times) + ' 次 · ' + TM.name + ' · 第 ' + myGen + ' 世';
     $('smWord').textContent = p.word;
-    $('stelaFold').querySelector('b').textContent = '✦ 我的星碑';
   } else {
-    $('stelaForm').hidden = false;
     $('stelaMine').hidden = true;
     $('stelaLayer').textContent = '第 ' + times + ' 次抵达 · ' + TM.name + ' · 第 ' + myGen + ' 世';
-    $('stelaFold').querySelector('b').textContent = '✦ 在星碑上留下名字';
   }
-  if(!p && !box.dataset.auto){
+  $('stelaForm').hidden = false;
+  if($('stelaNick').value.trim() === '') $('stelaNick').value = p ? p.nick : '';
+  if($('stelaWord').value.trim() === '') $('stelaWord').value = p ? p.word : '';
+  $('stelaFold').querySelector('b').textContent = p ? '✦ 我的星碑 · 每次通关都可以换一句话' : '✦ 在星碑上留下名字';
+  $('btnStelaPost').textContent = p ? '重新刻 碑' : '刻 上 星 碑';
+  if(!box.dataset.auto){
     box.dataset.auto = '1';
     box.classList.add('open');
     panel.hidden = false;
+    stelaCounts();
   }
 }
 
@@ -3442,11 +3473,21 @@ function renderWall(rows){
   const SUBJ_NAME = {};
   SUBJECTS.forEach(s => { SUBJ_NAME[s.id] = s.name; });
   SUBJ_NAME['mix-xc'] = '混合'; SUBJ_NAME['mix-cz'] = '混合'; SUBJ_NAME['mix-gz'] = '混合';
+  /* 旧档遗留的无学段科目 id */
+  SUBJ_NAME['geo'] = '地理'; SUBJ_NAME['hist'] = '历史'; SUBJ_NAME['bio'] = '生物'; SUBJ_NAME['poem'] = '诗歌';
+  /* 学段标签：科目 id 后缀 -xc 小学 / -gz 高中 / 其余（含旧 id）归中学 */
+  const stageOfSub = s => {
+    const id = String(s || '');
+    if(id.endsWith('-xc')) return '小学';
+    if(id.endsWith('-gz')) return '高中';
+    return '中学';
+  };
   $('wallList').innerHTML = rows.map(r => {
     const mine = myId && r.id === myId;
     const cy = Math.max(0, Math.min(2, Number(r.cycle) || 0));
     const gen = Math.max(1, Number(r.generation) || 1);
     const sn = r.subject ? (SUBJ_NAME[r.subject] || r.subject) : null;
+    const stg = r.subject ? stageOfSub(r.subject) : null;
     return `<div class="wall-item${mine ? ' me' : ''}">
       <div class="wall-ava c${cy}">${escHtml(String(r.nick).slice(0, 1))}</div>
       <div class="wall-body">
@@ -3454,7 +3495,7 @@ function renderWall(rows){
           <span class="wall-nick">${escHtml(r.nick)}</span>
           ${mine ? '<span class="wall-tag me">你</span>' : ''}
           <span class="wall-tag c${cy}">${CYC_NAME[cy]}</span>
-          ${sn ? `<span class="wall-tag subj">${escHtml(sn)}觉醒</span>` : ''}
+          ${sn ? `<span class="wall-tag subj">${stg}·${escHtml(sn)}</span>` : ''}
         </div>
         <div class="wall-word">${escHtml(r.word)}</div>
         <div class="wall-meta2">第 ${r.times} 次抵达 · 第 ${gen} 世 · ${ago(r.updated_at)}</div>
