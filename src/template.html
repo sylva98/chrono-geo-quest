@@ -3171,7 +3171,8 @@ function showRebirth(sub){
   const g = genFor(sub);
   $('rebSub').textContent = subjectById(sub).name + ' · 将 入 第 ' + (g + 1) + ' 世';
   $('rebGen').textContent = '第 ' + (g + 1) + ' 世';
-  $('rebStela').textContent = Object.keys(stelaStore()).length + ' 块';
+  const stelaN = Object.keys(stelaStore()).filter(k => k.slice(k.indexOf('@') + 1) === sub).length;
+  $('rebStela').textContent = stelaN + ' 块';
   show('s-rebirth');
 }
 
@@ -3197,9 +3198,9 @@ async function doRebirth(sub){
     localStorage.removeItem(winKey(sub, 2));
   }catch(e){}
   setGen(sub, gen || (genFor(sub) + 1));
-  /* 新一世从空碑开始刻，旧碑留在云端墙上 */
+  /* 新一世从空碑开始刻：只清这一科的碑，其它科目的碑文一块不动 */
   const all = stelaStore();
-  delete all.c0; delete all.c1; delete all.c2;
+  ['c0@', 'c1@', 'c2@'].forEach(pre => { delete all[pre + sub]; });
   try{ localStorage.setItem('chrono_stela', JSON.stringify(all)); }catch(e){}
 
   btn.disabled = false;
@@ -3212,12 +3213,42 @@ async function doRebirth(sub){
 function stelaStore(){
   try{ return JSON.parse(localStorage.getItem('chrono_stela') || '{}'); }catch(e){ return {}; }
 }
-function stelaGet(cycle){ return stelaStore()['c' + cycle] || null; }
-function stelaSet(cycle, v){
+/* 星碑按「科目 × 周目」各存一块：键 c<周目>@<科目>。
+   服务端按 设备+周目 upsert，因此每个科目派生独立设备标识（设备id::科目），
+   同一设备在不同科目、不同周目都可以各刻一块，互不覆盖 */
+function stelaSub(sub){ return sub || (S && S.sub) || pickId || '?'; }
+function stelaGet(cycle, sub){ return stelaStore()['c' + cycle + '@' + stelaSub(sub)] || null; }
+function stelaSet(cycle, sub, v){
   const all = stelaStore();
-  if(v) all['c' + cycle] = v; else delete all['c' + cycle];
+  const k = 'c' + cycle + '@' + stelaSub(sub);
+  if(v) all[k] = v; else delete all[k];
   try{ localStorage.setItem('chrono_stela', JSON.stringify(all)); }catch(e){}
 }
+function devFor(sub){ return deviceId() + '::' + stelaSub(sub); }
+/* 旧版碑按「设备+周目」只存一块（键 c<周目>，无科目）：迁移到按科目分碑。
+   旧碑在服务端的设备标识不带后缀，标记 bareDev——之后改刻仍走原设备，更新同一行 */
+async function stelaMigrate(){
+  const all = stelaStore();
+  for(const k of Object.keys(all)){
+    if(k.indexOf('@') >= 0) continue;
+    const p = all[k];
+    const cur = stelaStore();
+    if(!(k in cur)) continue;   /* 已被其它操作处理 */
+    delete cur[k];
+    if(p && p.id){
+      try{
+        const rows = await sbGet('/stela?id=eq.' + p.id + '&select=subject,cycle');
+        const sub = rows.length && rows[0].subject;
+        if(sub){
+          p.bareDev = 1;
+          cur['c' + (Number(rows[0].cycle) || 0) + '@' + sub] = p;
+        }
+      }catch(e){ return; }   /* 离线：不落盘，下次再迁 */
+    }
+    try{ localStorage.setItem('chrono_stela', JSON.stringify(cur)); }catch(e){ return; }
+  }
+}
+stelaMigrate();
 function visitCount(cycle){
   try{ return Number(localStorage.getItem('chrono_visit_c' + cycle) || 0); }catch(e){ return 0; }
 }
@@ -3272,7 +3303,7 @@ function stelaCounts(){
 function stelaRender(){
   const box = $('stelaBox'), panel = $('stelaPanel');
   if(!box) return;
-  const p = stelaGet(CYCLE);
+  const p = stelaGet(CYCLE, S && S.sub);
   const times = (S && S.visits) || visitCount(CYCLE) || 1;
   const myGen = genFor((S && S.sub) || pickId);
   $('stelaTag').textContent = TM.name + ' · 第 ' + myGen + ' 世';
@@ -3309,14 +3340,15 @@ async function stelaSubmit(){
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = '刻 碑 中 …';
   const times = (S && S.visits) || visitCount(CYCLE) || 1;
-  const prev = stelaGet(CYCLE);
-  const dev = (prev && prev.device) || deviceId();
-  const gen = genFor((S && S.sub) || pickId);
+  const mySub = (S && S.sub) || pickId;
+  const prev = stelaGet(CYCLE, mySub);
+  const dev = prev ? (prev.bareDev ? deviceId() : (prev.device || devFor(mySub))) : devFor(mySub);
+  const gen = genFor(mySub);
   const body = {p_device: dev, p_cycle: CYCLE, p_nick: nick, p_word: word,
-                p_times: times, p_subject: (S && S.sub) || null, p_generation: gen};
+                p_times: times, p_subject: mySub, p_generation: gen};
   try{
     const res = await stelaPost(body);
-    stelaSet(CYCLE, {id: res.id, nick, word, times, at: Date.now(), device: dev, gen});
+    stelaSet(CYCLE, mySub, {id: res.id, nick, word, times, at: Date.now(), device: dev, gen});
     Sfx.good();
     stelaRender();
     $('stelaPanel').hidden = false;
@@ -3324,7 +3356,7 @@ async function stelaSubmit(){
     /* 刻碑成功：直接带去星碑墙，看自己与大家的留言 */
     setTimeout(() => { openWall(); }, 650);
   }catch(e){
-    stelaSet(CYCLE, {id: null, nick, word, times, at: Date.now(), pending: 1, device: dev, gen});
+    stelaSet(CYCLE, mySub, {id: null, nick, word, times, at: Date.now(), pending: 1, device: dev, gen});
     stelaError('星碑暂时没连上，已先存在本机，联网后会自动补上。');
     stelaRender();
     $('stelaPanel').hidden = false;
@@ -3336,26 +3368,28 @@ async function stelaSubmit(){
 
 /* 离线写入的碑，联网后补传 */
 async function stelaFlush(){
-  const p = stelaGet(CYCLE);
+  const mySub = (S && S.sub) || pickId;
+  const p = stelaGet(CYCLE, mySub);
   if(!p || p.id || !p.pending) return;
   try{
     const res = await stelaPost({
-      p_device: p.device || deviceId(), p_cycle: CYCLE, p_nick: p.nick, p_word: p.word,
-      p_times: p.times, p_subject: (S && S.sub) || null, p_generation: p.gen || genFor(pickId)
+      p_device: p.device || devFor(mySub), p_cycle: CYCLE, p_nick: p.nick, p_word: p.word,
+      p_times: p.times, p_subject: mySub, p_generation: p.gen || genFor(mySub)
     });
-    p.id = res.id; delete p.pending; stelaSet(CYCLE, p);
+    p.id = res.id; delete p.pending; stelaSet(CYCLE, mySub, p);
     stelaRender();
   }catch(e){}
 }
 
 async function stelaDelete(){
-  const p = stelaGet(CYCLE);
+  const mySub = (S && S.sub) || pickId;
+  const p = stelaGet(CYCLE, mySub);
   if(!p) return;
   if(!window.confirm('删除这块星碑？删除后可以重新刻。')) return;
   if(p.id){
-    try{ await sbRpc('stela_del', {p_id: String(p.id), p_device: p.device || deviceId()}); }catch(e){}
+    try{ await sbRpc('stela_del', {p_id: String(p.id), p_device: p.device || devFor(mySub)}); }catch(e){}
   }
-  stelaSet(CYCLE, null);
+  stelaSet(CYCLE, mySub, null);
   Sfx.bad();
   stelaRender();
 }
@@ -3462,8 +3496,9 @@ const WALL_SIGIL = [
 ];
 
 function renderWall(rows){
-  const me = stelaGet(CYCLE);
-  const myId = me && me.id;
+  /* 我的碑：设备标识匹配（含带科目后缀的派生设备与旧版裸设备） */
+  const dev = deviceId();
+  const isMine = r => !!r.device && (r.device === dev || r.device === dev + '::' + (r.subject || ''));
   $('wallCount').textContent = rows.length + ' 块';
   if(!rows.length){
     $('wallList').innerHTML = '<div class="wall-empty">这里还没有碑。<br>你可以是第一个。</div>';
@@ -3483,7 +3518,7 @@ function renderWall(rows){
     return '中学';
   };
   $('wallList').innerHTML = rows.map(r => {
-    const mine = myId && r.id === myId;
+    const mine = isMine(r);
     const cy = Math.max(0, Math.min(2, Number(r.cycle) || 0));
     const gen = Math.max(1, Number(r.generation) || 1);
     const sn = r.subject ? (SUBJ_NAME[r.subject] || r.subject) : null;
