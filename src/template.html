@@ -228,6 +228,10 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
 .sub-list{display:flex;flex-direction:column;gap:9px;margin:14px 0 0;overflow-y:auto;
   scrollbar-width:none;min-height:0}
 .sub-list::-webkit-scrollbar{display:none}
+.sub-card .rst{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;
+  color:var(--ink-dim);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);
+  line-height:1;opacity:.62;transition:.2s}
+.sub-card .rst:hover{opacity:1;color:#ffb4a8;border-color:rgba(255,140,120,.5);background:rgba(255,120,100,.12)}
 .sub-card{display:flex;align-items:center;gap:11px;padding:12px;border-radius:14px;text-align:left;
   background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);color:var(--ink);
   font-family:inherit;cursor:pointer;transition:border-color .25s,background .25s,box-shadow .35s}
@@ -2103,6 +2107,7 @@ function renderSubjectPicker(stage){
       <span class="ic">${s.short}</span>
       <span class="tx"><b class="nm">${s.name}</b><span class="ds">${meta}</span></span>
       <span class="st${b.lock ? ' lock' : ''}">${b.state}</span>
+      ${b.fresh ? '' : '<span class="rst" data-rst="1" title="重置本科目进度">↺</span>'}
     </button>`;
   }).join('');
 
@@ -2127,6 +2132,22 @@ function renderSubjectPicker(stage){
       }
       beginRun(id);
     };
+    /* 卡片右侧「↺」：把本科目进度退回初始状态（其它科目不动） */
+    const rst = el.querySelector('.rst');
+    if(rst){
+      rst.onclick = (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const id = el.dataset.id;
+        const nm = (SUBJECTS.find(s => s.id === id) || {}).name || id;
+        if(!window.confirm('重置「' + nm + '」的进度？最高纪元、周目、世代都会回到初始状态，其它科目不受影响。')) return;
+        resetSubjectProgress(id);
+        try{ if(localStorage.getItem('chrono_last_sub') === id) localStorage.removeItem('chrono_last_sub'); }catch(e){}
+        try{ Sfx.down(); }catch(e){}
+        toastMsg('「' + nm + '」已回到初始状态');
+        renderSubjectPicker();
+      };
+    }
   });
 }
 
