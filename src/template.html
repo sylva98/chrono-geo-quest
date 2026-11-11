@@ -373,6 +373,10 @@ html[data-cycle="2"] #oracleText{color:#e6edf4;text-shadow:0 0 14px rgba(210,225
 .fb-memo span{display:inline-block;font-size:10px;letter-spacing:.14em;font-weight:700;
   color:#3b2b04;background:linear-gradient(180deg,#ffe08a,#ffc93e);border:1px solid rgba(255,222,120,.9);
   border-radius:4px;padding:1.5px 8px;margin-right:9px;vertical-align:1px}
+.sys-toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);z-index:999;
+  max-width:86vw;text-align:center;background:rgba(18,26,40,.94);border:1px solid rgba(255,206,74,.6);
+  color:#ffe08a;font-size:13px;line-height:1.6;padding:11px 18px;border-radius:13px;
+  box-shadow:0 8px 26px -10px rgba(0,0,0,.7);animation:fade .3s ease both}
 .feedback>.btn{flex:none;padding:13px 16px;font-size:15px}
 .core-use{background:linear-gradient(180deg,#a8ecff,#3aa7d8);color:#02121c;border:0;font-weight:600;
   box-shadow:0 8px 26px -10px #6fd4ff;margin-bottom:8px;letter-spacing:.08em;animation:coreGlow 2.4s ease-in-out infinite}
@@ -1355,7 +1359,7 @@ const CYCLES = [
 let CYCLE = 0;
 let TM = CYCLES[0];
 let ERAS = TM.eras;
-const GEN_DAYS = 5;        // 入无我境后闭关天数，到期方可转世
+const GEN_DAYS = 3;        // 入无我境后闭关天数，到期方可转世
 const START_ERA = 9;
 const MAX_ERA = ERAS.length - 1;
 function secsNormal(){ return TM.secs; }                    // 常规：三个周目递减 60 / 40 / 30
@@ -1959,6 +1963,62 @@ function genFor(sub){
 function setGen(sub, n){
   try{ localStorage.setItem('chrono_gen_' + sub, String(Math.max(1, n))); }catch(e){}
 }
+/* ---- 进度重置 / 衰减 ----
+   resetSubjectProgress：清空某科目全部本地进度（最高抵达/周目通关标记/世代/闭关/待重考池/续玩存档）。
+   触发：① URL 带 ?reset=<科目id>（手动重开） ② 超过 STALE_DAYS 天没玩该科目（自动退回初始状态） */
+const STALE_DAYS = 5;      // 超过这么多天不玩，对应科目进度退回初始状态
+function resetSubjectProgress(sub){
+  ['chrono_best_', 'chrono_best_c1_', 'chrono_best_c2_',
+   'chrono_win_c0_', 'chrono_win_c1_', 'chrono_win_c2_',
+   'chrono_gen_', 'chrono_lock_', 'chrono_seen_', 'chrono_lastplay_']
+    .forEach(k => { try{ localStorage.removeItem(k + sub); }catch(e){} });
+  try{
+    const sv = JSON.parse(localStorage.getItem('chrono_save') || 'null');
+    if(sv && sv.sub === sub) localStorage.removeItem('chrono_save');
+  }catch(e){}
+}
+function touchLastPlay(sub){
+  try{ localStorage.setItem('chrono_lastplay_' + sub, String(Date.now())); }catch(e){}
+}
+function hasSubjectProgress(sub){
+  try{
+    return ['chrono_best_', 'chrono_best_c1_', 'chrono_best_c2_',
+            'chrono_win_c0_', 'chrono_win_c1_', 'chrono_win_c2_']
+      .some(k => localStorage.getItem(k + sub) !== null) || genFor(sub) > 1;
+  }catch(e){ return false; }
+}
+function toastMsg(txt, ms){
+  const t = document.createElement('div');
+  t.className = 'sys-toast';
+  t.textContent = txt;
+  (document.body || document.documentElement).appendChild(t);
+  setTimeout(() => t.remove(), ms || 4600);
+}
+function staleSweep(){
+  const stale = [];
+  try{
+    for(const s of SUBJECTS){
+      const last = Number(localStorage.getItem('chrono_lastplay_' + s.id)) || 0;
+      if(last && Date.now() - last > STALE_DAYS * 86400000
+         && hasSubjectProgress(s.id)){
+        resetSubjectProgress(s.id);
+        stale.push(s.name);
+      }
+    }
+  }catch(e){}
+  if(stale.length) toastMsg('「' + stale.join('」「') + '」超过 ' + STALE_DAYS + ' 天未游玩，进度已回到初始状态', 6200);
+}
+/* URL 带 ?reset=<科目id>：立刻清空该科目进度并提示（用于手动重开） */
+(function(){
+  const m = (location.search || '').match(/[?&]reset=([a-zA-Z0-9_-]+)/);
+  if(!m) return;
+  resetSubjectProgress(m[1]);
+  const done = () => toastMsg('该科目进度已重置回初始状态');
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', done)
+    : done();
+})();
+staleSweep();
 /* ---- 该科目现在该走哪一周目：由进度单向推进，不可手选 ---- */
 function cycleForSub(sub){
   for(let c = 0; c < CYCLES.length; c++){
@@ -2455,6 +2515,7 @@ function renderQuestion(){
   document.querySelectorAll('.pass-toast').forEach(el => el.remove());
   const q = S.queue[S.qi];
   if(!q) return;
+  touchLastPlay(S.sub);   /* 游玩时间戳：衰减重置以此为准 */
   $('qPos').textContent = pad2(S.qi+1) + ' / ' + pad2(S.levelTotal);
   $('qTopic').textContent = q.t;
   const stem = $('stem');
@@ -2643,11 +2704,12 @@ function shortExp(e){
 }
 function fbBody(q, lead){
   const MN = window.__MN__ || {};
-  const mn = MN[q.stage + ':' + q.t] || MN[q.t];   /* 口诀按学段命名空间优先匹配 */
+  const mn = MN[q.stage + ':' + q.t] || MN[q.t];   /* 专题口诀兜底；题级口诀(q.m)优先——和本题内容一一对应 */
+  const mm = q.m || (mn && mn.m) || '';
   let h = '';
   if(lead) h += '<div class="fb-lead">' + lead + '</div>';
   h += '<div class="fb-exp"><i>解</i>' + shortExp(q.e) + '</div>';
-  if(mn && mn.m) h += '<div class="fb-memo"><span>口诀</span>' + mn.m + '</div>';
+  if(mm) h += '<div class="fb-memo"><span>口诀</span>' + mm + '</div>';
   return h;
 }
 
